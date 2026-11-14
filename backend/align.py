@@ -23,7 +23,7 @@ import numpy as np
 import torch
 import torchaudio.functional as F
 
-from backend.listener import LISTENER_ENV, MODEL, listener, listener_tag  # noqa: F401 (re-exported)
+from backend.listener import LISTENER_ENV, MODEL, listener, listener_tag, live_listener  # noqa: F401 (re-exported)
 
 SR = 16000          # the model was trained on 16 kHz audio
 MAX_EXTEND = 0.15   # s; a phoneme can't run more than this past its spike (the 'capped' rule from spikes/d_align.py, untuned)
@@ -46,13 +46,19 @@ class Emissions:
     log_probs: torch.Tensor   # (frames, 392) log-probabilities
     sec_per_frame: float      # about 0.02
     duration: float           # seconds of audio
+    model: str = None         # which listener made them (None = listener()); thresholds must match it
+
+
+def _model(name=None):
+    """The (extractor, model) for a listener name (None = listener(), what eval scripts use)."""
+    return _load(name or listener())
 
 
 @cache
-def _model():
-    """Load the model once (1.26 GB; slow the first time), on CPU (no GPU needed at this scale)."""
+def _load(name):
+    """Load a listener once (1.26 GB each; slow the first time), on CPU (no GPU needed at this scale).
+    The live app can hold two: the fine-tuned one for English and the original for Korean."""
     from transformers import Wav2Vec2FeatureExtractor, Wav2Vec2ForCTC
-    name = listener()
     model = Wav2Vec2ForCTC.from_pretrained(name).eval()
     if model.config.vocab_size != len(vocab()):   # a listener with other symbols would make every id wrong
         raise ValueError(f"{name} has {model.config.vocab_size} output symbols, the vocab has {len(vocab())}")
@@ -71,8 +77,9 @@ def model_symbol(ipa, lang):
     return KO_MODEL_SYMBOL.get(ipa, ipa) if lang == "ko" else ipa
 
 
-def emissions(audio, sr):
-    """Raw samples (any rate, mono or stereo) -> Emissions. This is the slow part (~1 s per sentence on CPU)."""
+def emissions(audio, sr, lang=None):
+    """Raw samples (any rate, mono or stereo) -> Emissions. This is the slow part (~1 s per sentence on CPU).
+    lang given (the live app): that language's live_listener(). No lang (eval scripts): listener(), as before."""
     audio = np.asarray(audio, dtype=np.float32)
     if audio.ndim == 2:
         audio = audio.mean(axis=1)  # stereo -> mono
@@ -82,11 +89,12 @@ def emissions(audio, sr):
     duration = len(wav) / SR
     if duration < MIN_SECONDS:
         raise ValueError(f"recording is {duration:.2f} s; too short to analyze")
-    extractor, model = _model()
+    name = live_listener(lang) if lang else listener()
+    extractor, model = _model(name)
     inputs = extractor(wav.numpy(), sampling_rate=SR, return_tensors="pt")  # normalizes volume
     with torch.inference_mode():
         log_probs = model(inputs.input_values).logits.log_softmax(-1)[0]
-    return Emissions(log_probs, duration / log_probs.shape[0], duration)
+    return Emissions(log_probs, duration / log_probs.shape[0], duration, name)
 
 
 def align(em, words, lang):
@@ -99,7 +107,7 @@ def align(em, words, lang):
     if em.log_probs.shape[0] < needed:
         raise ValueError(f"recording ({em.duration:.1f} s) is too short for this sentence")
 
-    blank = _model()[1].config.pad_token_id
+    blank = _model(em.model)[1].config.pad_token_id
     targets = torch.tensor([ids], dtype=torch.int32)
     frame_labels, frame_scores = F.forced_align(em.log_probs.unsqueeze(0), targets, blank=blank)
     spans = F.merge_tokens(frame_labels[0], frame_scores[0].exp())  # one span per expected phoneme

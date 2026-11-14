@@ -20,7 +20,8 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 
-from backend.align import align, emissions, listener
+from backend.align import align, emissions
+from backend.listener import listener_id, live_listener
 from backend.g2p import expected_phonemes
 from backend.tts import normalize_text
 
@@ -54,7 +55,7 @@ def align_clip(wav_path, text, lang):
     last sound to where the voice stops, by at most MAX_TAIL. (Not done for learners: their audio has room noise,
     and scoring reads those windows.)"""
     samples, sr = sf.read(wav_path, dtype="float32")
-    em = emissions(samples, sr)
+    em = emissions(samples, sr, lang)
     words = align(em, expected_phonemes(text, lang), lang)
     last, end = words[-1]["phonemes"][-1], voice_end(samples, sr)
     last["end"] = round(min(max(last["end"], end), last["end"] + MAX_TAIL), 3)
@@ -67,12 +68,13 @@ def native_timings(wav_path, text, lang):
     text with no pronounceable words (same as /analyze)."""
     path = timings_path(wav_path)
     saved = _read(path)
-    if saved and saved.get("version") == TIMINGS_VERSION and saved.get("model") == listener() and saved.get("lang") == lang:
+    model = listener_id(live_listener(lang))    # timings from another listener are redone
+    if saved and saved.get("version") == TIMINGS_VERSION and saved.get("model") == model and saved.get("lang") == lang:
         return saved
     words, duration = align_clip(wav_path, normalize_text(text), lang)
     out = {
         "version": TIMINGS_VERSION,
-        "model": listener(),
+        "model": model,
         "lang": lang,
         "text": normalize_text(text),
         "duration_s": round(duration, 3),

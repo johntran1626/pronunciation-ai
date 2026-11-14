@@ -217,11 +217,11 @@ async def analyze(audio: UploadFile = File(...),
 
 def _run_pipeline(samples, sr, text, lang):
     expected = expected_phonemes(text, lang)  # 1. what should be said
-    em = emissions(samples, sr)               #    the model runs ONCE...
+    em = emissions(samples, sr, lang)         #    the model runs ONCE (this language's listener)...
     words = align(em, expected, lang)         # 2. ...where each expected sound is
     heard = recognize(em)                     # 3. ...and what was actually heard
     words, extra_at_start = attach_heard(words, heard, lang)  # 4. line them up: what was heard in each place
-    sound_t, match_t = load_thresholds(), load_match_thresholds()
+    sound_t, match_t = load_thresholds(em.model), load_match_thresholds(em.model)  # tuned for THAT listener
     rules = match_t.get(lang, {}).get("sentence", {"enabled": False})
     matched, reason = sentence_check(words, len(heard), rules)  # 5. did they say THIS sentence?
     if matched:

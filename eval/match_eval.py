@@ -15,6 +15,10 @@ English: L2-ARCTIC, 24 non-native speakers (groups as in eval/l2arctic.py: "othe
 Korean: Zeroth test split, 10 NATIVE speakers (no labelled learner Korean is available).
 
 Output (git-ignored): data/cache/match_words.csv (one row per word) and data/cache/match_sentences.csv.
+
+With PC_LISTENER set (the fine-tuned listener): output goes to data/cache/<tag>/, English keeps only speakers the
+fine-tune never trained on (dev + Korean L1 test), and Korean is skipped (the app keeps the original model for it).
+    PC_LISTENER=data/models/listener_v1/best python -m eval.match_eval
 """
 import argparse
 import csv
@@ -30,14 +34,16 @@ import pyarrow.parquet as pq
 import soundfile as sf
 
 from backend.align import align, emissions
+from backend.listener import listener_tag
+from eval.listener import tagged
 from backend.compare import attach_heard
 from backend.g2p import expected_phonemes
 from backend.match import sentence_features, word_features
 from backend.recognize import recognize
 from eval.l2arctic import korean_utterances, other_utterances
 
-WORDS_OUT = Path("data/cache/match_words.csv")
-SENT_OUT = Path("data/cache/match_sentences.csv")
+WORDS_OUT = tagged(Path("data/cache/match_words.csv"))      # own folder per listener
+SENT_OUT = tagged(Path("data/cache/match_sentences.csv"))
 ZEROTH_TEST = Path("data/zeroth/data/test-00000-of-00001.parquet")
 ZEROTH_TUNE_SPEAKERS = {118, 121, 105, 132, 112}  # 5 of the 10 test-split speakers; the other 5 are the test
 
@@ -135,11 +141,23 @@ def run_recording(base, audio, sr, text, lang, rng, other_text, pool, cut_times=
 
 
 # ---------- the corpora ----------
+def keep(lang, group, speaker):
+    """Everything for the original model. For a fine-tuned listener: English held-out speakers only, no Korean."""
+    if not listener_tag():
+        return True
+    if lang == "ko":
+        return False
+    from eval.ft_data import split_of   # the SAME split the fine-tune used
+    return split_of("l2arctic", speaker, group == "korean") != "train"
+
+
 def english(limit):
     prompts = [line.split('"')[1] for line in Path("data/l2arctic/PROMPTS").read_text().splitlines() if '"' in line]
     pool = sorted({w.strip(".,;:!?\"'") for p in prompts for w in p.split() if len(w.strip(".,;:!?\"'")) >= 3})
     for source in (korean_utterances(limit), other_utterances(limit)):
         for group, spk, utt, grid, text, wav in source:
+            if not keep("en", group, spk):
+                continue
             audio, sr = sf.read(wav, dtype="float32")
             if audio.ndim > 1:
                 audio = audio.mean(axis=1)
@@ -153,6 +171,8 @@ def english(limit):
 
 
 def korean(limit):
+    if not keep("ko", "test", ""):
+        return
     rows = pq.read_table(ZEROTH_TEST, columns=["id", "speaker_id", "audio", "text"]).to_pylist()
     pool = sorted({w for r in rows for w in r["text"].split() if len(w) >= 2})
     per_speaker = {}

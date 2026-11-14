@@ -25,6 +25,7 @@ import copy
 import json
 from pathlib import Path
 
+from backend.listener import thresholds_file
 from backend.scoring import PAIR_OF_TARGET
 
 MATCH_FILE = Path(__file__).with_name("match_thresholds.json")
@@ -32,8 +33,10 @@ OFF = {"sentence": {"enabled": False}, "word": {"enabled": False}}
 NOT_HEARD = "word_not_heard"
 
 
-def load_match_thresholds():
-    return json.loads(MATCH_FILE.read_text()) if MATCH_FILE.exists() else {}
+def load_match_thresholds(name=None):
+    """The "did you say it?" thresholds tuned for this listener (None = the original model: MATCH_FILE)."""
+    path = thresholds_file("match", name)
+    return json.loads(path.read_text()) if path.exists() else {}
 
 
 def _rules(match_t, lang):

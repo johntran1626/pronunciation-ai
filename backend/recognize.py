@@ -18,7 +18,7 @@ def recognize(em):
     symbol_of = {i: s for s, i in vocab().items()}
     probs = em.log_probs.exp()
     best = probs.argmax(-1).tolist()          # (1) top symbol per frame
-    blank = _model()[1].config.pad_token_id
+    blank = _model(em.model)[1].config.pad_token_id
 
     heard, i = [], 0
     while i < len(best):

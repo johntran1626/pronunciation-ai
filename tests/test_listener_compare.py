@@ -29,9 +29,9 @@ def test_env_var_picks_the_fine_tuned_listener(monkeypatch):
 
 @pytest.fixture
 def fresh_model_cache():
-    align._model.cache_clear()
+    align._load.cache_clear()
     yield
-    align._model.cache_clear()
+    align._load.cache_clear()
 
 
 def _fake_loader(monkeypatch, vocab_size):

@@ -34,6 +34,7 @@ from pathlib import Path
 from backend.acoustics import f3_dip, rl_f3, vb_features
 from backend.align import vocab
 from backend.detector import predict, vectorize
+from backend.listener import thresholds_file
 from backend.features import MEASURED, sound_features
 from backend.sequence_align import is_vowel
 
@@ -117,8 +118,10 @@ def is_red(cand, thresholds):
     return cand["margin"] > t["margin"] and (t["variant"] == "A" or cand["heard_agrees"])
 
 
-def load_thresholds():
-    return json.loads(THRESHOLDS_FILE.read_text()) if THRESHOLDS_FILE.exists() else {"pairs": {}}
+def load_thresholds(name=None):
+    """The per-pair thresholds tuned for this listener (None = the original model: THRESHOLDS_FILE)."""
+    path = thresholds_file("sound", name)
+    return json.loads(path.read_text()) if path.exists() else {"pairs": {}}
 
 
 def score_words(em, words, lang, thresholds=None, audio=None, sr=None):

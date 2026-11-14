@@ -3,6 +3,7 @@
     python -m eval.compare_listeners --build    # waits for the fine-tune to finish, then runs the 5 cache builds
                                                 # with the new listener (held-out speakers only), then the report
     python -m eval.compare_listeners            # the report alone (seconds), once the new caches exist
+    python -m eval.compare_listeners --write-thresholds   # the new listener's English pair thresholds for the app
 
 In brief: it's a rematch with the rules fixed in advance. Both listeners go through the exact same pipeline
 (align -> recognize -> margin + detector features -> detectors). For a fair fight:
@@ -15,8 +16,9 @@ In brief: it's a rematch with the rules fixed in advance. Both listeners go thro
 Per pair, two rules are tried: the margin rule (eval/run.py) and the detector (eval/detectors.py, which
 first needs out-of-fold AUC >= 0.70 on tuning speakers before the Korean rows are even looked at).
 
-Writes results/listeners.json. Changes NOTHING in the app (backend/thresholds.json, the live listener): switching
-the live app to the new listener is a manual decision, after this report.
+Writes results/listeners.json. The report alone changes nothing in the app. --write-thresholds writes
+backend/thresholds_listener_v1.json from the report's NEW margin rules (tuned on dev speakers only); the app uses
+the new listener for English once that file AND backend/match_thresholds_listener_v1.json exist (backend/listener.py).
 """
 import argparse
 import json
@@ -113,7 +115,25 @@ def compare(old_rows, new_rows, pairs=PAIRS, split=_split_of):
     return out
 
 
-# ---------- 3. loading ----------
+# ---------- 3. the new listener's thresholds for the app ----------
+THRESHOLD_KEYS = ("cap", "variant", "feature", "margin", "m_lo", "dip", "enabled")
+
+
+def live_thresholds(report):
+    """The NEW listener's margin rule per pair, in backend/thresholds.json's format. A pair is on only if its
+    margin rule passed the bar. A pair that passes only with the detector stays off: the report keeps numbers,
+    not the detector's fitted weights, so there is nothing to run (refitting it is a separate, explicit step)."""
+    pairs = {}
+    for p, r in report["pairs"].items():
+        rule = r["new"]["margin rule"]
+        pairs[p] = {k: rule[k] for k in THRESHOLD_KEYS if k in rule}
+        pairs[p]["enabled"] = bool(rule.get("enabled"))
+    return {"source": "eval/compare_listeners.py: margin rules of the fine-tuned listener, tuned on dev speakers "
+                      "only, checked on the Korean test speakers (results/listeners.json)",
+            "pairs": pairs}
+
+
+# ---------- 4. loading ----------
 def load(tag):
     """All 4 caches + SAA's feature sidecar for one listener ('' = old)."""
     from eval.detectors import attach_saa_features, load_saa_features
@@ -191,7 +211,16 @@ def _cell(one):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--build", action="store_true", help="wait for the fine-tune, build the new caches, then report")
+    ap.add_argument("--write-thresholds", action="store_true",
+                    help="write the new listener's pair thresholds for the app from results/listeners.json")
     a = ap.parse_args()
+    if a.write_thresholds:
+        from backend.listener import thresholds_file
+        out = live_thresholds(json.loads(RESULTS.read_text()))
+        path = thresholds_file("sound", str(NEW))
+        path.write_text(json.dumps(out, indent=2) + "\n")
+        print(f"wrote {path.relative_to(ROOT)}: on = {[p for p, t in out['pairs'].items() if t['enabled']]}")
+        return
     if a.build:
         build()
     tag = listener_tag(str(NEW))

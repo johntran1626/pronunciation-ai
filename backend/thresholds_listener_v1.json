@@ -1,0 +1,62 @@
+{
+  "source": "eval/compare_listeners.py: margin rules of the fine-tuned listener, tuned on dev speakers only, checked on the Korean test speakers (results/listeners.json)",
+  "pairs": {
+    "r_as_l": {
+      "cap": 0.005,
+      "variant": "B",
+      "margin": -1.0001,
+      "enabled": true
+    },
+    "l_as_r": {
+      "cap": 0.005,
+      "variant": "F",
+      "feature": "f3_dip",
+      "margin": 0.996199999,
+      "m_lo": -0.535900001,
+      "dip": -1.449099999,
+      "enabled": false
+    },
+    "f_as_p": {
+      "cap": 0.005,
+      "variant": "A",
+      "margin": -0.507,
+      "enabled": false
+    },
+    "v_as_b": {
+      "cap": 0.005,
+      "variant": "B",
+      "margin": 0.2079,
+      "enabled": false
+    },
+    "th_as_s": {
+      "cap": 0.005,
+      "variant": "A",
+      "margin": 0.9938,
+      "enabled": true
+    },
+    "dh_as_d": {
+      "cap": 0.005,
+      "variant": "B",
+      "margin": 0.946,
+      "enabled": false
+    },
+    "ih_as_iy": {
+      "cap": 0.005,
+      "variant": "B",
+      "margin": 0.8902,
+      "enabled": true
+    },
+    "iy_as_ih": {
+      "cap": 0.005,
+      "variant": "B",
+      "margin": 0.6115,
+      "enabled": false
+    },
+    "extra_vowel": {
+      "cap": 0.005,
+      "variant": "B",
+      "margin": 0.823,
+      "enabled": true
+    }
+  }
+}

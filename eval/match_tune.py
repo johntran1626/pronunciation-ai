@@ -23,15 +23,32 @@ import numpy as np
 
 from eval.run import wilson
 
-SENT = Path("data/cache/match_sentences.csv")
-WORDS = Path("data/cache/match_words.csv")
-RESULTS = Path("results/match.json")
-THRESHOLDS = Path("backend/match_thresholds.json")
+
+
+def paths():
+    """Inputs and outputs for the listener in PC_LISTENER (unset = the original model, the original file names).
+    The fine-tuned listener gets its own files, so tuning it never overwrites what the original model uses."""
+    from backend.listener import listener, listener_tag, thresholds_file
+    from eval.listener import tagged
+    tag = listener_tag()
+    return {"sentences": tagged(Path("data/cache/match_sentences.csv")),
+            "words": tagged(Path("data/cache/match_words.csv")),
+            "results": Path(f"results/match_{tag}.json" if tag else "results/match.json"),
+            "thresholds": thresholds_file("match", listener())}
+
 SENTENCE_CAP = 0.01
 WORD_CAP = 0.002  # 0.2% chosen: 0.7% of correct sentences with a false red vs 2.2% at 0.5%
 GRID = [round(i * 0.02, 2) for i in range(41)]          # 0.00 .. 0.80
 HEARD_GRID = [0.0, 0.1, 0.2, 0.25, 0.34, 0.4, 0.5, 0.6]   # share of a word's sounds heard
 MIN_SOUNDS = [1, 2, 3]
+
+
+def may_go_live(thresholds):
+    """Writing a fine-tuned listener's file switches the app's English to it (backend/listener.py), so it is
+    written only if its English sentence check held its cap on the test speakers. The original model's file is
+    always written (it is what the app falls back to)."""
+    from backend.listener import listener_tag
+    return not listener_tag() or bool(thresholds["en"]["sentence"]["enabled"])
 
 
 # ---------- the rules (same logic as backend/match.py, on plain rows) ----------
@@ -146,8 +163,9 @@ def word_report(words, sentences, gate_t, rule):
 
 
 def main():
-    S = _load(SENT, ("n", "heard", "conf", "n_heard"))
-    W = _load(WORDS, ("n", "heard", "conf", "is_target", "dist"))
+    P = paths()
+    S = _load(P["sentences"], ("n", "heard", "conf", "n_heard"))
+    W = _load(P["words"], ("n", "heard", "conf", "is_target", "dist"))
     for w in W:
         w["dist"] = int(w["dist"]) if w["dist"] != "" else -1
     results, thresholds = {"caps": {"sentence": SENTENCE_CAP, "word": WORD_CAP}}, {}
@@ -174,30 +192,35 @@ def main():
     }
     thresholds["en"] = {"sentence": {"enabled": gate_ok, **gate}, "word": {"enabled": word_ok, **rule}}
 
-    # ----- Korean (natives only) -----
-    ko = [r for r in S if r["lang"] == "ko"]
-    ko_noise = [r for r in ko if r["cond"] == "noise"]
-    ko_tune, ko_test = [r for r in ko if r["group"] == "tune"], [r for r in ko if r["group"] == "test"]
-    lenient = pick_lenient_gate(ko_noise)
-    strict = pick_gate([r for r in ko_tune if r["cond"] == "orig"],
-                       [r for r in ko_tune if r["cond"] == "other"] + ko_noise, SENTENCE_CAP)
-    ko_w = [w for w in W if w["lang"] == "ko"]
-    ko_rule = pick_word_rule([w for w in ko_w if w["group"] == "tune" and w["cond"] == "orig"],
-                             [w for w in ko_w if w["group"] == "tune" and w["cond"] in ("cut", "swap")
-                              and w["is_target"] == 1], WORD_CAP)
-    results["ko"] = {
-        "sentence": {"thresholds": lenient, "enabled": True, "why": "lenient: rejects only no-speech (no learner data)",
-                     "test": {**gate_report(ko_test, lenient), "noise": gate_report(ko_noise, lenient)["noise"]},
-                     "for_comparison_native_tuned": {"thresholds": strict, "test": gate_report(ko_test, strict)}},
-        "word": {"thresholds": ko_rule, "enabled": False, "why": "no Korean reds without learner data",
-                 "test_natives": word_report([w for w in ko_w if w["group"] == "test"], ko_test, lenient, ko_rule)},
-    }
-    thresholds["ko"] = {"sentence": {"enabled": True, **lenient}, "word": {"enabled": False, **ko_rule}}
-    thresholds["source"] = "eval/match_tune.py (see results/match.json)"
+    # ----- Korean (natives only; skipped for a listener the app uses for English only) -----
+    if any(r["lang"] == "ko" and r["cond"] != "noise" for r in S):
+        ko = [r for r in S if r["lang"] == "ko"]
+        ko_noise = [r for r in ko if r["cond"] == "noise"]
+        ko_tune, ko_test = [r for r in ko if r["group"] == "tune"], [r for r in ko if r["group"] == "test"]
+        lenient = pick_lenient_gate(ko_noise)
+        strict = pick_gate([r for r in ko_tune if r["cond"] == "orig"],
+                           [r for r in ko_tune if r["cond"] == "other"] + ko_noise, SENTENCE_CAP)
+        ko_w = [w for w in W if w["lang"] == "ko"]
+        ko_rule = pick_word_rule([w for w in ko_w if w["group"] == "tune" and w["cond"] == "orig"],
+                                 [w for w in ko_w if w["group"] == "tune" and w["cond"] in ("cut", "swap")
+                                  and w["is_target"] == 1], WORD_CAP)
+        results["ko"] = {
+            "sentence": {"thresholds": lenient, "enabled": True, "why": "lenient: rejects only no-speech (no learner data)",
+                         "test": {**gate_report(ko_test, lenient), "noise": gate_report(ko_noise, lenient)["noise"]},
+                         "for_comparison_native_tuned": {"thresholds": strict, "test": gate_report(ko_test, strict)}},
+            "word": {"thresholds": ko_rule, "enabled": False, "why": "no Korean reds without learner data",
+                     "test_natives": word_report([w for w in ko_w if w["group"] == "test"], ko_test, lenient, ko_rule)},
+        }
+        thresholds["ko"] = {"sentence": {"enabled": True, **lenient}, "word": {"enabled": False, **ko_rule}}
+    thresholds["source"] = f"eval/match_tune.py (see {P['results']})"
 
-    RESULTS.write_text(json.dumps(results, indent=1, ensure_ascii=False) + "\n")
-    THRESHOLDS.write_text(json.dumps(thresholds, indent=1) + "\n")
+    P["results"].write_text(json.dumps(results, indent=1, ensure_ascii=False) + "\n")
     print(json.dumps(results, indent=1, ensure_ascii=False))
+    if may_go_live(thresholds):
+        P["thresholds"].write_text(json.dumps(thresholds, indent=1) + "\n")
+        print(f"wrote {P['thresholds']}")
+    else:
+        print(f"NOT written: the English sentence check broke its cap; the app keeps the original listener")
 
 
 if __name__ == "__main__":
