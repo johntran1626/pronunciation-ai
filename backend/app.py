@@ -4,6 +4,7 @@ Run the server:  uvicorn backend.app:app --reload     then open http://127.0.0.1
 """
 import io
 import json
+import os
 from pathlib import Path
 from typing import Literal
 
@@ -31,8 +32,22 @@ MAX_BYTES = 10 * 1024 * 1024   # 10 MB: stops huge uploads before we try to deco
 app = FastAPI(title="Pronunciation coach")
 
 # CORS: which websites' pages may READ our replies in a browser. An explicit list, not "*",
-# so a random site can't use our backend from its own page. The deployed frontend URL is added at deploy time.
-ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
+# so a random site can't use our backend from its own page.
+LOCAL_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
+
+
+def allowed_origins(setting: str | None) -> list[str]:
+    """The local dev origins plus the comma-separated FRONTEND_ORIGINS setting (the deployed frontend's URL).
+
+    Set on the host, so a new frontend URL is a settings change, not a code change. "*" is refused.
+    """
+    extra = [o.strip().rstrip("/") for o in (setting or "").split(",") if o.strip()]
+    if "*" in extra:
+        raise ValueError("FRONTEND_ORIGINS must list exact sites; '*' would let any website read our replies")
+    return LOCAL_ORIGINS + [o for o in extra if o not in LOCAL_ORIGINS]
+
+
+ALLOWED_ORIGINS = allowed_origins(os.environ.get("FRONTEND_ORIGINS"))
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
