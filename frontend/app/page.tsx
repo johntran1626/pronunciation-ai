@@ -9,6 +9,7 @@ import FormalitySwitch from "@/components/FormalitySwitch";
 import Translation from "@/components/Translation";
 import { fetchCustom, fetchPack, fetchPacks, type CustomText, type Lang, type Pack, type PackSummary } from "@/lib/api";
 import { MAX_CUSTOM_CHARS, checkLine, typedProblem } from "@/lib/custom";
+import { SHOW_DEV, pickerPacks } from "@/lib/devOnly";
 import { tagLabel } from "@/lib/tags";
 import { bySpeech, hasSpeechLevels } from "@/lib/translations";
 
@@ -96,7 +97,7 @@ export default function Home() {
     if (!lang) return;
     let ignore = false; // drop a late reply if the user already switched direction
     fetchPacks(lang).then(
-      (list) => !ignore && setPacks(list),
+      (list) => !ignore && setPacks(pickerPacks(list, SHOW_DEV)),
       (e: Error) => !ignore && setError(e.message),
     );
     return () => {
