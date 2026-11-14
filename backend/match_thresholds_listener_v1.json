@@ -1,0 +1,16 @@
+{
+ "en": {
+  "sentence": {
+   "enabled": true,
+   "min_heard": 0.0,
+   "min_conf": 0.44
+  },
+  "word": {
+   "enabled": true,
+   "min_sounds": 3,
+   "max_heard": 0.25,
+   "max_conf": 0.1
+  }
+ },
+ "source": "eval/match_tune.py (see results/match_listener_v1.json)"
+}

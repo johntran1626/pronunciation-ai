@@ -1,0 +1,656 @@
+{
+ "source": "eval/aihub505.py: AI Hub 505, English-L1 learners reading Korean scripts",
+ "warning": "Fire rate = real errors + false alarms; nobody has checked which (no per-sound labels), so it is an UPPER BOUND on false alarms, not a detection rate. Cut-offs come from native Zeroth speakers (other microphones than AI Hub's phones), so part of any gap can be the recording setup. The 상/중/하 rating is for the whole sentence; the label files don't say what the raters judged. Aggregate counts only; no recordings or transcripts.",
+ "settings": {
+  "per_speaker": null,
+  "split": "both",
+  "limit": null,
+  "cap": 0.005
+ },
+ "dropped_before_run": null,
+ "failed_in_run": 0,
+ "recordings": 4453,
+ "speakers": 151,
+ "native_cuts": {
+  "tap_as_r_margin": {
+   "name": "ㄹ said as English R (model margin)",
+   "cut": 0.3414,
+   "fired": 5,
+   "n": 1133,
+   "rate": 0.0044
+  },
+  "tap_as_r_f3": {
+   "name": "ㄹ said as English R (F3 dip)",
+   "cut": 5.5788,
+   "fired": 5,
+   "n": 1129,
+   "rate": 0.0044
+  },
+  "tap_as_l_margin": {
+   "name": "ㄹ said as English L (model margin)",
+   "cut": 0.9358,
+   "fired": 5,
+   "n": 1133,
+   "rate": 0.0044
+  },
+  "tense_puff_vot": {
+   "name": "ㅃㄸㄲ said with an English puff (VOT)",
+   "cut": 91.2,
+   "fired": 3,
+   "n": 798,
+   "rate": 0.0038
+  }
+ },
+ "fire": {
+  "tap_as_r_margin": {
+   "dev": {
+    "all": {
+     "n": 5239,
+     "fired": 6,
+     "rate": 0.0011,
+     "ci": [
+      0.0005,
+      0.0025
+     ]
+    },
+    "상": {
+     "n": 2142,
+     "fired": 2,
+     "rate": 0.0009,
+     "ci": [
+      0.0003,
+      0.0034
+     ]
+    },
+    "중": {
+     "n": 2914,
+     "fired": 4,
+     "rate": 0.0014,
+     "ci": [
+      0.0005,
+      0.0035
+     ]
+    },
+    "하": {
+     "n": 183,
+     "fired": 0,
+     "rate": 0.0,
+     "ci": [
+      0.0,
+      0.0206
+     ]
+    }
+   },
+   "test": {
+    "all": {
+     "n": 6195,
+     "fired": 35,
+     "rate": 0.0056,
+     "ci": [
+      0.0041,
+      0.0078
+     ]
+    },
+    "상": {
+     "n": 2650,
+     "fired": 17,
+     "rate": 0.0064,
+     "ci": [
+      0.004,
+      0.0103
+     ]
+    },
+    "중": {
+     "n": 3363,
+     "fired": 15,
+     "rate": 0.0045,
+     "ci": [
+      0.0027,
+      0.0073
+     ]
+    },
+    "하": {
+     "n": 182,
+     "fired": 3,
+     "rate": 0.0165,
+     "ci": [
+      0.0056,
+      0.0473
+     ]
+    }
+   },
+   "both": {
+    "all": {
+     "n": 11434,
+     "fired": 41,
+     "rate": 0.0036,
+     "ci": [
+      0.0026,
+      0.0049
+     ]
+    },
+    "상": {
+     "n": 4792,
+     "fired": 19,
+     "rate": 0.004,
+     "ci": [
+      0.0025,
+      0.0062
+     ]
+    },
+    "중": {
+     "n": 6277,
+     "fired": 19,
+     "rate": 0.003,
+     "ci": [
+      0.0019,
+      0.0047
+     ]
+    },
+    "하": {
+     "n": 365,
+     "fired": 3,
+     "rate": 0.0082,
+     "ci": [
+      0.0028,
+      0.0239
+     ]
+    }
+   }
+  },
+  "tap_as_r_f3": {
+   "dev": {
+    "all": {
+     "n": 5239,
+     "fired": 56,
+     "rate": 0.0107,
+     "ci": [
+      0.0082,
+      0.0139
+     ]
+    },
+    "상": {
+     "n": 2142,
+     "fired": 25,
+     "rate": 0.0117,
+     "ci": [
+      0.0079,
+      0.0172
+     ]
+    },
+    "중": {
+     "n": 2914,
+     "fired": 31,
+     "rate": 0.0106,
+     "ci": [
+      0.0075,
+      0.0151
+     ]
+    },
+    "하": {
+     "n": 183,
+     "fired": 0,
+     "rate": 0.0,
+     "ci": [
+      0.0,
+      0.0206
+     ]
+    }
+   },
+   "test": {
+    "all": {
+     "n": 6195,
+     "fired": 49,
+     "rate": 0.0079,
+     "ci": [
+      0.006,
+      0.0104
+     ]
+    },
+    "상": {
+     "n": 2650,
+     "fired": 31,
+     "rate": 0.0117,
+     "ci": [
+      0.0083,
+      0.0166
+     ]
+    },
+    "중": {
+     "n": 3363,
+     "fired": 17,
+     "rate": 0.0051,
+     "ci": [
+      0.0032,
+      0.0081
+     ]
+    },
+    "하": {
+     "n": 182,
+     "fired": 1,
+     "rate": 0.0055,
+     "ci": [
+      0.001,
+      0.0305
+     ]
+    }
+   },
+   "both": {
+    "all": {
+     "n": 11434,
+     "fired": 105,
+     "rate": 0.0092,
+     "ci": [
+      0.0076,
+      0.0111
+     ]
+    },
+    "상": {
+     "n": 4792,
+     "fired": 56,
+     "rate": 0.0117,
+     "ci": [
+      0.009,
+      0.0151
+     ]
+    },
+    "중": {
+     "n": 6277,
+     "fired": 48,
+     "rate": 0.0076,
+     "ci": [
+      0.0058,
+      0.0101
+     ]
+    },
+    "하": {
+     "n": 365,
+     "fired": 1,
+     "rate": 0.0027,
+     "ci": [
+      0.0005,
+      0.0154
+     ]
+    }
+   }
+  },
+  "tap_as_l_margin": {
+   "dev": {
+    "all": {
+     "n": 5239,
+     "fired": 140,
+     "rate": 0.0267,
+     "ci": [
+      0.0227,
+      0.0314
+     ]
+    },
+    "상": {
+     "n": 2142,
+     "fired": 36,
+     "rate": 0.0168,
+     "ci": [
+      0.0122,
+      0.0232
+     ]
+    },
+    "중": {
+     "n": 2914,
+     "fired": 98,
+     "rate": 0.0336,
+     "ci": [
+      0.0277,
+      0.0408
+     ]
+    },
+    "하": {
+     "n": 183,
+     "fired": 6,
+     "rate": 0.0328,
+     "ci": [
+      0.0151,
+      0.0697
+     ]
+    }
+   },
+   "test": {
+    "all": {
+     "n": 6195,
+     "fired": 331,
+     "rate": 0.0534,
+     "ci": [
+      0.0481,
+      0.0593
+     ]
+    },
+    "상": {
+     "n": 2650,
+     "fired": 71,
+     "rate": 0.0268,
+     "ci": [
+      0.0213,
+      0.0337
+     ]
+    },
+    "중": {
+     "n": 3363,
+     "fired": 235,
+     "rate": 0.0699,
+     "ci": [
+      0.0617,
+      0.079
+     ]
+    },
+    "하": {
+     "n": 182,
+     "fired": 25,
+     "rate": 0.1374,
+     "ci": [
+      0.0948,
+      0.1949
+     ]
+    }
+   },
+   "both": {
+    "all": {
+     "n": 11434,
+     "fired": 471,
+     "rate": 0.0412,
+     "ci": [
+      0.0377,
+      0.045
+     ]
+    },
+    "상": {
+     "n": 4792,
+     "fired": 107,
+     "rate": 0.0223,
+     "ci": [
+      0.0185,
+      0.0269
+     ]
+    },
+    "중": {
+     "n": 6277,
+     "fired": 333,
+     "rate": 0.0531,
+     "ci": [
+      0.0478,
+      0.0589
+     ]
+    },
+    "하": {
+     "n": 365,
+     "fired": 31,
+     "rate": 0.0849,
+     "ci": [
+      0.0605,
+      0.118
+     ]
+    }
+   }
+  },
+  "tense_puff_vot": {
+   "dev": {
+    "all": {
+     "n": 1899,
+     "fired": 94,
+     "rate": 0.0495,
+     "ci": [
+      0.0406,
+      0.0602
+     ]
+    },
+    "상": {
+     "n": 757,
+     "fired": 31,
+     "rate": 0.041,
+     "ci": [
+      0.029,
+      0.0575
+     ]
+    },
+    "중": {
+     "n": 1056,
+     "fired": 53,
+     "rate": 0.0502,
+     "ci": [
+      0.0386,
+      0.0651
+     ]
+    },
+    "하": {
+     "n": 86,
+     "fired": 10,
+     "rate": 0.1163,
+     "ci": [
+      0.0644,
+      0.201
+     ]
+    }
+   },
+   "test": {
+    "all": {
+     "n": 2178,
+     "fired": 142,
+     "rate": 0.0652,
+     "ci": [
+      0.0556,
+      0.0764
+     ]
+    },
+    "상": {
+     "n": 910,
+     "fired": 24,
+     "rate": 0.0264,
+     "ci": [
+      0.0178,
+      0.0389
+     ]
+    },
+    "중": {
+     "n": 1197,
+     "fired": 108,
+     "rate": 0.0902,
+     "ci": [
+      0.0753,
+      0.1078
+     ]
+    },
+    "하": {
+     "n": 71,
+     "fired": 10,
+     "rate": 0.1408,
+     "ci": [
+      0.0783,
+      0.2402
+     ]
+    }
+   },
+   "both": {
+    "all": {
+     "n": 4077,
+     "fired": 236,
+     "rate": 0.0579,
+     "ci": [
+      0.0511,
+      0.0655
+     ]
+    },
+    "상": {
+     "n": 1667,
+     "fired": 55,
+     "rate": 0.033,
+     "ci": [
+      0.0254,
+      0.0427
+     ]
+    },
+    "중": {
+     "n": 2253,
+     "fired": 161,
+     "rate": 0.0715,
+     "ci": [
+      0.0615,
+      0.0828
+     ]
+    },
+    "하": {
+     "n": 157,
+     "fired": 20,
+     "rate": 0.1274,
+     "ci": [
+      0.084,
+      0.1886
+     ]
+    }
+   }
+  }
+ },
+ "scores": {
+  "dev": {
+   "n_sentences": 2057,
+   "n_speakers": 71,
+   "by_rating": {
+    "상": {
+     "n": 850,
+     "heard": 0.5573,
+     "conf": 0.4635,
+     "missing": 0.1031
+    },
+    "중": {
+     "n": 1128,
+     "heard": 0.606,
+     "conf": 0.5202,
+     "missing": 0.0931
+    },
+    "하": {
+     "n": 79,
+     "heard": 0.6115,
+     "conf": 0.5371,
+     "missing": 0.1164
+    }
+   },
+   "heard": {
+    "spearman": -0.272,
+    "ci_by_speaker": [
+     -0.3673,
+     -0.1607
+    ],
+    "speaker_level_spearman": -0.5472
+   },
+   "conf": {
+    "spearman": -0.3226,
+    "ci_by_speaker": [
+     -0.4211,
+     -0.2062
+    ],
+    "speaker_level_spearman": -0.5744
+   },
+   "missing": {
+    "spearman": 0.0995,
+    "ci_by_speaker": [
+     -0.009,
+     0.1899
+    ],
+    "speaker_level_spearman": 0.2265
+   }
+  },
+  "test": {
+   "n_sentences": 2396,
+   "n_speakers": 80,
+   "by_rating": {
+    "상": {
+     "n": 1010,
+     "heard": 0.5622,
+     "conf": 0.4662,
+     "missing": 0.1023
+    },
+    "중": {
+     "n": 1305,
+     "heard": 0.6018,
+     "conf": 0.5144,
+     "missing": 0.0979
+    },
+    "하": {
+     "n": 81,
+     "heard": 0.6287,
+     "conf": 0.552,
+     "missing": 0.0977
+    }
+   },
+   "heard": {
+    "spearman": -0.2336,
+    "ci_by_speaker": [
+     -0.3165,
+     -0.1413
+    ],
+    "speaker_level_spearman": -0.4075
+   },
+   "conf": {
+    "spearman": -0.2941,
+    "ci_by_speaker": [
+     -0.374,
+     -0.2053
+    ],
+    "speaker_level_spearman": -0.4605
+   },
+   "missing": {
+    "spearman": 0.059,
+    "ci_by_speaker": [
+     -0.0179,
+     0.1384
+    ],
+    "speaker_level_spearman": 0.0493
+   }
+  },
+  "both": {
+   "n_sentences": 4453,
+   "n_speakers": 151,
+   "by_rating": {
+    "상": {
+     "n": 1860,
+     "heard": 0.56,
+     "conf": 0.465,
+     "missing": 0.1027
+    },
+    "중": {
+     "n": 2433,
+     "heard": 0.6038,
+     "conf": 0.5171,
+     "missing": 0.0957
+    },
+    "하": {
+     "n": 160,
+     "heard": 0.6202,
+     "conf": 0.5447,
+     "missing": 0.1069
+    }
+   },
+   "heard": {
+    "spearman": -0.2513,
+    "ci_by_speaker": [
+     -0.314,
+     -0.1859
+    ],
+    "speaker_level_spearman": -0.4752
+   },
+   "conf": {
+    "spearman": -0.3075,
+    "ci_by_speaker": [
+     -0.3716,
+     -0.2364
+    ],
+    "speaker_level_spearman": -0.5102
+   },
+   "missing": {
+    "spearman": 0.0776,
+    "ci_by_speaker": [
+     0.0175,
+     0.1386
+    ],
+    "speaker_level_spearman": 0.13
+   }
+  }
+ }
+}
