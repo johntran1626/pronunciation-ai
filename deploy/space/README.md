@@ -21,5 +21,8 @@ Source code, method and evaluation results: https://github.com/johntran1626/pron
 - `GET /packs`: sentence packs
 - `POST /analyze`: audio + target text → per-sound results (interactive docs at `/docs`)
 
+Native reference audio for every pack sentence (Azure neural TTS, normal and slower speed) is generated ahead of time
+and shipped in the image; only Custom-mode sentences are synthesized on demand.
+
 The fine-tuned English listener is kept in a private model repo and downloaded when the container starts, because
 part of its training data is licensed for non-commercial use only and is not redistributed.

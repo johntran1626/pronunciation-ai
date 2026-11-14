@@ -4,6 +4,8 @@
 !requirements.txt
 !backend
 !content
+# The one part of data/ that goes in: generated reference audio (Azure clips + their timings), nothing private.
+!data/tts_cache
 **/__pycache__
 **/*.pyc
 **/.DS_Store
