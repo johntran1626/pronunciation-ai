@@ -1,0 +1,9 @@
+# Allow-list: only what the server needs goes into the build. Everything else stays out, including
+# secrets (.env), corpora, model weights and private recordings (data/, eval/), and the local virtualenv.
+*
+!requirements.txt
+!backend
+!content
+**/__pycache__
+**/*.pyc
+**/.DS_Store
