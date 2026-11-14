@@ -265,6 +265,67 @@ def score_summary(rows, n_boot=1000):
     return out
 
 
+SPEED_SCORES = ("heard", "conf")
+
+
+def script_of(file):
+    """AI Hub file names start with the script id: EN12RC045_EN0001_20210803.wav -> EN12RC045."""
+    return Path(file).name.split("_")[0]
+
+
+def partial_spearman(x, y, z):
+    """Rank correlation of x and y with z held fixed: what is left of x~y once both are explained by z."""
+    rxy, rxz, ryz = spearman(x, y), spearman(x, z), spearman(y, z)
+    if None in (rxy, rxz, ryz) or abs(rxz) == 1 or abs(ryz) == 1:
+        return None
+    return round((rxy - rxz * ryz) / math.sqrt((1 - rxz ** 2) * (1 - ryz ** 2)), 4)
+
+
+def within_script_spearman(rows, k):
+    """Score k vs rating among readers of the SAME script: each script's mean score and mean rating are
+    subtracted first, so an easy script read by good speakers can't make the correlation."""
+    by = defaultdict(list)
+    for r in rows:
+        by[script_of(r["file"])].append(r)
+    xs, ys = [], []
+    for g in by.values():
+        if len(g) < 2:
+            continue
+        mx, my = np.mean([float(r[k]) for r in g]), np.mean([int(r["rating"]) for r in g])
+        xs += [float(r[k]) - mx for r in g]
+        ys += [int(r["rating"]) - my for r in g]
+    return spearman(xs, ys)
+
+
+def speed_summary(rows, n_boot=1000):
+    """Why do heard/conf go DOWN as the rating goes up? half -> speaking rate (expected sounds per second of
+    audio, pauses included) and sentence length per rating; speed vs rating; and per score: vs speed, vs rating,
+    vs rating with speed held fixed (speaker-resampled 95% interval), vs rating within the same script."""
+    speed = lambda r: int(r["n"]) / float(r["seconds"])
+    out = {}
+    for half, rs in _halves(rows).items():
+        rs = [r for r in rs if float(r["seconds"]) > 0]
+        s = dict(n_sentences=len(rs), by_rating={})
+        for v in (3, 2, 1):
+            g = [r for r in rs if int(r["rating"]) == v]
+            if g:
+                s["by_rating"][RATING_NAME[v]] = dict(n=len(g), speed=round(float(np.mean([speed(r) for r in g])), 2),
+                                                      sounds=round(float(np.mean([int(r["n"]) for r in g])), 1))
+        rating = lambda sub: [int(r["rating"]) for r in sub]
+        sp = lambda sub: [speed(r) for r in sub]
+        stat = lambda sub: spearman(sp(sub), rating(sub))
+        s["speed_vs_rating"] = dict(spearman=stat(rs), ci_by_speaker=list(speaker_bootstrap(rs, stat, n_boot=n_boot)))
+        for k in SPEED_SCORES:
+            score = lambda sub, k=k: [float(r[k]) for r in sub]
+            part = lambda sub, k=k, score=score: partial_spearman(score(sub), rating(sub), sp(sub))
+            s[k] = dict(vs_speed=spearman(score(rs), sp(rs)), vs_rating=spearman(score(rs), rating(rs)),
+                        vs_rating_speed_removed=dict(spearman=part(rs),
+                                                     ci_by_speaker=list(speaker_bootstrap(rs, part, n_boot=n_boot))),
+                        vs_rating_same_script=within_script_spearman(rs, k))
+        out[half] = s
+    return out
+
+
 # ---------- 4. safety + resume ----------
 def check_listener():
     """The native cut-offs were measured with the ORIGINAL listener; measuring learners with another one would
@@ -418,7 +479,8 @@ def report(sentences, sounds, out, settings, dropped=None, n_boot=1000):
         settings=settings, dropped_before_run=dropped, failed_in_run=failed,
         recordings=len(sent), speakers=len({r["speaker"] for r in sent}),
         native_cuts={c: dict(name=CHECKS[c][2], **v) for c, v in cuts_full.items()},
-        fire=fire_summary(snd, cuts), scores=score_summary(sent, n_boot=n_boot))
+        fire=fire_summary(snd, cuts), scores=score_summary(sent, n_boot=n_boot),
+        speed=speed_summary(sent, n_boot=n_boot))
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(res, ensure_ascii=False, indent=1))
     print(f"\n{len(sent)} recordings ({failed} failed) -> {out}")
@@ -433,6 +495,12 @@ def report(sentences, sounds, out, settings, dropped=None, n_boot=1000):
         line = ", ".join(f"{k} rho={s[k]['spearman']} {s[k]['ci_by_speaker']} spk={s[k]['speaker_level_spearman']}"
                          for k in SCORES)
         print(f"scores {half} ({s['n_sentences']} sentences, {s['n_speakers']} speakers): {line}")
+    for half, s in res["speed"].items():
+        rate = ", ".join(f"{g} {v['speed']}/s ({v['sounds']} sounds)" for g, v in s["by_rating"].items())
+        line = ", ".join(f"{k} vs speed {s[k]['vs_speed']}, vs rating {s[k]['vs_rating']} -> speed removed "
+                         f"{s[k]['vs_rating_speed_removed']['spearman']} {s[k]['vs_rating_speed_removed']['ci_by_speaker']}"
+                         f", same script {s[k]['vs_rating_same_script']}" for k in SPEED_SCORES)
+        print(f"speed {half}: {rate}; speed vs rating {s['speed_vs_rating']['spearman']}; {line}")
     return res
 
 

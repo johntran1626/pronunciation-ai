@@ -652,5 +652,160 @@
     "speaker_level_spearman": 0.13
    }
   }
+ },
+ "speed": {
+  "dev": {
+   "n_sentences": 2057,
+   "by_rating": {
+    "상": {
+     "n": 850,
+     "speed": 8.84,
+     "sounds": 98.1
+    },
+    "중": {
+     "n": 1128,
+     "speed": 7.17,
+     "sounds": 98.2
+    },
+    "하": {
+     "n": 79,
+     "speed": 4.81,
+     "sounds": 100.4
+    }
+   },
+   "speed_vs_rating": {
+    "spearman": 0.5615,
+    "ci_by_speaker": [
+     0.4533,
+     0.6463
+    ]
+   },
+   "heard": {
+    "vs_speed": -0.386,
+    "vs_rating": -0.272,
+    "vs_rating_speed_removed": {
+     "spearman": -0.0724,
+     "ci_by_speaker": [
+      -0.1429,
+      0.0029
+     ]
+    },
+    "vs_rating_same_script": -0.304
+   },
+   "conf": {
+    "vs_speed": -0.4327,
+    "vs_rating": -0.3226,
+    "vs_rating_speed_removed": {
+     "spearman": -0.1068,
+     "ci_by_speaker": [
+      -0.1782,
+      -0.0308
+     ]
+    },
+    "vs_rating_same_script": -0.3548
+   }
+  },
+  "test": {
+   "n_sentences": 2396,
+   "by_rating": {
+    "상": {
+     "n": 1010,
+     "speed": 8.69,
+     "sounds": 97.3
+    },
+    "중": {
+     "n": 1305,
+     "speed": 7.03,
+     "sounds": 96.7
+    },
+    "하": {
+     "n": 81,
+     "speed": 4.58,
+     "sounds": 100.3
+    }
+   },
+   "speed_vs_rating": {
+    "spearman": 0.5233,
+    "ci_by_speaker": [
+     0.4273,
+     0.6102
+    ]
+   },
+   "heard": {
+    "vs_speed": -0.3499,
+    "vs_rating": -0.2336,
+    "vs_rating_speed_removed": {
+     "spearman": -0.0633,
+     "ci_by_speaker": [
+      -0.1349,
+      0.0123
+     ]
+    },
+    "vs_rating_same_script": -0.2509
+   },
+   "conf": {
+    "vs_speed": -0.4102,
+    "vs_rating": -0.2941,
+    "vs_rating_speed_removed": {
+     "spearman": -0.1022,
+     "ci_by_speaker": [
+      -0.1788,
+      -0.0294
+     ]
+    },
+    "vs_rating_same_script": -0.3148
+   }
+  },
+  "both": {
+   "n_sentences": 4453,
+   "by_rating": {
+    "상": {
+     "n": 1860,
+     "speed": 8.76,
+     "sounds": 97.7
+    },
+    "중": {
+     "n": 2433,
+     "speed": 7.1,
+     "sounds": 97.4
+    },
+    "하": {
+     "n": 160,
+     "speed": 4.69,
+     "sounds": 100.4
+    }
+   },
+   "speed_vs_rating": {
+    "spearman": 0.5397,
+    "ci_by_speaker": [
+     0.4745,
+     0.601
+    ]
+   },
+   "heard": {
+    "vs_speed": -0.3645,
+    "vs_rating": -0.2513,
+    "vs_rating_speed_removed": {
+     "spearman": -0.0696,
+     "ci_by_speaker": [
+      -0.12,
+      -0.0191
+     ]
+    },
+    "vs_rating_same_script": -0.2748
+   },
+   "conf": {
+    "vs_speed": -0.4185,
+    "vs_rating": -0.3075,
+    "vs_rating_speed_removed": {
+     "spearman": -0.1068,
+     "ci_by_speaker": [
+      -0.1562,
+      -0.0535
+     ]
+    },
+    "vs_rating_same_script": -0.333
+   }
+  }
  }
 }

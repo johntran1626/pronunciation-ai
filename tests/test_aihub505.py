@@ -156,6 +156,77 @@ def test_score_summary_has_sentence_and_speaker_level_correlations():
     assert "speaker_level_spearman" in s["heard"]
 
 
+def test_script_id_is_the_first_part_of_the_file_name():
+    assert A.script_of("EN12RC045_EN0001_20210803.wav") == "EN12RC045"
+
+
+def test_partial_spearman_removes_a_shared_third_variable():
+    """y and x both follow z, and only through z: once z is removed nothing is left."""
+    z = list(range(60))
+    x = [v + (7 if i % 2 else -7) for i, v in enumerate(z)]
+    y = [v + (7 if i % 3 == 0 else -3) for i, v in enumerate(z)]
+    assert A.spearman(x, y) > 0.9
+    assert abs(A.partial_spearman(x, y, z)) < A.spearman(x, y) / 3
+    assert A.partial_spearman(x, [1] * 60, z) is None                    # no spread -> no correlation
+
+
+def test_within_script_spearman_compares_readers_of_the_same_script():
+    """Script B is read better AND scores higher, but within each script a higher rating means a LOWER score."""
+    rows = []
+    for script, base in (("A", 0.2), ("B", 0.8)):
+        for i in range(10):
+            rating = 1 + i % 3
+            rows.append(dict(file=f"{script}_s{i}_x.wav", rating=rating + (1 if script == "B" else 0),
+                             heard=base - 0.05 * rating))
+    pooled = A.spearman([r["heard"] for r in rows], [r["rating"] for r in rows])
+    assert pooled > 0                                                    # pooled: the script difference wins
+    assert A.within_script_spearman(rows, "heard") < -0.9                # same script: backwards
+
+
+def test_speed_summary_reports_rate_length_and_scores_with_speed_removed():
+    rows = []
+    for i in range(60):
+        rating = 1 + i % 3
+        seconds = 20 - 4 * rating + (i % 5) * 0.3                         # better speakers read faster
+        n = 100
+        speed = n / seconds
+        rows.append(dict(file=f"S{i % 6}_spk{i % 12}_x.wav", speaker=f"spk{i % 12}", split="dev" if i % 12 < 6 else "test",
+                         rating=rating, n=n, seconds=seconds,
+                         heard=round(1 - speed / 20 + (i % 7) * 0.002, 4),
+                         conf=round(0.9 - speed / 25 + (i % 4) * 0.002, 4), missing=0.1))
+    s = A.speed_summary(rows, n_boot=50)
+    assert set(s) == {"dev", "test", "both"}
+    b = s["both"]
+    assert set(b["by_rating"]) == {"상", "중", "하"}
+    assert b["by_rating"]["상"]["speed"] > b["by_rating"]["하"]["speed"]
+    assert b["by_rating"]["상"]["sounds"] == 100
+    assert b["speed_vs_rating"]["spearman"] > 0.8 and len(b["speed_vs_rating"]["ci_by_speaker"]) == 2
+    for k in ("heard", "conf"):
+        assert b[k]["vs_speed"] < -0.9
+        assert b[k]["vs_rating"] < -0.5
+        assert abs(b[k]["vs_rating_speed_removed"]["spearman"]) < abs(b[k]["vs_rating"])
+        assert len(b[k]["vs_rating_speed_removed"]["ci_by_speaker"]) == 2
+        assert "vs_rating_same_script" in b[k]
+    assert "missing" not in b                                            # only the two scores the README discusses
+
+
+def test_report_saves_the_speed_check(tmp_path, monkeypatch):
+    monkeypatch.setattr(A, "native_values", lambda: {"tap_as_r_margin": [0.1] * 400})
+    sent = tmp_path / "s.csv"
+    fields = ["file", "speaker", "split", "rating", "seconds", "n", "heard", "missing", "conf", "error"]
+    with open(sent, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fields)
+        w.writeheader()
+        for i in range(30):
+            w.writerow(dict(file=f"S{i % 3}_spk{i % 6}_x.wav", speaker=f"spk{i % 6}", split="dev", rating=1 + i % 3,
+                            seconds=10 + i % 4, n=80, heard=0.5 + (i % 7) / 50, missing=0.1, conf=0.4 + (i % 5) / 40,
+                            error=""))
+    res = A.report(sent, tmp_path / "none.csv", tmp_path / "out.json", {}, n_boot=20)
+    saved = json.loads((tmp_path / "out.json").read_text())
+    assert "speed" in saved and saved["speed"] == res["speed"]
+    assert saved["speed"]["dev"]["heard"]["vs_speed"] is not None
+
+
 # ---------- 4. safety ----------
 def test_refuses_the_fine_tuned_listener(monkeypatch):
     """The native cut-offs were measured with the original listener; Korean must use the same one."""
