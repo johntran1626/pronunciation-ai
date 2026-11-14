@@ -1,0 +1,338 @@
+{
+  "id": "ko-office",
+  "lang": "ko",
+  "name": "Office",
+  "dev_only": false,
+  "reviewed": false,
+  "source": "Native example lines from 국립국어원 한국어기초사전 (krdict.korean.go.kr), unmodified (source per line). English translations LLM-written (Claude, Anthropic), not checked by a native Korean speaker.",
+  "license": "CC BY-SA 2.0 KR (per line)",
+  "items": [
+    {
+      "id": "ko_office_01",
+      "text": "중국어를 한국어로 바꾸면 되는 거죠?",
+      "translation": "So I just need to put the Chinese into Korean, right?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "17198#5",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=17198",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_02",
+      "text": "전화 잘못 거셨습니다.",
+      "translation": "You have the wrong number.",
+      "speech": "존댓말",
+      "tags": [
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "20260#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=20260",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_03",
+      "text": "제가 연락처를 드릴게요.",
+      "translation": "I'll give you my contact details.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "14014#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=14014",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_04",
+      "text": "곧 끊을 거예요.",
+      "translation": "I'll hang up soon.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "62839#25",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=62839",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_05",
+      "text": "여보세요, 거기 김 사장님 댁입니까?",
+      "translation": "Hello, is this the home of Kim, the company president?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "17866#2",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=17866",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_06",
+      "text": "보고서 작성은 다 끝났나요?",
+      "translation": "Have you finished writing the report?",
+      "speech": "존댓말",
+      "tags": [
+        "eo_vs_o",
+        "eu",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "24803#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=24803",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_07",
+      "text": "팀장으로 승진을 축하합니다.",
+      "translation": "Congratulations on your promotion to team leader.",
+      "speech": "존댓말",
+      "tags": [
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "15953#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=15953",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_08",
+      "text": "어느 부서에서 근무하십니까?",
+      "translation": "Which department do you work in?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "26317#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=26317",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_09",
+      "text": "기획안 제출은 언제까지입니까?",
+      "translation": "When is the proposal due?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "31811#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=31811",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_10",
+      "text": "회식이 있어서 좀 늦을 거 같아요.",
+      "translation": "We have a team dinner, so I'll probably be a little late.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "88144#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=88144",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_11",
+      "text": "너 어쩌면 그렇게 소식을 딱 끊고 사니?",
+      "translation": "How could you cut off all contact like that?",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "62839#2",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=62839",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_12",
+      "text": "아마 자동 연결이 될 거야.",
+      "translation": "It'll probably connect automatically.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "13973#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=13973",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_13",
+      "text": "전화가 먹통이네.",
+      "translation": "The phone is dead.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o"
+      ],
+      "source": "krdict",
+      "source_id": "20260#4",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=20260",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_14",
+      "text": "지수는 요즘 왜 소식이 없지?",
+      "translation": "Why haven't we heard from Jisu lately?",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "71143#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=71143",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_15",
+      "text": "볼일이 급해서 화장실 가.",
+      "translation": "I really need to go, so I'm off to the restroom.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "60065#3",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=60065",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_16",
+      "text": "어, 유민아 출근길이야?",
+      "translation": "Oh, Yumin, on your way to work?",
+      "speech": "반말",
+      "tags": [
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "79079#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=79079",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_17",
+      "text": "왜 퇴직을 하려는 거야?",
+      "translation": "Why do you want to leave your job?",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "82890#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=82890",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_18",
+      "text": "도우미를 부르자.",
+      "translation": "Let's call a helper.",
+      "speech": "반말",
+      "tags": [
+        "eo_vs_o",
+        "eu",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "48094#3",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=48094",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_19",
+      "text": "나 교원 자격 시험에 붙었어!",
+      "translation": "I passed the teacher certification exam!",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "70795#2",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=70795",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_office_20",
+      "text": "오늘 점심 식사 담당은 누구야?",
+      "translation": "Who's in charge of lunch today?",
+      "speech": "반말",
+      "tags": [
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "14006#2",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=14006",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    }
+  ]
+}

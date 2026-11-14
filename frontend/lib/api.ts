@@ -12,9 +12,14 @@ export type Health = { ok: boolean };
 export type PackItem = {
   id: string;
   text: string;
-  translation: string | null; // English packs: the 존댓말 (polite) Korean form
+  translation: string | null; // English packs: the 존댓말 (polite) Korean form; Korean packs: the English meaning
   translation_informal?: string | null; // English packs: the 반말 (casual) Korean form
   tags: string[];
+  // Korean packs only: the line's speech level (the 존댓말 / 반말 switch filters on it) and where it comes from.
+  speech?: "존댓말" | "반말";
+  source_url?: string;
+  license?: string;
+  credit?: string;
 };
 type PackInfo = {
   id: string;

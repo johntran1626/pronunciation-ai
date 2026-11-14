@@ -12,3 +12,14 @@ export function pickTranslation(t: Translated, casual: boolean): Shown | null {
   if (!hasBothForms(t)) return { form: null, text: t.translation };
   return casual ? { form: "반말", text: t.translation_informal as string } : { form: "존댓말", text: t.translation };
 }
+
+// Korean packs: every line is already one speech level (`speech`), so the switch filters which lines are listed.
+// Packs whose lines have no `speech` (English packs, dev packs) are never filtered.
+type Leveled = { speech?: "존댓말" | "반말"; [key: string]: unknown }; // any item; only `speech` is read
+
+export const hasSpeechLevels = (items: Leveled[]) => items.some((it) => it.speech);
+
+export function bySpeech<T extends Leveled>(items: T[], casual: boolean): T[] {
+  if (!hasSpeechLevels(items)) return items;
+  return items.filter((it) => it.speech === (casual ? "반말" : "존댓말"));
+}

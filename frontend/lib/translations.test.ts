@@ -23,3 +23,25 @@ test("no translation (dev packs) gives null", () => {
   assert.equal(pickTranslation({ translation: null }, false), null);
   assert.equal(hasBothForms({ translation: null }), false);
 });
+
+// Korean packs: each line IS one speech level, so the same switch filters the sentence list instead.
+import { bySpeech, hasSpeechLevels } from "./translations.ts";
+
+const koItems = [
+  { id: "a", speech: "존댓말" as const },
+  { id: "b", speech: "반말" as const },
+  { id: "c", speech: "존댓말" as const },
+];
+
+test("a Korean pack shows only 존댓말 lines by default, only 반말 lines with the switch on", () => {
+  assert.deepEqual(bySpeech(koItems, false).map((it) => it.id), ["a", "c"]);
+  assert.deepEqual(bySpeech(koItems, true).map((it) => it.id), ["b"]);
+  assert.equal(hasSpeechLevels(koItems), true);
+});
+
+test("packs without speech levels (English, dev) are never filtered", () => {
+  const plain = [{ id: "x" }, { id: "y" }];
+  assert.deepEqual(bySpeech(plain, true), plain);
+  assert.deepEqual(bySpeech(plain, false), plain);
+  assert.equal(hasSpeechLevels(plain), false);
+});

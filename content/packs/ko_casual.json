@@ -1,0 +1,338 @@
+{
+  "id": "ko-casual",
+  "lang": "ko",
+  "name": "Casual",
+  "dev_only": false,
+  "reviewed": false,
+  "source": "Native example lines from 국립국어원 한국어기초사전 (krdict.korean.go.kr), unmodified (source per line). English translations LLM-written (Claude, Anthropic), not checked by a native Korean speaker.",
+  "license": "CC BY-SA 2.0 KR (per line)",
+  "items": [
+    {
+      "id": "ko_casual_01",
+      "text": "저 가게는 얼마를 부르던가요?",
+      "translation": "How much was that shop asking?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "57304#8",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=57304",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_02",
+      "text": "이 날은 공휴일인가요?",
+      "translation": "Is this day a public holiday?",
+      "speech": "존댓말",
+      "tags": [
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "27216#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=27216",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_03",
+      "text": "이쪽으로 가져오세요.",
+      "translation": "Bring it over here, please.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "53818#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=53818",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_04",
+      "text": "주말에 잘 쉬었어요?",
+      "translation": "Did you get a good rest over the weekend?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "19548#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=19548",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_05",
+      "text": "어떤 그림을 좋아하세요?",
+      "translation": "What kind of paintings do you like?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "29687#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=29687",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_06",
+      "text": "이번 연휴에는 뭐 했어요?",
+      "translation": "What did you do over this holiday?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "67804#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=67804",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_07",
+      "text": "저는 수학을 제일 좋아해요.",
+      "translation": "I like math the most.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "27929#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=27929",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_08",
+      "text": "대학 졸업 후에 계획이 있어요?",
+      "translation": "Do you have plans for after college?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "23324#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=23324",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_09",
+      "text": "이번 주말에 미술관에 갈래요?",
+      "translation": "Do you want to go to the art museum this weekend?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "56220#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=56220",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_10",
+      "text": "식사 안 하셔도 괜찮으시겠어요?",
+      "translation": "Will you be all right without eating?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "60097#2",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=60097",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_11",
+      "text": "노래방에 가지 않을래?",
+      "translation": "Do you want to go to karaoke?",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "40105#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=40105",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_12",
+      "text": "아침 시간 동안 뭘 했니?",
+      "translation": "What did you do this morning?",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o"
+      ],
+      "source": "krdict",
+      "source_id": "62841#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=62841",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_13",
+      "text": "난 시내에서 주로 놀아.",
+      "translation": "I mostly hang out downtown.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "88353#23",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=88353",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_14",
+      "text": "우리 강아지 왔구나!",
+      "translation": "There's my puppy!",
+      "speech": "반말",
+      "tags": [
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "15689#5",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=15689",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_15",
+      "text": "방금 들은 노래 어때?",
+      "translation": "What do you think of the song you just heard?",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "20195#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=20195",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_16",
+      "text": "방학 때 뭘 하고 지낼 거니?",
+      "translation": "What are you going to do over the break?",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "20207#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=20207",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_17",
+      "text": "넌 무슨 운동을 좋아하니?",
+      "translation": "What sports do you like?",
+      "speech": "반말",
+      "tags": [
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "27929#4",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=27929",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_18",
+      "text": "같이 농구 경기 한 판 할래?",
+      "translation": "Want to play a game of basketball together?",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "28323#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=28323",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_19",
+      "text": "아이고, 아주 소설을 써라.",
+      "translation": "Oh, come on, now you're just making things up.",
+      "speech": "반말",
+      "tags": [
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "32185#5",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=32185",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_casual_20",
+      "text": "이제 한 게임 끝났어.",
+      "translation": "That's one game finished.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "57276#5",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=57276",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    }
+  ]
+}

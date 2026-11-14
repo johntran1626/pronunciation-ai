@@ -5,10 +5,12 @@ import BackendStatus from "@/components/BackendStatus";
 import NativeAudio from "@/components/NativeAudio";
 import Recorder from "@/components/Recorder";
 import FormalityLine from "@/components/FormalityLine";
+import FormalitySwitch from "@/components/FormalitySwitch";
 import Translation from "@/components/Translation";
 import { fetchCustom, fetchPack, fetchPacks, type CustomText, type Lang, type Pack, type PackSummary } from "@/lib/api";
 import { MAX_CUSTOM_CHARS, checkLine, typedProblem } from "@/lib/custom";
 import { tagLabel } from "@/lib/tags";
+import { bySpeech, hasSpeechLevels } from "@/lib/translations";
 
 // "type your own" sits next to the packs; this id can't clash with a pack file name.
 const CUSTOM = "__custom__";
@@ -115,7 +117,9 @@ export default function Home() {
     };
   }, [packId]);
 
-  const item = pack?.items.find((it) => it.id === itemId) ?? null;
+  // Korean packs: the 존댓말 / 반말 switch decides which lines are listed (a hidden line's card closes too).
+  const shownItems = pack ? bySpeech(pack.items, casual) : [];
+  const item = shownItems.find((it) => it.id === itemId) ?? null;
   const isCustom = packId === CUSTOM;
   const line = custom ? checkLine(custom) : null;
 
@@ -206,7 +210,12 @@ export default function Home() {
       {/* 3. Sentence */}
       {packId && !isCustom && (
         <section className="flex flex-col gap-3">
-          <h2 className="font-medium">3. Pick a sentence</h2>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-medium">3. Pick a sentence</h2>
+            {pack && hasSpeechLevels(pack.items) && (
+              <FormalitySwitch casual={casual} onCasual={setCasual} label="Show 반말 (casual) lines instead of 존댓말 (polite)" />
+            )}
+          </div>
           {!pack && !error && <p className="text-neutral-500">Loading sentences…</p>}
           {pack?.dev_only && (
             <p className="text-sm text-neutral-500">
@@ -214,7 +223,7 @@ export default function Home() {
             </p>
           )}
           <ol className="flex flex-col gap-2">
-            {pack?.items.map((it) => (
+            {pack && shownItems.map((it) => (
               <li key={it.id}>
                 <button onClick={() => setItemId(it.id)} lang={pack.lang} className={`w-full ${choice(itemId === it.id)}`}>
                   {it.text}
@@ -244,6 +253,15 @@ export default function Home() {
                   {tagLabel(t)}
                 </span>
               ))}
+            </p>
+          )}
+          {item.credit && (
+            <p className="text-xs text-neutral-500">
+              Source:{" "}
+              <a href={item.source_url} target="_blank" rel="noreferrer" className="underline">
+                {item.credit}
+              </a>
+              , {item.license}.
             </p>
           )}
           {/* Hear it first, then record */}

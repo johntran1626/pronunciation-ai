@@ -1,0 +1,338 @@
+{
+  "id": "ko-basics",
+  "lang": "ko",
+  "name": "Basics",
+  "dev_only": false,
+  "reviewed": false,
+  "source": "Native example lines from 국립국어원 한국어기초사전 (krdict.korean.go.kr), unmodified (source per line). English translations LLM-written (Claude, Anthropic), not checked by a native Korean speaker.",
+  "license": "CC BY-SA 2.0 KR (per line)",
+  "items": [
+    {
+      "id": "ko_basics_01",
+      "text": "이번 주 금요일이에요.",
+      "translation": "It's this Friday.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "29737#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=29737",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_02",
+      "text": "공사는 언제 끝납니까?",
+      "translation": "When will the construction be finished?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "17856#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=17856",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_03",
+      "text": "방학이 언제부터예요?",
+      "translation": "When does the school break start?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "17860#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=17860",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_04",
+      "text": "오늘 어디서 만날까요?",
+      "translation": "Where shall we meet today?",
+      "speech": "존댓말",
+      "tags": [
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "40481#2",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=40481",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_05",
+      "text": "이쪽 복도 끝에 있어요.",
+      "translation": "It's at the end of this hallway.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "48072#3",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=48072",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_06",
+      "text": "이제부터 시작이에요.",
+      "translation": "It starts now.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "58621#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=58621",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_07",
+      "text": "정월 이틀까지 쉬어요.",
+      "translation": "We're off until January 2nd.",
+      "speech": "존댓말",
+      "tags": [
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "70754#3",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=70754",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_08",
+      "text": "사월 오 일 식목일입니다.",
+      "translation": "April 5th is Arbor Day.",
+      "speech": "존댓말",
+      "tags": [
+        "eo_vs_o",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "20228#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=20228",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_09",
+      "text": "요즘에는 어떻게 지내요?",
+      "translation": "How are you doing these days?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "20250#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=20250",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_10",
+      "text": "경찰서에는 신고했어요?",
+      "translation": "Did you report it to the police?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "25960#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=25960",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_11",
+      "text": "금방 뭐라고 했어?",
+      "translation": "What did you just say?",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "34764#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=34764",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_12",
+      "text": "십이월이 다 지나가네.",
+      "translation": "December is almost over.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "27764#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=27764",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_13",
+      "text": "오늘 저녁엔 뭐 먹을까?",
+      "translation": "What should we eat tonight?",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "68206#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=68206",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_14",
+      "text": "올 여름은 계속 장마야.",
+      "translation": "This summer has been one long rainy season.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "71700#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=71700",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_15",
+      "text": "눈이 녹아서 꽁꽁 얼었네.",
+      "translation": "The snow melted and then froze solid.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "20198#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=20198",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_16",
+      "text": "밥을 좀 일찍 먹도록 하자.",
+      "translation": "Let's try to eat a little early.",
+      "speech": "반말",
+      "tags": [
+        "eo_vs_o",
+        "eu",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "26226#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=26226",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_17",
+      "text": "너 요즘 만나는 여자 있지?",
+      "translation": "You're seeing a girl these days, aren't you?",
+      "speech": "반말",
+      "tags": [
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "27369#4",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=27369",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_18",
+      "text": "빨리 다시 건강해져야지.",
+      "translation": "You've got to get well again soon.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "62539#12",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=62539",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_19",
+      "text": "웬일로 새벽에 일어났어?",
+      "translation": "How come you're up so early?",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "62740#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=62740",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_basics_20",
+      "text": "난 추운 겨울 빼고 다 좋아.",
+      "translation": "I like everything except the cold winter.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "64367#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=64367",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    }
+  ]
+}

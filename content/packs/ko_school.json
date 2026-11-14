@@ -1,0 +1,340 @@
+{
+  "id": "ko-school",
+  "lang": "ko",
+  "name": "School",
+  "dev_only": false,
+  "reviewed": false,
+  "source": "Native example lines from 국립국어원 한국어기초사전 (krdict.korean.go.kr), unmodified (source per line). English translations LLM-written (Claude, Anthropic), not checked by a native Korean speaker.",
+  "license": "CC BY-SA 2.0 KR (per line)",
+  "items": [
+    {
+      "id": "ko_school_01",
+      "text": "정말 역사가 깊은 대학이군요.",
+      "translation": "This university really has a long history.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "62515#3",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=62515",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_02",
+      "text": "알았어요. 이리 주세요.",
+      "translation": "All right. Hand it over, please.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "89445#25",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=89445",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_03",
+      "text": "사실에 맞는 말만 하세요.",
+      "translation": "Only say what's true.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "66231#2",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=66231",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_04",
+      "text": "무슨 요일에 학교에 가요?",
+      "translation": "Which days do you go to school?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "73276#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=73276",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_05",
+      "text": "담당자 사무실이 어디예요?",
+      "translation": "Where is the office of the person in charge?",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "61202#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=61202",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_06",
+      "text": "필요한 서류가 무엇입니까?",
+      "translation": "What documents do I need?",
+      "speech": "존댓말",
+      "tags": [
+        "eo_vs_o",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "62870#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=62870",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_07",
+      "text": "선생님, 드릴 말씀이 있습니다.",
+      "translation": "Teacher, there's something I'd like to tell you.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "27365#2",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=27365",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_08",
+      "text": "학생증을 보여 주셔야 합니다.",
+      "translation": "You need to show your student ID.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "83726#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=83726",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_09",
+      "text": "묻는 말에 바르게 대답하십시오.",
+      "translation": "Answer the question properly.",
+      "speech": "존댓말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "27260#2",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=27260",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_10",
+      "text": "사 학년이요.",
+      "translation": "Fourth grade.",
+      "speech": "존댓말",
+      "tags": [
+        "eo_vs_o"
+      ],
+      "source": "krdict",
+      "source_id": "31671#3",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=31671",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_11",
+      "text": "그럼 나와 같이 복습을 해 보자.",
+      "translation": "Then let's review together.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "14544#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=14544",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_12",
+      "text": "왜 불러도 답이 없어?",
+      "translation": "Why don't you answer when I call you?",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "14003#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=14003",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_13",
+      "text": "말도 안 되는 소리 하지 마.",
+      "translation": "Don't talk nonsense.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "tap_r"
+      ],
+      "source": "krdict",
+      "source_id": "27260#11",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=27260",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_14",
+      "text": "숙제부터 끝내고 봐야지.",
+      "translation": "Finish your homework first, then watch.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "29692#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=29692",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_15",
+      "text": "사전에서 찾아보면 되지.",
+      "translation": "Just look it up in the dictionary.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "61329#1",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=61329",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_16",
+      "text": "승규야, 이게 무슨 글자니?",
+      "translation": "Seunggyu, what letter is this?",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "62490#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=62490",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_17",
+      "text": "잠깐만. 필통에 있을 텐데.",
+      "translation": "Hang on. It should be in my pencil case.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "eu",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "84661#3",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=84661",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_18",
+      "text": "노트 한 장만 찢어 줄 수 있니?",
+      "translation": "Could you tear a page out of your notebook for me?",
+      "speech": "반말",
+      "tags": [
+        "eo_vs_o",
+        "eu"
+      ],
+      "source": "krdict",
+      "source_id": "32788#0",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=32788",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_19",
+      "text": "유민이가 떠들고 다녔나 봐.",
+      "translation": "Looks like Yumin went around telling everyone.",
+      "speech": "반말",
+      "tags": [
+        "eo_vs_o",
+        "eu",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "64655#5",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=64655",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    },
+    {
+      "id": "ko_school_20",
+      "text": "잠깐만, 시간표 좀 보고 올게.",
+      "translation": "Hang on, I'll go check the timetable.",
+      "speech": "반말",
+      "tags": [
+        "ae_vs_e",
+        "eo_vs_o",
+        "p_stops"
+      ],
+      "source": "krdict",
+      "source_id": "65811#3",
+      "source_url": "https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=65811",
+      "license": "CC BY-SA 2.0 KR",
+      "credit": "국립국어원 한국어기초사전 (krdict.korean.go.kr)"
+    }
+  ]
+}
