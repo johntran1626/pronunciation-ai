@@ -247,13 +247,25 @@ def _limit_message(wait, n_chars):
     return f"Too many new audio clips at once. Try again in {wait} s."
 
 
+# Scoring costs no money (our own CPU), but a visitor sending recordings non-stop would slow the app for everyone.
+# A learner records, listens and reads the result, so 20 a minute is far more than real use. No daily cap:
+# daily_chars=0 and every request counts 0 characters.
+ANALYZE_PER_MINUTE = 20
+analyze_limiter = TTSLimiter(per_client=ANALYZE_PER_MINUTE, window_s=60, daily_chars=0)
+
+
 @app.post("/analyze")
-async def analyze(audio: UploadFile = File(...),
+async def analyze(request: Request,
+                  audio: UploadFile = File(...),
                   text: str = Form(...),
                   lang: Literal["ko", "en"] = Form(...)):
-    """Recording + target sentence in, results out.
-    Steps 9-22: input checks, expected phonemes + times, what was heard, the red/green verdict, and
+    """Recording + target sentence in, results out. 429 when one visitor sends too many recordings in a minute.
+    Input checks, expected phonemes + times, what was heard, the red/green verdict, and
     `display` per word (the pieces of the written word to paint green/red)."""
+    ok, wait = analyze_limiter.allow(client_ip(request), 0)   # before reading the upload: refusing is cheap
+    if not ok:
+        raise HTTPException(429, f"Too many recordings in a short time. Try again in {wait} s.",
+                            headers={"Retry-After": str(wait)})
     text = text.strip()
     if not text:
         raise HTTPException(400, "text is empty")
