@@ -38,6 +38,10 @@ COPY --chown=user content/ content/
 
 EXPOSE 7860
 
+# Hugging Face Spaces puts one proxy in front of the app; it appends the visitor's address to X-Forwarded-For,
+# so the rate limits key on that entry instead of the proxy's address (backend/app.py, client_ip).
+ENV TRUSTED_PROXY_HOPS=1
+
 # Start-up: download the private fine-tuned listener (kept out of the image, see backend/fetch_listener.py),
 # then serve. HF_HUB_OFFLINE=1 makes the app use only the files already on disk.
 CMD ["sh", "-c", "python -m backend.fetch_listener && exec env HF_HUB_OFFLINE=1 uvicorn backend.app:app --host 0.0.0.0 --port 7860"]

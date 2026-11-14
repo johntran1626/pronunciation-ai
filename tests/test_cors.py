@@ -28,10 +28,46 @@ def test_preflight_for_analyze_is_allowed():
     assert "POST" in r.headers.get("access-control-allow-methods", "")
 
 
-def test_unknown_site_gets_no_permission():
+# A host's proxy can answer CORS itself and echo ANY Origin back (Hugging Face Spaces does), which would undo the
+# list above. So the app also refuses a request whose Origin is not on the list: 403 and nothing useful in it.
+
+def test_unknown_site_is_refused():
     r = client.get("/health", headers={"Origin": "https://some-other-site.example"})
-    assert r.status_code == 200                       # the server still answers...
-    assert "access-control-allow-origin" not in r.headers  # ...but the browser will hide the reply
+    assert r.status_code == 403
+    assert "access-control-allow-origin" not in r.headers
+    assert "ok" not in r.text
+
+
+def test_unknown_site_cannot_post_a_recording():
+    r = client.post("/analyze", headers={"Origin": "https://some-other-site.example"},
+                    data={"text": "Hi.", "lang": "en"}, files={"audio": ("a.wav", b"x", "audio/wav")})
+    assert r.status_code == 403
+
+
+def test_unknown_site_preflight_is_refused():
+    r = client.options("/analyze", headers={"Origin": "https://some-other-site.example",
+                                            "Access-Control-Request-Method": "POST"})
+    assert r.status_code == 403
+
+
+def test_null_origin_is_refused():
+    # Sandboxed frames and local files send the literal word "null".
+    assert client.get("/health", headers={"Origin": "null"}).status_code == 403
+
+
+def test_no_origin_is_allowed():
+    # curl, health checks and server-to-server calls send no Origin; browsers always do across sites.
+    assert client.get("/health").status_code == 200
+
+
+def test_page_on_the_backend_itself_is_allowed():
+    # The /docs page is served by the backend, so its "Try it out" requests come from the backend's own address.
+    r = client.get("/health", headers={"Origin": "http://testserver"})   # TestClient's host is "testserver"
+    assert r.status_code == 200
+
+
+def test_origin_check_ignores_a_trailing_slash_and_case():
+    assert client.get("/health", headers={"Origin": "HTTP://LOCALHOST:3000/"}).status_code == 200
 
 
 # The deployed frontend's address comes from the FRONTEND_ORIGINS setting (comma-separated), so a new Vercel URL
@@ -65,6 +101,7 @@ def test_setting_reaches_the_running_app(monkeypatch):
     try:
         fresh = TestClient(importlib.reload(app_module).app)
         r = fresh.get("/health", headers={"Origin": "https://coach.vercel.app"})
+        assert r.status_code == 200
         assert r.headers.get("access-control-allow-origin") == "https://coach.vercel.app"
     finally:
         monkeypatch.delenv("FRONTEND_ORIGINS")

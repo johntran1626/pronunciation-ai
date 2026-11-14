@@ -11,7 +11,7 @@ from typing import Literal
 import soundfile as sf
 from fastapi import FastAPI, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from starlette.concurrency import run_in_threadpool
 
 from backend.align import align, emissions
@@ -54,6 +54,55 @@ app.add_middleware(
     allow_methods=["GET", "POST"],   # all the app uses: GET (/health, /packs, /tts...) and POST /analyze
     allow_headers=["*"],
 )
+ALLOWED_ORIGIN_SET = {o.lower() for o in ALLOWED_ORIGINS}
+
+
+@app.middleware("http")
+async def refuse_other_sites(request: Request, call_next):
+    """403 for a browser request from a site not on the list.
+
+    CORS alone isn't enough on a host whose proxy answers CORS itself and echoes ANY Origin back (Hugging Face
+    Spaces does): the browser would then let any site read our replies. Browsers always send Origin on cross-site
+    requests, so refusing here keeps the list in force. No Origin (curl, health checks) and the backend's own pages
+    (/docs) are let through."""
+    origin = request.headers.get("origin")
+    if origin is not None:
+        clean = origin.strip().rstrip("/").lower()
+        own_page = clean.split("://", 1)[-1] == request.headers.get("host", "").lower()
+        if clean not in ALLOWED_ORIGIN_SET and not own_page:
+            return JSONResponse({"detail": "This site may not use this backend."}, status_code=403)
+    return await call_next(request)
+
+
+# Rate limits are per visitor, so we need the visitor's address. Behind a host's proxy, request.client is the
+# PROXY (the same for everyone). Each proxy APPENDS the address it saw to X-Forwarded-For, and a visitor can put
+# anything in front of that, so only the last `hops` entries are trustworthy. TRUSTED_PROXY_HOPS = how many
+# proxies sit in front of us: 0 locally (header ignored), 1 on Hugging Face Spaces.
+def trusted_proxy_hops(setting: str | None) -> int:
+    """The TRUSTED_PROXY_HOPS setting as a whole number 0-10 (empty = 0). Anything else is refused at start-up."""
+    text = (setting or "").strip()
+    if not text:
+        return 0
+    if not text.isdigit() or int(text) > 10:
+        raise ValueError(f"TRUSTED_PROXY_HOPS must be a whole number from 0 to 10, got {setting!r}")
+    return int(text)
+
+
+TRUSTED_PROXY_HOPS = trusted_proxy_hops(os.environ.get("TRUSTED_PROXY_HOPS"))
+
+
+def client_from(peer: str | None, forwarded: list[str], hops: int) -> str:
+    """The visitor's address: the entry the first of our `hops` proxies added to X-Forwarded-For, else the
+    connection's own address. `forwarded` = every X-Forwarded-For header line (a request may carry several)."""
+    entries = [e.strip() for line in forwarded for e in line.split(",") if e.strip()]
+    if hops and entries:
+        return entries[-min(hops, len(entries))]
+    return peer or "unknown"
+
+
+def client_ip(request: Request) -> str:
+    peer = request.client.host if request.client else None
+    return client_from(peer, request.headers.getlist("x-forwarded-for"), TRUSTED_PROXY_HOPS)
 
 
 @app.get("/health")
@@ -109,8 +158,7 @@ async def _get_clip(request, text, lang, voice, rate):
         raise HTTPException(400, str(e))
     if path.exists():
         return path, True
-    # TODO (deploy): behind a host's proxy, request.client is the proxy; we'll read X-Forwarded-For there instead.
-    client = request.client.host if request.client else "unknown"
+    client = client_ip(request)
     n_chars = len(tts.normalize_text(text))
     ok, wait = tts_limiter.allow(client, n_chars)
     if not ok:
@@ -148,7 +196,7 @@ async def translate_sentence(request: Request, text: str = Query(..., max_length
         raise HTTPException(400, str(e))
     if hit is not None:
         return {**hit, "cached": True}
-    client = request.client.host if request.client else "unknown"
+    client = client_ip(request)
     ok, wait = translate_limiter.allow(client, len(tts.normalize_text(text)))
     if not ok:
         raise HTTPException(429, "Too many new translations right now. Try again a little later.",
