@@ -10,6 +10,8 @@ from fastapi.testclient import TestClient
 
 from backend.app import MAX_SECONDS, app
 from backend.g2p import expected_phonemes
+from backend.listener import live_listener
+from backend.scoring import PAIRS, load_thresholds
 
 FIXTURES = Path(__file__).with_name("fixtures")
 MANIFEST = json.loads((FIXTURES / "fixtures.json").read_text(encoding="utf-8")) if (FIXTURES / "fixtures.json").exists() else []
@@ -54,7 +56,17 @@ def test_native_speaker_reading_correctly_gets_no_red(fx):
     assert body["matched"] is True
     assert all(w["status"] != "red" for w in body["words"])
     if fx["lang"] == "en":
-        # green only where a sound check passed (today: R, via r_as_l); every other word is plain
+        # green only where a live sound check passed; every other word is plain. Which sounds are checked
+        # comes from the thresholds of the listener the app runs, so this follows a listener switch.
+        targets = checked_targets(fx["lang"])
+        assert targets, "no live English sound check"
         for w in body["words"]:
-            has_r = any(p["ipa"] == "ɹ" for p in w["phonemes"])
-            assert w["status"] == ("green" if has_r else "unchecked"), w["word"]
+            checked = any(p["ipa"] in targets for p in w["phonemes"])
+            assert w["status"] == ("green" if checked else "unchecked"), w["word"]
+
+
+def checked_targets(lang):
+    """Target sounds of the enabled per-sound checks for the listener the app runs for lang.
+    extra_vowel has no target sound (it looks after a word-final consonant), so it never makes a word green."""
+    pairs = load_thresholds(live_listener(lang)).get("pairs", {})
+    return {PAIRS[name]["target"] for name, t in pairs.items() if t.get("enabled") and name in PAIRS}

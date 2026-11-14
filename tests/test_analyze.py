@@ -101,11 +101,17 @@ def test_every_expected_sound_has_an_op():
 
 
 @pytest.mark.skipif(not HKK.exists(), reason="L2-ARCTIC not downloaded")
-def test_real_recording_shows_the_missing_l_in_balls():
+def test_real_recording_shows_the_wrong_l_in_balls():
     text = (HKK / "transcript" / "arctic_a0020.txt").read_text().strip()
     body = post((HKK / "wav" / "arctic_a0020.wav").read_bytes(), text=text, lang="en").json()
+    # L2-ARCTIC's annotators marked b, ɔː and z correct and the l wrong (said as R). Listener-independent
+    # part only: the fine-tuned listener hears ɔː and l -> ɹ (as the annotators did); the original
+    # hears a different vowel and no l at all (del).
     balls = next(w for w in body["words"] if w["word"] == "balls")
-    assert [(p["ipa"], p["op"]) for p in balls["phonemes"]] == [("b", "match"), ("ɔː", "sub"), ("l", "del"), ("z", "match")]
+    ops = {p["ipa"]: p["op"] for p in balls["phonemes"]}
+    assert [p["ipa"] for p in balls["phonemes"]] == ["b", "ɔː", "l", "z"]
+    assert (ops["b"], ops["z"]) == ("match", "match")
+    assert ops["l"] in ("sub", "del")
 
 
 # ---------- the verdict ----------
