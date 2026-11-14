@@ -40,7 +40,7 @@ A sound check is on in the app only if, on these test speakers, at most 0.5% of 
 | A word cut out of the audio: caught | 295/600 (49%; 45–53%) |
 | A word swapped in the text: caught | 360/600 (60%; 56–64%) |
 
-Processing time per sentence: not yet measured for this listener.
+**Processing time per sentence:** median 0.21 s; the slowest 5% took 0.30 s or more (longest 0.40 s). Measured on 600 readings by the same 4 Korean speakers (median recording 3.5 s), on CPU only (Apple M3 Pro, 6 CPU threads), model already loaded, network not included.
 
 Korean (English speakers learning Korean): the sound checks are off. No learner Korean with sound-by-sound error labels was available to tune and test them safely.
 <!-- results:end -->
