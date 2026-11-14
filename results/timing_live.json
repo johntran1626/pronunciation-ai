@@ -1,0 +1,29 @@
+{
+  "listener": "listener_v1",
+  "lang": "en",
+  "device": "cpu",
+  "machine": "Hugging Face Space, cpu-basic hardware",
+  "url": "https://johntran1626-pronunciation-ai.hf.space",
+  "data": "L2-ARCTIC, every reading by its 4 Korean speakers (HJK, HKK, YDCK, YKWK)",
+  "timed": "round trip of POST /analyze from a laptop: upload, queue, analysis and answer",
+  "seconds_per_sentence": {
+    "n": 600,
+    "median": 1.332,
+    "p95": 2.127,
+    "max": 3.177
+  },
+  "audio_seconds": {
+    "n": 600,
+    "median": 3.459,
+    "p95": 5.468,
+    "max": 7.652
+  },
+  "health_round_trip": {
+    "n": 20,
+    "median": 0.104,
+    "p95": 0.369,
+    "max": 0.852
+  },
+  "skipped": 0,
+  "measured": "2026-11-14"
+}

@@ -42,6 +42,8 @@ A sound check is on in the app only if, on these test speakers, at most 0.5% of 
 
 **Processing time per sentence:** median 0.21 s; the slowest 5% took 0.30 s or more (longest 0.40 s). Measured on 600 readings by the same 4 Korean speakers (median recording 3.5 s), on CPU only (Apple M3 Pro, 6 CPU threads), model already loaded, network not included.
 
+**On the live server (Hugging Face Space, cpu-basic hardware):** median 1.33 s from sending a recording to having the result; the slowest 5% took 2.13 s or more (longest 3.18 s). Same 600 readings, sent one at a time from a laptop, network included (an empty request took 0.10 s on its own).
+
 Korean (English speakers learning Korean): the sound checks are off. No learner Korean with sound-by-sound error labels was available to tune and test them safely.
 <!-- results:end -->
 
@@ -105,4 +107,4 @@ recording + target text
 - **Speed hurts the scores.** Fast, connected speech lowers the recognizer's confidence (see above), so a fluent speaker can score lower than a slow, careful one. The app never shows these scores as an overall grade.
 - **Reference audio is synthetic.** Native reference recordings are text-to-speech, not human recordings.
 - **Translations are machine-written.** English meanings of Korean lines and Korean translations of English lines were written by an LLM and have not been checked by a native speaker. Korean practice sentences come from a native-written dictionary (국립국어원 한국어기초사전, CC BY-SA 2.0 KR).
-- **Timing was measured on a laptop**, not on the hosting server; it will be re-measured there.
+- **The live timing is one visitor at a time.** It was measured from one laptop, sending recordings one after another to free shared hardware. Several visitors at once would wait longer, and that has not been measured.
