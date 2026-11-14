@@ -1,0 +1,1110 @@
+{
+ "source": "spikes/e_korean_model.py",
+ "model": "slplab/wav2vec2-xls-r-300m_phone-mfa_korean",
+ "limit_per_speaker": null,
+ "warning": "Part 1 = SIMULATED errors on NATIVE speech; Part 2 = English vs Korean natives. Optimistic.",
+ "zeroth_recordings": 1368,
+ "cmu_recordings": 660,
+ "seconds_per_recording": {
+  "median": 0.388,
+  "p95": 0.709
+ },
+ "part1": {
+  "asp_as_lenis (initial)": {
+   "threshold": 0.9865,
+   "tune_correct": 594,
+   "test_correct": 286,
+   "test_errors": 537,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 3,
+    "false_alarm": {
+     "k": 3,
+     "n": 286,
+     "rate": 0.0105,
+     "ci95": [
+      0.0036,
+      0.0304
+     ]
+    },
+    "caught": 406,
+    "detection": {
+     "k": 406,
+     "n": 537,
+     "rate": 0.7561,
+     "ci95": [
+      0.718,
+      0.7905
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 24,
+    "false_alarm": {
+     "k": 24,
+     "n": 286,
+     "rate": 0.0839,
+     "ci95": [
+      0.057,
+      0.1218
+     ]
+    },
+    "caught": 530,
+    "detection": {
+     "k": 530,
+     "n": 537,
+     "rate": 0.987,
+     "ci95": [
+      0.9733,
+      0.9937
+     ]
+    }
+   },
+   "verdict": "fail"
+  },
+  "asp_as_lenis (inside)": {
+   "threshold": 0.9454,
+   "tune_correct": 1199,
+   "test_correct": 611,
+   "test_errors": 718,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 4,
+    "false_alarm": {
+     "k": 4,
+     "n": 611,
+     "rate": 0.0065,
+     "ci95": [
+      0.0025,
+      0.0167
+     ]
+    },
+    "caught": 642,
+    "detection": {
+     "k": 642,
+     "n": 718,
+     "rate": 0.8942,
+     "ci95": [
+      0.8695,
+      0.9146
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 57,
+    "false_alarm": {
+     "k": 57,
+     "n": 611,
+     "rate": 0.0933,
+     "ci95": [
+      0.0727,
+      0.119
+     ]
+    },
+    "caught": 717,
+    "detection": {
+     "k": 717,
+     "n": 718,
+     "rate": 0.9986,
+     "ci95": [
+      0.9922,
+      0.9998
+     ]
+    }
+   }
+  },
+  "asp_as_tense (initial)": {
+   "threshold": 0.7214,
+   "tune_correct": 594,
+   "test_correct": 286,
+   "test_errors": 124,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 3,
+    "false_alarm": {
+     "k": 3,
+     "n": 286,
+     "rate": 0.0105,
+     "ci95": [
+      0.0036,
+      0.0304
+     ]
+    },
+    "caught": 104,
+    "detection": {
+     "k": 104,
+     "n": 124,
+     "rate": 0.8387,
+     "ci95": [
+      0.764,
+      0.8931
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 24,
+    "false_alarm": {
+     "k": 24,
+     "n": 286,
+     "rate": 0.0839,
+     "ci95": [
+      0.057,
+      0.1218
+     ]
+    },
+    "caught": 124,
+    "detection": {
+     "k": 124,
+     "n": 124,
+     "rate": 1.0,
+     "ci95": [
+      0.97,
+      1.0
+     ]
+    }
+   },
+   "verdict": "fail"
+  },
+  "asp_as_tense (inside)": {
+   "threshold": 0.8498,
+   "tune_correct": 1199,
+   "test_correct": 611,
+   "test_errors": 113,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 11,
+    "false_alarm": {
+     "k": 11,
+     "n": 611,
+     "rate": 0.018,
+     "ci95": [
+      0.0101,
+      0.0319
+     ]
+    },
+    "caught": 90,
+    "detection": {
+     "k": 90,
+     "n": 113,
+     "rate": 0.7965,
+     "ci95": [
+      0.7131,
+      0.8604
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 57,
+    "false_alarm": {
+     "k": 57,
+     "n": 611,
+     "rate": 0.0933,
+     "ci95": [
+      0.0727,
+      0.119
+     ]
+    },
+    "caught": 113,
+    "detection": {
+     "k": 113,
+     "n": 113,
+     "rate": 1.0,
+     "ci95": [
+      0.9671,
+      1.0
+     ]
+    }
+   }
+  },
+  "lenis_as_asp (initial)": {
+   "threshold": 0.0173,
+   "tune_correct": 3620,
+   "test_correct": 1876,
+   "test_errors": 183,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 20,
+    "false_alarm": {
+     "k": 20,
+     "n": 1876,
+     "rate": 0.0107,
+     "ci95": [
+      0.0069,
+      0.0164
+     ]
+    },
+    "caught": 172,
+    "detection": {
+     "k": 172,
+     "n": 183,
+     "rate": 0.9399,
+     "ci95": [
+      0.8956,
+      0.9661
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 135,
+    "false_alarm": {
+     "k": 135,
+     "n": 1876,
+     "rate": 0.072,
+     "ci95": [
+      0.0611,
+      0.0846
+     ]
+    },
+    "caught": 176,
+    "detection": {
+     "k": 176,
+     "n": 183,
+     "rate": 0.9617,
+     "ci95": [
+      0.9232,
+      0.9813
+     ]
+    }
+   },
+   "verdict": "fail"
+  },
+  "lenis_as_asp (inside)": {
+   "threshold": -0.0,
+   "tune_correct": 5740,
+   "test_correct": 2917,
+   "test_errors": 262,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 3,
+    "false_alarm": {
+     "k": 3,
+     "n": 2917,
+     "rate": 0.001,
+     "ci95": [
+      0.0003,
+      0.003
+     ]
+    },
+    "caught": 249,
+    "detection": {
+     "k": 249,
+     "n": 262,
+     "rate": 0.9504,
+     "ci95": [
+      0.917,
+      0.9708
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 168,
+    "false_alarm": {
+     "k": 168,
+     "n": 2917,
+     "rate": 0.0576,
+     "ci95": [
+      0.0497,
+      0.0666
+     ]
+    },
+    "caught": 253,
+    "detection": {
+     "k": 253,
+     "n": 262,
+     "rate": 0.9656,
+     "ci95": [
+      0.936,
+      0.9818
+     ]
+    }
+   }
+  },
+  "lenis_as_tense (initial)": {
+   "threshold": 0.6083,
+   "tune_correct": 3620,
+   "test_correct": 1876,
+   "test_errors": 102,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 14,
+    "false_alarm": {
+     "k": 14,
+     "n": 1876,
+     "rate": 0.0075,
+     "ci95": [
+      0.0045,
+      0.0125
+     ]
+    },
+    "caught": 87,
+    "detection": {
+     "k": 87,
+     "n": 102,
+     "rate": 0.8529,
+     "ci95": [
+      0.7715,
+      0.9088
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 135,
+    "false_alarm": {
+     "k": 135,
+     "n": 1876,
+     "rate": 0.072,
+     "ci95": [
+      0.0611,
+      0.0846
+     ]
+    },
+    "caught": 95,
+    "detection": {
+     "k": 95,
+     "n": 102,
+     "rate": 0.9314,
+     "ci95": [
+      0.8651,
+      0.9664
+     ]
+    }
+   },
+   "verdict": "pass"
+  },
+  "lenis_as_tense (inside)": {
+   "threshold": 0.1941,
+   "tune_correct": 5740,
+   "test_correct": 2917,
+   "test_errors": 111,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 12,
+    "false_alarm": {
+     "k": 12,
+     "n": 2917,
+     "rate": 0.0041,
+     "ci95": [
+      0.0024,
+      0.0072
+     ]
+    },
+    "caught": 99,
+    "detection": {
+     "k": 99,
+     "n": 111,
+     "rate": 0.8919,
+     "ci95": [
+      0.8205,
+      0.9371
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 168,
+    "false_alarm": {
+     "k": 168,
+     "n": 2917,
+     "rate": 0.0576,
+     "ci95": [
+      0.0497,
+      0.0666
+     ]
+    },
+    "caught": 101,
+    "detection": {
+     "k": 101,
+     "n": 111,
+     "rate": 0.9099,
+     "ci95": [
+      0.8421,
+      0.9503
+     ]
+    }
+   }
+  },
+  "tense_as_asp (initial)": {
+   "threshold": 0.6285,
+   "tune_correct": 530,
+   "test_correct": 283,
+   "test_errors": 195,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 1,
+    "false_alarm": {
+     "k": 1,
+     "n": 283,
+     "rate": 0.0035,
+     "ci95": [
+      0.0006,
+      0.0197
+     ]
+    },
+    "caught": 176,
+    "detection": {
+     "k": 176,
+     "n": 195,
+     "rate": 0.9026,
+     "ci95": [
+      0.8528,
+      0.9367
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 53,
+    "false_alarm": {
+     "k": 53,
+     "n": 283,
+     "rate": 0.1873,
+     "ci95": [
+      0.1461,
+      0.2368
+     ]
+    },
+    "caught": 189,
+    "detection": {
+     "k": 189,
+     "n": 195,
+     "rate": 0.9692,
+     "ci95": [
+      0.9345,
+      0.9858
+     ]
+    }
+   },
+   "verdict": "pass"
+  },
+  "tense_as_asp (inside)": {
+   "threshold": 0.984,
+   "tune_correct": 1345,
+   "test_correct": 740,
+   "test_errors": 273,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 3,
+    "false_alarm": {
+     "k": 3,
+     "n": 740,
+     "rate": 0.0041,
+     "ci95": [
+      0.0014,
+      0.0119
+     ]
+    },
+    "caught": 192,
+    "detection": {
+     "k": 192,
+     "n": 273,
+     "rate": 0.7033,
+     "ci95": [
+      0.6466,
+      0.7544
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 191,
+    "false_alarm": {
+     "k": 191,
+     "n": 740,
+     "rate": 0.2581,
+     "ci95": [
+      0.2279,
+      0.2908
+     ]
+    },
+    "caught": 265,
+    "detection": {
+     "k": 265,
+     "n": 273,
+     "rate": 0.9707,
+     "ci95": [
+      0.9433,
+      0.9851
+     ]
+    }
+   }
+  },
+  "tense_as_lenis (initial)": {
+   "threshold": 0.9987,
+   "tune_correct": 530,
+   "test_correct": 283,
+   "test_errors": 551,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 1,
+    "false_alarm": {
+     "k": 1,
+     "n": 283,
+     "rate": 0.0035,
+     "ci95": [
+      0.0006,
+      0.0197
+     ]
+    },
+    "caught": 73,
+    "detection": {
+     "k": 73,
+     "n": 551,
+     "rate": 0.1325,
+     "ci95": [
+      0.1067,
+      0.1634
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 53,
+    "false_alarm": {
+     "k": 53,
+     "n": 283,
+     "rate": 0.1873,
+     "ci95": [
+      0.1461,
+      0.2368
+     ]
+    },
+    "caught": 544,
+    "detection": {
+     "k": 544,
+     "n": 551,
+     "rate": 0.9873,
+     "ci95": [
+      0.974,
+      0.9938
+     ]
+    }
+   },
+   "verdict": "fail"
+  },
+  "tense_as_lenis (inside)": {
+   "threshold": 0.9994,
+   "tune_correct": 1345,
+   "test_correct": 740,
+   "test_errors": 704,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 1,
+    "false_alarm": {
+     "k": 1,
+     "n": 740,
+     "rate": 0.0014,
+     "ci95": [
+      0.0002,
+      0.0076
+     ]
+    },
+    "caught": 5,
+    "detection": {
+     "k": 5,
+     "n": 704,
+     "rate": 0.0071,
+     "ci95": [
+      0.003,
+      0.0165
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 191,
+    "false_alarm": {
+     "k": 191,
+     "n": 740,
+     "rate": 0.2581,
+     "ci95": [
+      0.2279,
+      0.2908
+     ]
+    },
+    "caught": 702,
+    "detection": {
+     "k": 702,
+     "n": 704,
+     "rate": 0.9972,
+     "ci95": [
+      0.9897,
+      0.9992
+     ]
+    }
+   }
+  },
+  "ㅓ_as_ㅗ (initial)": {
+   "threshold": 0.9934,
+   "tune_correct": 151,
+   "test_correct": 83,
+   "test_errors": 13,
+   "error_speakers": 8,
+   "app": {
+    "false_alarms": 0,
+    "false_alarm": {
+     "k": 0,
+     "n": 83,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0442
+     ]
+    },
+    "caught": 8,
+    "detection": {
+     "k": 8,
+     "n": 13,
+     "rate": 0.6154,
+     "ci95": [
+      0.3552,
+      0.8229
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 6,
+    "false_alarm": {
+     "k": 6,
+     "n": 83,
+     "rate": 0.0723,
+     "ci95": [
+      0.0335,
+      0.1489
+     ]
+    },
+    "caught": 13,
+    "detection": {
+     "k": 13,
+     "n": 13,
+     "rate": 1.0,
+     "ci95": [
+      0.7719,
+      1.0
+     ]
+    }
+   },
+   "verdict": "too few"
+  },
+  "ㅓ_as_ㅗ (inside)": {
+   "threshold": 0.8618,
+   "tune_correct": 3771,
+   "test_correct": 1775,
+   "test_errors": 432,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 21,
+    "false_alarm": {
+     "k": 21,
+     "n": 1775,
+     "rate": 0.0118,
+     "ci95": [
+      0.0078,
+      0.018
+     ]
+    },
+    "caught": 385,
+    "detection": {
+     "k": 385,
+     "n": 432,
+     "rate": 0.8912,
+     "ci95": [
+      0.8583,
+      0.9172
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 184,
+    "false_alarm": {
+     "k": 184,
+     "n": 1775,
+     "rate": 0.1037,
+     "ci95": [
+      0.0903,
+      0.1187
+     ]
+    },
+    "caught": 430,
+    "detection": {
+     "k": 430,
+     "n": 432,
+     "rate": 0.9954,
+     "ci95": [
+      0.9833,
+      0.9987
+     ]
+    }
+   }
+  },
+  "ㅗ_as_ㅓ (initial)": {
+   "threshold": 0.014,
+   "tune_correct": 93,
+   "test_correct": 46,
+   "test_errors": 20,
+   "error_speakers": 9,
+   "app": {
+    "false_alarms": 0,
+    "false_alarm": {
+     "k": 0,
+     "n": 46,
+     "rate": 0.0,
+     "ci95": [
+      -0.0,
+      0.0771
+     ]
+    },
+    "caught": 20,
+    "detection": {
+     "k": 20,
+     "n": 20,
+     "rate": 1.0,
+     "ci95": [
+      0.8389,
+      1.0
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 0,
+    "false_alarm": {
+     "k": 0,
+     "n": 46,
+     "rate": 0.0,
+     "ci95": [
+      -0.0,
+      0.0771
+     ]
+    },
+    "caught": 20,
+    "detection": {
+     "k": 20,
+     "n": 20,
+     "rate": 1.0,
+     "ci95": [
+      0.8389,
+      1.0
+     ]
+    }
+   },
+   "verdict": "too few"
+  },
+  "ㅗ_as_ㅓ (inside)": {
+   "threshold": 0.5162,
+   "tune_correct": 3459,
+   "test_correct": 1691,
+   "test_errors": 423,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 11,
+    "false_alarm": {
+     "k": 11,
+     "n": 1691,
+     "rate": 0.0065,
+     "ci95": [
+      0.0036,
+      0.0116
+     ]
+    },
+    "caught": 362,
+    "detection": {
+     "k": 362,
+     "n": 423,
+     "rate": 0.8558,
+     "ci95": [
+      0.8191,
+      0.8861
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 116,
+    "false_alarm": {
+     "k": 116,
+     "n": 1691,
+     "rate": 0.0686,
+     "ci95": [
+      0.0575,
+      0.0817
+     ]
+    },
+    "caught": 404,
+    "detection": {
+     "k": 404,
+     "n": 423,
+     "rate": 0.9551,
+     "ci95": [
+      0.9309,
+      0.9711
+     ]
+    }
+   }
+  },
+  "ㅜ_as_ㅡ (initial)": {
+   "threshold": 0.5245,
+   "tune_correct": 54,
+   "test_correct": 32,
+   "test_errors": 0,
+   "error_speakers": 0,
+   "app": {
+    "false_alarms": 1,
+    "false_alarm": {
+     "k": 1,
+     "n": 32,
+     "rate": 0.0312,
+     "ci95": [
+      0.0055,
+      0.1574
+     ]
+    },
+    "caught": 0,
+    "detection": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "ci95": null
+    }
+   },
+   "baseline": {
+    "false_alarms": 11,
+    "false_alarm": {
+     "k": 11,
+     "n": 32,
+     "rate": 0.3438,
+     "ci95": [
+      0.2041,
+      0.5169
+     ]
+    },
+    "caught": 0,
+    "detection": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "ci95": null
+    }
+   },
+   "verdict": "too few"
+  },
+  "ㅜ_as_ㅡ (inside)": {
+   "threshold": 0.9402,
+   "tune_correct": 2475,
+   "test_correct": 1287,
+   "test_errors": 456,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 9,
+    "false_alarm": {
+     "k": 9,
+     "n": 1287,
+     "rate": 0.007,
+     "ci95": [
+      0.0037,
+      0.0132
+     ]
+    },
+    "caught": 388,
+    "detection": {
+     "k": 388,
+     "n": 456,
+     "rate": 0.8509,
+     "ci95": [
+      0.8153,
+      0.8806
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 144,
+    "false_alarm": {
+     "k": 144,
+     "n": 1287,
+     "rate": 0.1119,
+     "ci95": [
+      0.0958,
+      0.1303
+     ]
+    },
+    "caught": 450,
+    "detection": {
+     "k": 450,
+     "n": 456,
+     "rate": 0.9868,
+     "ci95": [
+      0.9716,
+      0.994
+     ]
+    }
+   }
+  },
+  "ㅡ_as_ㅜ (initial)": {
+   "threshold": -0.8844,
+   "tune_correct": 8,
+   "test_correct": 4,
+   "test_errors": 9,
+   "error_speakers": 6,
+   "app": {
+    "false_alarms": 2,
+    "false_alarm": {
+     "k": 2,
+     "n": 4,
+     "rate": 0.5,
+     "ci95": [
+      0.15,
+      0.85
+     ]
+    },
+    "caught": 9,
+    "detection": {
+     "k": 9,
+     "n": 9,
+     "rate": 1.0,
+     "ci95": [
+      0.7008,
+      1.0
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 1,
+    "false_alarm": {
+     "k": 1,
+     "n": 4,
+     "rate": 0.25,
+     "ci95": [
+      0.0456,
+      0.6994
+     ]
+    },
+    "caught": 9,
+    "detection": {
+     "k": 9,
+     "n": 9,
+     "rate": 1.0,
+     "ci95": [
+      0.7008,
+      1.0
+     ]
+    }
+   },
+   "verdict": "too few"
+  },
+  "ㅡ_as_ㅜ (inside)": {
+   "threshold": 0.2481,
+   "tune_correct": 4604,
+   "test_correct": 2400,
+   "test_errors": 414,
+   "error_speakers": 10,
+   "app": {
+    "false_alarms": 22,
+    "false_alarm": {
+     "k": 22,
+     "n": 2400,
+     "rate": 0.0092,
+     "ci95": [
+      0.0061,
+      0.0138
+     ]
+    },
+    "caught": 374,
+    "detection": {
+     "k": 374,
+     "n": 414,
+     "rate": 0.9034,
+     "ci95": [
+      0.8711,
+      0.9282
+     ]
+    }
+   },
+   "baseline": {
+    "false_alarms": 152,
+    "false_alarm": {
+     "k": 152,
+     "n": 2400,
+     "rate": 0.0633,
+     "ci95": [
+      0.0543,
+      0.0738
+     ]
+    },
+    "caught": 399,
+    "detection": {
+     "k": 399,
+     "n": 414,
+     "rate": 0.9638,
+     "ci95": [
+      0.9411,
+      0.9779
+     ]
+    }
+   }
+  }
+ },
+ "part2": {
+  "tests": {
+   "ㅃㄸㄲ with an English-p puff (asp - tense)": {
+    "errors": 448,
+    "korean_correct": 813,
+    "controls": 132,
+    "auc_vs_korean": 0.977,
+    "auc_vs_controls": 0.723,
+    "survives": false,
+    "has_control": true,
+    "vot_set": "VOT: 0.920 / 0.947"
+   },
+   "ㅃㄸㄲ like English b/d/g (max(lenis, asp) - tense)": {
+    "errors": 324,
+    "korean_correct": 813,
+    "controls": null,
+    "auc_vs_korean": 0.89,
+    "auc_vs_controls": null,
+    "survives": true,
+    "has_control": false,
+    "vot_set": "VOT: 0.591 / -"
+   },
+   "ㅂㄷㄱ like English b/d/g (tense - lenis)": {
+    "errors": 324,
+    "korean_correct": 5214,
+    "controls": null,
+    "auc_vs_korean": 0.662,
+    "auc_vs_controls": null,
+    "survives": false,
+    "has_control": false,
+    "vot_set": "not in the VOT set"
+   }
+  },
+  "model_picks": {
+   "en asp": {
+    "lenis": 0.279,
+    "tense": 0.013,
+    "asp": 0.708,
+    "n": 448
+   },
+   "en vcd": {
+    "lenis": 0.91,
+    "tense": 0.09,
+    "asp": 0.0,
+    "n": 324
+   },
+   "en sp": {
+    "lenis": 0.977,
+    "tense": 0.0,
+    "asp": 0.023,
+    "n": 132
+   },
+   "ko lenis": {
+    "lenis": 0.985,
+    "tense": 0.01,
+    "asp": 0.005,
+    "n": 5214
+   },
+   "ko tense": {
+    "lenis": 0.219,
+    "tense": 0.772,
+    "asp": 0.009,
+    "n": 813
+   },
+   "ko asp": {
+    "lenis": 0.194,
+    "tense": 0.008,
+    "asp": 0.798,
+    "n": 840
+   }
+  }
+ }
+}

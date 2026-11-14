@@ -1,0 +1,688 @@
+{
+ "source": "eval/sim_validate.py : simulated errors on CMU ARCTIC natives vs REAL L2-ARCTIC Korean-speaker errors (results/eval.json, app)",
+ "recordings": 600,
+ "limit": null,
+ "seed": 17,
+ "verdict": {
+  "p1_pairs_ok": 8,
+  "p1_pairs": 8,
+  "p1_pass": true,
+  "p2_spearman": 0.7619,
+  "p2_useful_for_ranking": true,
+  "p3_pairs_native_fa_le_real": 8
+ },
+ "pairs": {
+  "r_as_l": {
+   "variant": "B",
+   "margin": -1.0001,
+   "enabled_in_app": true,
+   "simulated": {
+    "detection": {
+     "k": 387,
+     "n": 420,
+     "rate": 0.9214,
+     "ci95": [
+      0.8917,
+      0.9435
+     ]
+    },
+    "false_alarms": {
+     "k": 0,
+     "n": 828,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0046
+     ]
+    },
+    "baseline_detection": {
+     "k": 420,
+     "n": 420,
+     "rate": 1.0,
+     "ci95": [
+      0.9909,
+      1.0
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 290,
+     "n": 828,
+     "rate": 0.3502,
+     "ci95": [
+      0.3185,
+      0.3834
+     ]
+    }
+   },
+   "real": {
+    "detection": {
+     "k": 7,
+     "n": 14,
+     "rate": 0.5,
+     "ci95": [
+      0.268,
+      0.732
+     ]
+    },
+    "false_alarms": {
+     "k": 1,
+     "n": 725,
+     "rate": 0.0014,
+     "ci95": [
+      0.0002,
+      0.0078
+     ]
+    },
+    "baseline_detection": {
+     "k": 11,
+     "n": 14,
+     "rate": 0.7857,
+     "ci95": [
+      0.5241,
+      0.9243
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 219,
+     "n": 725,
+     "rate": 0.3021,
+     "ci95": [
+      0.2698,
+      0.3365
+     ]
+    }
+   },
+   "p1_upper_bound_ok": true,
+   "p1_baseline_upper_bound_ok": true,
+   "p3_native_fa_le_real": true
+  },
+  "l_as_r": {
+   "variant": "A",
+   "margin": 0.0028,
+   "enabled_in_app": false,
+   "simulated": {
+    "detection": {
+     "k": 445,
+     "n": 472,
+     "rate": 0.9428,
+     "ci95": [
+      0.9181,
+      0.9604
+     ]
+    },
+    "false_alarms": {
+     "k": 0,
+     "n": 760,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.005
+     ]
+    },
+    "baseline_detection": {
+     "k": 472,
+     "n": 472,
+     "rate": 1.0,
+     "ci95": [
+      0.9919,
+      1.0
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 60,
+     "n": 760,
+     "rate": 0.0789,
+     "ci95": [
+      0.0618,
+      0.1003
+     ]
+    }
+   },
+   "real": {
+    "detection": {
+     "k": 18,
+     "n": 27,
+     "rate": 0.6667,
+     "ci95": [
+      0.4782,
+      0.8136
+     ]
+    },
+    "false_alarms": {
+     "k": 15,
+     "n": 715,
+     "rate": 0.021,
+     "ci95": [
+      0.0128,
+      0.0343
+     ]
+    },
+    "baseline_detection": {
+     "k": 22,
+     "n": 27,
+     "rate": 0.8148,
+     "ci95": [
+      0.633,
+      0.9182
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 74,
+     "n": 715,
+     "rate": 0.1035,
+     "ci95": [
+      0.0832,
+      0.128
+     ]
+    }
+   },
+   "p1_upper_bound_ok": true,
+   "p1_baseline_upper_bound_ok": true,
+   "p3_native_fa_le_real": true
+  },
+  "f_as_p": {
+   "variant": "B",
+   "margin": -1.0001,
+   "enabled_in_app": false,
+   "simulated": {
+    "detection": {
+     "k": 265,
+     "n": 268,
+     "rate": 0.9888,
+     "ci95": [
+      0.9676,
+      0.9962
+     ]
+    },
+    "false_alarms": {
+     "k": 0,
+     "n": 424,
+     "rate": 0.0,
+     "ci95": [
+      -0.0,
+      0.009
+     ]
+    },
+    "baseline_detection": {
+     "k": 268,
+     "n": 268,
+     "rate": 1.0,
+     "ci95": [
+      0.9859,
+      1.0
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 5,
+     "n": 424,
+     "rate": 0.0118,
+     "ci95": [
+      0.005,
+      0.0273
+     ]
+    }
+   },
+   "real": {
+    "detection": {
+     "k": 3,
+     "n": 7,
+     "rate": 0.4286,
+     "ci95": [
+      0.1582,
+      0.7495
+     ]
+    },
+    "false_alarms": {
+     "k": 9,
+     "n": 409,
+     "rate": 0.022,
+     "ci95": [
+      0.0116,
+      0.0413
+     ]
+    },
+    "baseline_detection": {
+     "k": 3,
+     "n": 7,
+     "rate": 0.4286,
+     "ci95": [
+      0.1582,
+      0.7495
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 13,
+     "n": 409,
+     "rate": 0.0318,
+     "ci95": [
+      0.0187,
+      0.0536
+     ]
+    }
+   },
+   "p1_upper_bound_ok": true,
+   "p1_baseline_upper_bound_ok": true,
+   "p3_native_fa_le_real": true
+  },
+  "v_as_b": {
+   "variant": "A",
+   "margin": 0.842,
+   "enabled_in_app": false,
+   "simulated": {
+    "detection": {
+     "k": 244,
+     "n": 244,
+     "rate": 1.0,
+     "ci95": [
+      0.9845,
+      1.0
+     ]
+    },
+    "false_alarms": {
+     "k": 0,
+     "n": 456,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0084
+     ]
+    },
+    "baseline_detection": {
+     "k": 243,
+     "n": 244,
+     "rate": 0.9959,
+     "ci95": [
+      0.9772,
+      0.9993
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 11,
+     "n": 456,
+     "rate": 0.0241,
+     "ci95": [
+      0.0135,
+      0.0427
+     ]
+    }
+   },
+   "real": {
+    "detection": {
+     "k": 6,
+     "n": 19,
+     "rate": 0.3158,
+     "ci95": [
+      0.1536,
+      0.5399
+     ]
+    },
+    "false_alarms": {
+     "k": 3,
+     "n": 410,
+     "rate": 0.0073,
+     "ci95": [
+      0.0025,
+      0.0213
+     ]
+    },
+    "baseline_detection": {
+     "k": 11,
+     "n": 19,
+     "rate": 0.5789,
+     "ci95": [
+      0.3628,
+      0.7686
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 27,
+     "n": 410,
+     "rate": 0.0659,
+     "ci95": [
+      0.0456,
+      0.0941
+     ]
+    }
+   },
+   "p1_upper_bound_ok": true,
+   "p1_baseline_upper_bound_ok": true,
+   "p3_native_fa_le_real": true
+  },
+  "th_as_s": {
+   "variant": "A",
+   "margin": 0.9819,
+   "enabled_in_app": false,
+   "simulated": {
+    "detection": {
+     "k": 336,
+     "n": 432,
+     "rate": 0.7778,
+     "ci95": [
+      0.7362,
+      0.8144
+     ]
+    },
+    "false_alarms": {
+     "k": 0,
+     "n": 116,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0321
+     ]
+    },
+    "baseline_detection": {
+     "k": 432,
+     "n": 432,
+     "rate": 1.0,
+     "ci95": [
+      0.9912,
+      1.0
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 9,
+     "n": 116,
+     "rate": 0.0776,
+     "ci95": [
+      0.0414,
+      0.1409
+     ]
+    }
+   },
+   "real": {
+    "detection": {
+     "k": 3,
+     "n": 27,
+     "rate": 0.1111,
+     "ci95": [
+      0.0385,
+      0.2806
+     ]
+    },
+    "false_alarms": {
+     "k": 1,
+     "n": 81,
+     "rate": 0.0123,
+     "ci95": [
+      0.0022,
+      0.0667
+     ]
+    },
+    "baseline_detection": {
+     "k": 17,
+     "n": 27,
+     "rate": 0.6296,
+     "ci95": [
+      0.4423,
+      0.7847
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 15,
+     "n": 81,
+     "rate": 0.1852,
+     "ci95": [
+      0.1156,
+      0.2833
+     ]
+    }
+   },
+   "p1_upper_bound_ok": true,
+   "p1_baseline_upper_bound_ok": true,
+   "p3_native_fa_le_real": true
+  },
+  "dh_as_d": {
+   "variant": "A",
+   "margin": 0.9564,
+   "enabled_in_app": false,
+   "simulated": {
+    "detection": {
+     "k": 314,
+     "n": 464,
+     "rate": 0.6767,
+     "ci95": [
+      0.6329,
+      0.7177
+     ]
+    },
+    "false_alarms": {
+     "k": 0,
+     "n": 652,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0059
+     ]
+    },
+    "baseline_detection": {
+     "k": 464,
+     "n": 464,
+     "rate": 1.0,
+     "ci95": [
+      0.9918,
+      1.0
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 12,
+     "n": 652,
+     "rate": 0.0184,
+     "ci95": [
+      0.0106,
+      0.0319
+     ]
+    }
+   },
+   "real": {
+    "detection": {
+     "k": 13,
+     "n": 365,
+     "rate": 0.0356,
+     "ci95": [
+      0.0209,
+      0.06
+     ]
+    },
+    "false_alarms": {
+     "k": 8,
+     "n": 265,
+     "rate": 0.0302,
+     "ci95": [
+      0.0154,
+      0.0584
+     ]
+    },
+    "baseline_detection": {
+     "k": 61,
+     "n": 365,
+     "rate": 0.1671,
+     "ci95": [
+      0.1324,
+      0.2088
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 57,
+     "n": 265,
+     "rate": 0.2151,
+     "ci95": [
+      0.1699,
+      0.2685
+     ]
+    }
+   },
+   "p1_upper_bound_ok": true,
+   "p1_baseline_upper_bound_ok": true,
+   "p3_native_fa_le_real": true
+  },
+  "ih_as_iy": {
+   "variant": "B",
+   "margin": 0.8401,
+   "enabled_in_app": false,
+   "simulated": {
+    "detection": {
+     "k": 274,
+     "n": 444,
+     "rate": 0.6171,
+     "ci95": [
+      0.5711,
+      0.6611
+     ]
+    },
+    "false_alarms": {
+     "k": 1,
+     "n": 1212,
+     "rate": 0.0008,
+     "ci95": [
+      0.0001,
+      0.0047
+     ]
+    },
+    "baseline_detection": {
+     "k": 441,
+     "n": 444,
+     "rate": 0.9932,
+     "ci95": [
+      0.9803,
+      0.9977
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 55,
+     "n": 1212,
+     "rate": 0.0454,
+     "ci95": [
+      0.035,
+      0.0586
+     ]
+    }
+   },
+   "real": {
+    "detection": {
+     "k": 8,
+     "n": 101,
+     "rate": 0.0792,
+     "ci95": [
+      0.0407,
+      0.1486
+     ]
+    },
+    "false_alarms": {
+     "k": 9,
+     "n": 1051,
+     "rate": 0.0086,
+     "ci95": [
+      0.0045,
+      0.0162
+     ]
+    },
+    "baseline_detection": {
+     "k": 20,
+     "n": 101,
+     "rate": 0.198,
+     "ci95": [
+      0.132,
+      0.2862
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 89,
+     "n": 1051,
+     "rate": 0.0847,
+     "ci95": [
+      0.0693,
+      0.1031
+     ]
+    }
+   },
+   "p1_upper_bound_ok": true,
+   "p1_baseline_upper_bound_ok": true,
+   "p3_native_fa_le_real": true
+  },
+  "iy_as_ih": {
+   "variant": "B",
+   "margin": 0.6794,
+   "enabled_in_app": false,
+   "simulated": {
+    "detection": {
+     "k": 441,
+     "n": 504,
+     "rate": 0.875,
+     "ci95": [
+      0.8433,
+      0.9011
+     ]
+    },
+    "false_alarms": {
+     "k": 0,
+     "n": 744,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0051
+     ]
+    },
+    "baseline_detection": {
+     "k": 503,
+     "n": 504,
+     "rate": 0.998,
+     "ci95": [
+      0.9888,
+      0.9996
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 307,
+     "n": 744,
+     "rate": 0.4126,
+     "ci95": [
+      0.3778,
+      0.4484
+     ]
+    }
+   },
+   "real": {
+    "detection": {
+     "k": 7,
+     "n": 27,
+     "rate": 0.2593,
+     "ci95": [
+      0.1317,
+      0.4468
+     ]
+    },
+    "false_alarms": {
+     "k": 7,
+     "n": 709,
+     "rate": 0.0099,
+     "ci95": [
+      0.0048,
+      0.0202
+     ]
+    },
+    "baseline_detection": {
+     "k": 19,
+     "n": 27,
+     "rate": 0.7037,
+     "ci95": [
+      0.5152,
+      0.8415
+     ]
+    },
+    "baseline_false_alarms": {
+     "k": 363,
+     "n": 709,
+     "rate": 0.512,
+     "ci95": [
+      0.4752,
+      0.5486
+     ]
+    }
+   },
+   "p1_upper_bound_ok": true,
+   "p1_baseline_upper_bound_ok": true,
+   "p3_native_fa_le_real": true
+  }
+ }
+}

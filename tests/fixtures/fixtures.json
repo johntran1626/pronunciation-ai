@@ -1,0 +1,23 @@
+[
+ {
+  "file": "cmu_bdl_arctic_a0001.wav",
+  "lang": "en",
+  "text": "Author of the danger trail, Philip Steels, etc.",
+  "source": "CMU ARCTIC, speaker bdl (US male), arctic_a0001, unmodified",
+  "license": "CMU ARCTIC (Carnegie Mellon University, 2003), free for any purpose with notice: see LICENSES.md"
+ },
+ {
+  "file": "cmu_slt_arctic_a0020.wav",
+  "lang": "en",
+  "text": "Clubs and balls and cities grew to be only memories.",
+  "source": "CMU ARCTIC, speaker slt (US female), arctic_a0020, unmodified",
+  "license": "CMU ARCTIC (Carnegie Mellon University, 2003), free for any purpose with notice: see LICENSES.md"
+ },
+ {
+  "file": "zeroth_126_003_2058.wav",
+  "lang": "ko",
+  "text": "강아지가 용변을 보도록 유도하는 말을 가르칠 수도 있다",
+  "source": "Zeroth-Korean (Zeroth Project: Lucas Jo, Atlas Guide Inc.; Wonkyum Lee, Gridspace Inc.), via Hugging Face kresnik/zeroth_korean test split, id 126_003_2058, speaker 126; MODIFIED: converted from FLAC to 16-bit WAV, audio otherwise unchanged",
+  "license": "CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/): see LICENSES.md"
+ }
+]

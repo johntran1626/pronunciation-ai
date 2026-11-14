@@ -1,0 +1,443 @@
+{
+ "caps": {
+  "sentence": 0.01,
+  "word": 0.002
+ },
+ "en": {
+  "sentence": {
+   "thresholds": {
+    "min_heard": 0.42,
+    "min_conf": 0.38
+   },
+   "enabled": true,
+   "tune": {
+    "orig": {
+     "k": 29,
+     "n": 2999,
+     "rate": 0.0097,
+     "ci95": [
+      0.0067,
+      0.0139
+     ]
+    },
+    "swap": {
+     "k": 181,
+     "n": 2999,
+     "rate": 0.0604,
+     "ci95": [
+      0.0524,
+      0.0695
+     ]
+    },
+    "cut": {
+     "k": 213,
+     "n": 2999,
+     "rate": 0.071,
+     "ci95": [
+      0.0624,
+      0.0808
+     ]
+    },
+    "other": {
+     "k": 2976,
+     "n": 2999,
+     "rate": 0.9923,
+     "ci95": [
+      0.9885,
+      0.9949
+     ]
+    },
+    "noise": {
+     "k": 24,
+     "n": 24,
+     "rate": 1.0,
+     "ci95": [
+      0.862,
+      1.0
+     ]
+    }
+   },
+   "test": {
+    "orig": {
+     "k": 2,
+     "n": 600,
+     "rate": 0.0033,
+     "ci95": [
+      0.0009,
+      0.0121
+     ]
+    },
+    "swap": {
+     "k": 21,
+     "n": 600,
+     "rate": 0.035,
+     "ci95": [
+      0.023,
+      0.0529
+     ]
+    },
+    "cut": {
+     "k": 22,
+     "n": 600,
+     "rate": 0.0367,
+     "ci95": [
+      0.0243,
+      0.0549
+     ]
+    },
+    "other": {
+     "k": 597,
+     "n": 600,
+     "rate": 0.995,
+     "ci95": [
+      0.9854,
+      0.9983
+     ]
+    },
+    "noise": {
+     "k": 24,
+     "n": 24,
+     "rate": 1.0,
+     "ci95": [
+      0.862,
+      1.0
+     ]
+    }
+   }
+  },
+  "word": {
+   "thresholds": {
+    "min_sounds": 3,
+    "max_heard": 0.5,
+    "max_conf": 0.02
+   },
+   "enabled": true,
+   "tune": {
+    "false_not_heard_all_words": {
+     "k": 52,
+     "n": 28195,
+     "rate": 0.0018,
+     "ci95": [
+      0.0014,
+      0.0024
+     ]
+    },
+    "false_not_heard_human_correct": {
+     "k": 9,
+     "n": 15831,
+     "rate": 0.0006,
+     "ci95": [
+      0.0003,
+      0.0011
+     ]
+    },
+    "false_not_heard_human_error": {
+     "k": 43,
+     "n": 12239,
+     "rate": 0.0035,
+     "ci95": [
+      0.0026,
+      0.0047
+     ]
+    },
+    "caught_cut": {
+     "k": 1339,
+     "n": 2999,
+     "rate": 0.4465,
+     "ci95": [
+      0.4288,
+      0.4643
+     ]
+    },
+    "caught_swap": {
+     "k": 1627,
+     "n": 2999,
+     "rate": 0.5425,
+     "ci95": [
+      0.5246,
+      0.5603
+     ]
+    },
+    "cut_neighbour_flagged": {
+     "k": 52,
+     "n": 4957,
+     "rate": 0.0105,
+     "ci95": [
+      0.008,
+      0.0137
+     ]
+    },
+    "cut_far_word_flagged": {
+     "k": 30,
+     "n": 19266,
+     "rate": 0.0016,
+     "ci95": [
+      0.0011,
+      0.0022
+     ]
+    },
+    "sentences_with_a_false_not_heard": {
+     "k": 51,
+     "n": 2970,
+     "rate": 0.0172,
+     "ci95": [
+      0.0131,
+      0.0225
+     ]
+    }
+   },
+   "test": {
+    "false_not_heard_all_words": {
+     "k": 4,
+     "n": 5609,
+     "rate": 0.0007,
+     "ci95": [
+      0.0003,
+      0.0018
+     ]
+    },
+    "false_not_heard_human_correct": {
+     "k": 2,
+     "n": 3912,
+     "rate": 0.0005,
+     "ci95": [
+      0.0001,
+      0.0019
+     ]
+    },
+    "false_not_heard_human_error": {
+     "k": 2,
+     "n": 1663,
+     "rate": 0.0012,
+     "ci95": [
+      0.0003,
+      0.0044
+     ]
+    },
+    "caught_cut": {
+     "k": 271,
+     "n": 600,
+     "rate": 0.4517,
+     "ci95": [
+      0.4123,
+      0.4917
+     ]
+    },
+    "caught_swap": {
+     "k": 322,
+     "n": 600,
+     "rate": 0.5367,
+     "ci95": [
+      0.4967,
+      0.5762
+     ]
+    },
+    "cut_neighbour_flagged": {
+     "k": 9,
+     "n": 1023,
+     "rate": 0.0088,
+     "ci95": [
+      0.0046,
+      0.0166
+     ]
+    },
+    "cut_far_word_flagged": {
+     "k": 3,
+     "n": 3899,
+     "rate": 0.0008,
+     "ci95": [
+      0.0003,
+      0.0023
+     ]
+    },
+    "sentences_with_a_false_not_heard": {
+     "k": 4,
+     "n": 598,
+     "rate": 0.0067,
+     "ci95": [
+      0.0026,
+      0.0171
+     ]
+    }
+   }
+  }
+ },
+ "ko": {
+  "sentence": {
+   "thresholds": {
+    "min_heard": 0.0,
+    "min_conf": 0.0
+   },
+   "enabled": true,
+   "why": "lenient: rejects only no-speech (no learner data)",
+   "test": {
+    "orig": {
+     "k": 0,
+     "n": 207,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0182
+     ]
+    },
+    "swap": {
+     "k": 0,
+     "n": 207,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0182
+     ]
+    },
+    "cut": {
+     "k": 0,
+     "n": 207,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0182
+     ]
+    },
+    "other": {
+     "k": 0,
+     "n": 207,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0182
+     ]
+    },
+    "noise": {
+     "k": 24,
+     "n": 24,
+     "rate": 1.0,
+     "ci95": [
+      0.862,
+      1.0
+     ]
+    }
+   },
+   "for_comparison_native_tuned": {
+    "thresholds": {
+     "min_heard": 0.26,
+     "min_conf": 0.22
+    },
+    "test": {
+     "orig": {
+      "k": 2,
+      "n": 207,
+      "rate": 0.0097,
+      "ci95": [
+       0.0027,
+       0.0345
+      ]
+     },
+     "swap": {
+      "k": 2,
+      "n": 207,
+      "rate": 0.0097,
+      "ci95": [
+       0.0027,
+       0.0345
+      ]
+     },
+     "cut": {
+      "k": 9,
+      "n": 207,
+      "rate": 0.0435,
+      "ci95": [
+       0.023,
+       0.0806
+      ]
+     },
+     "other": {
+      "k": 181,
+      "n": 207,
+      "rate": 0.8744,
+      "ci95": [
+       0.8223,
+       0.9128
+      ]
+     }
+    }
+   }
+  },
+  "word": {
+   "thresholds": {
+    "min_sounds": 2,
+    "max_heard": 0.34,
+    "max_conf": 0.0
+   },
+   "enabled": false,
+   "why": "no Korean reds without learner data",
+   "test_natives": {
+    "false_not_heard_all_words": {
+     "k": 1,
+     "n": 3063,
+     "rate": 0.0003,
+     "ci95": [
+      0.0001,
+      0.0018
+     ]
+    },
+    "false_not_heard_human_correct": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "ci95": null
+    },
+    "false_not_heard_human_error": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "ci95": null
+    },
+    "caught_cut": {
+     "k": 10,
+     "n": 207,
+     "rate": 0.0483,
+     "ci95": [
+      0.0264,
+      0.0866
+     ]
+    },
+    "caught_swap": {
+     "k": 0,
+     "n": 207,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.0182
+     ]
+    },
+    "cut_neighbour_flagged": {
+     "k": 0,
+     "n": 379,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.01
+     ]
+    },
+    "cut_far_word_flagged": {
+     "k": 1,
+     "n": 2477,
+     "rate": 0.0004,
+     "ci95": [
+      0.0001,
+      0.0023
+     ]
+    },
+    "sentences_with_a_false_not_heard": {
+     "k": 1,
+     "n": 207,
+     "rate": 0.0048,
+     "ci95": [
+      0.0009,
+      0.0269
+     ]
+    }
+   }
+  }
+ }
+}

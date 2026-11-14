@@ -1,0 +1,1496 @@
+{
+ "source": "eval/korean_sim.py: simulated errors by text swap on native Zeroth-Korean",
+ "warning": "SIMULATED errors on NATIVE speech: detection is optimistic, false alarms are optimistic.",
+ "recordings": 1368,
+ "limit_per_speaker": null,
+ "seed": 17,
+ "known_answer_check": {
+  "stop_swaps": 11534,
+  "identical": 11534,
+  "passed": true
+ },
+ "usable_pairs": [
+  "ㄱ_as_ㄲ",
+  "ㄱ_as_ㅋ",
+  "ㄲ_as_ㄱ",
+  "ㄲ_as_ㅋ",
+  "ㄷ_as_ㅌ",
+  "ㄸ_as_ㄷ",
+  "ㄸ_as_ㅌ",
+  "ㅂ_as_ㅍ",
+  "ㅃ_as_ㅂ",
+  "ㅃ_as_ㅍ",
+  "ㅋ_as_ㄱ",
+  "ㅋ_as_ㄲ",
+  "ㅌ_as_ㄷ",
+  "ㅌ_as_ㄸ",
+  "ㅍ_as_ㅂ",
+  "ㅓ_as_ㅗ",
+  "ㅗ_as_ㅓ",
+  "ㅜ_as_ㅡ",
+  "ㅡ_as_ㅜ"
+ ],
+ "too_few_pairs": [
+  "ㄷ_as_ㄸ",
+  "ㅂ_as_ㅃ",
+  "ㅍ_as_ㅃ"
+ ],
+ "pairs": {
+  "test": {
+   "ㄱ_as_ㄲ": {
+    "errors": 104,
+    "error_speakers": 10,
+    "correct": 2803,
+    "baseline": {
+     "caught": 10,
+     "detection": 0.0962,
+     "detection_ci95": [
+      0.0531,
+      0.168
+     ],
+     "false_alarms": 1545,
+     "false_alarm_rate": 0.5512,
+     "false_alarm_ci95": [
+      0.5327,
+      0.5695
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0356
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0014
+     ]
+    }
+   },
+   "ㄱ_as_ㅋ": {
+    "errors": 100,
+    "error_speakers": 10,
+    "correct": 2803,
+    "baseline": {
+     "caught": 2,
+     "detection": 0.02,
+     "detection_ci95": [
+      0.0055,
+      0.07
+     ],
+     "false_alarms": 1545,
+     "false_alarm_rate": 0.5512,
+     "false_alarm_ci95": [
+      0.5327,
+      0.5695
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.037
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0014
+     ]
+    }
+   },
+   "ㄲ_as_ㄱ": {
+    "errors": 450,
+    "error_speakers": 10,
+    "correct": 389,
+    "baseline": {
+     "caught": 245,
+     "detection": 0.5444,
+     "detection_ci95": [
+      0.4982,
+      0.5899
+     ],
+     "false_alarms": 51,
+     "false_alarm_rate": 0.1311,
+     "false_alarm_ci95": [
+      0.1011,
+      0.1683
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0085
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0098
+     ]
+    }
+   },
+   "ㄲ_as_ㅋ": {
+    "errors": 102,
+    "error_speakers": 10,
+    "correct": 389,
+    "baseline": {
+     "caught": 2,
+     "detection": 0.0196,
+     "detection_ci95": [
+      0.0054,
+      0.0687
+     ],
+     "false_alarms": 51,
+     "false_alarm_rate": 0.1311,
+     "false_alarm_ci95": [
+      0.1011,
+      0.1683
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0363
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0098
+     ]
+    }
+   },
+   "ㄷ_as_ㄸ": {
+    "errors": 92,
+    "error_speakers": 10,
+    "correct": 1941,
+    "baseline": {
+     "caught": 17,
+     "detection": 0.1848,
+     "detection_ci95": [
+      0.1187,
+      0.2761
+     ],
+     "false_alarms": 1216,
+     "false_alarm_rate": 0.6265,
+     "false_alarm_ci95": [
+      0.6047,
+      0.6477
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      -0.0,
+      0.0401
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.002
+     ]
+    }
+   },
+   "ㄷ_as_ㅌ": {
+    "errors": 184,
+    "error_speakers": 10,
+    "correct": 1941,
+    "baseline": {
+     "caught": 9,
+     "detection": 0.0489,
+     "detection_ci95": [
+      0.0259,
+      0.0903
+     ],
+     "false_alarms": 1216,
+     "false_alarm_rate": 0.6265,
+     "false_alarm_ci95": [
+      0.6047,
+      0.6477
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      -0.0,
+      0.0205
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.002
+     ]
+    }
+   },
+   "ㄸ_as_ㄷ": {
+    "errors": 439,
+    "error_speakers": 10,
+    "correct": 531,
+    "baseline": {
+     "caught": 243,
+     "detection": 0.5535,
+     "detection_ci95": [
+      0.5068,
+      0.5994
+     ],
+     "false_alarms": 56,
+     "false_alarm_rate": 0.1055,
+     "false_alarm_ci95": [
+      0.0821,
+      0.1345
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0087
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0072
+     ]
+    }
+   },
+   "ㄸ_as_ㅌ": {
+    "errors": 189,
+    "error_speakers": 10,
+    "correct": 531,
+    "baseline": {
+     "caught": 12,
+     "detection": 0.0635,
+     "detection_ci95": [
+      0.0367,
+      0.1077
+     ],
+     "false_alarms": 56,
+     "false_alarm_rate": 0.1055,
+     "false_alarm_ci95": [
+      0.0821,
+      0.1345
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0199
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0072
+     ]
+    }
+   },
+   "ㅂ_as_ㅃ": {
+    "errors": 17,
+    "error_speakers": 9,
+    "correct": 1204,
+    "baseline": {
+     "caught": 4,
+     "detection": 0.2353,
+     "detection_ci95": [
+      0.0955,
+      0.4726
+     ],
+     "false_alarms": 548,
+     "false_alarm_rate": 0.4551,
+     "false_alarm_ci95": [
+      0.4272,
+      0.4834
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.1843
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0032
+     ]
+    }
+   },
+   "ㅂ_as_ㅍ": {
+    "errors": 161,
+    "error_speakers": 10,
+    "correct": 1204,
+    "baseline": {
+     "caught": 9,
+     "detection": 0.0559,
+     "detection_ci95": [
+      0.0297,
+      0.1028
+     ],
+     "false_alarms": 548,
+     "false_alarm_rate": 0.4551,
+     "false_alarm_ci95": [
+      0.4272,
+      0.4834
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0233
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0032
+     ]
+    }
+   },
+   "ㅃ_as_ㅂ": {
+    "errors": 366,
+    "error_speakers": 10,
+    "correct": 103,
+    "baseline": {
+     "caught": 142,
+     "detection": 0.388,
+     "detection_ci95": [
+      0.3395,
+      0.4388
+     ],
+     "false_alarms": 22,
+     "false_alarm_rate": 0.2136,
+     "false_alarm_ci95": [
+      0.1455,
+      0.3023
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0104
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.036
+     ]
+    }
+   },
+   "ㅃ_as_ㅍ": {
+    "errors": 177,
+    "error_speakers": 10,
+    "correct": 103,
+    "baseline": {
+     "caught": 8,
+     "detection": 0.0452,
+     "detection_ci95": [
+      0.0231,
+      0.0866
+     ],
+     "false_alarms": 22,
+     "false_alarm_rate": 0.2136,
+     "false_alarm_ci95": [
+      0.1455,
+      0.3023
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0212
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.036
+     ]
+    }
+   },
+   "ㅋ_as_ㄱ": {
+    "errors": 450,
+    "error_speakers": 10,
+    "correct": 269,
+    "baseline": {
+     "caught": 229,
+     "detection": 0.5089,
+     "detection_ci95": [
+      0.4628,
+      0.5548
+     ],
+     "false_alarms": 21,
+     "false_alarm_rate": 0.0781,
+     "false_alarm_ci95": [
+      0.0516,
+      0.1164
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0085
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0141
+     ]
+    }
+   },
+   "ㅋ_as_ㄲ": {
+    "errors": 108,
+    "error_speakers": 10,
+    "correct": 269,
+    "baseline": {
+     "caught": 13,
+     "detection": 0.1204,
+     "detection_ci95": [
+      0.0717,
+      0.1951
+     ],
+     "false_alarms": 21,
+     "false_alarm_rate": 0.0781,
+     "false_alarm_ci95": [
+      0.0516,
+      0.1164
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0343
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0141
+     ]
+    }
+   },
+   "ㅌ_as_ㄷ": {
+    "errors": 439,
+    "error_speakers": 10,
+    "correct": 319,
+    "baseline": {
+     "caught": 236,
+     "detection": 0.5376,
+     "detection_ci95": [
+      0.4908,
+      0.5837
+     ],
+     "false_alarms": 20,
+     "false_alarm_rate": 0.0627,
+     "false_alarm_ci95": [
+      0.0409,
+      0.0949
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0087
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0119
+     ]
+    }
+   },
+   "ㅌ_as_ㄸ": {
+    "errors": 109,
+    "error_speakers": 10,
+    "correct": 319,
+    "baseline": {
+     "caught": 25,
+     "detection": 0.2294,
+     "detection_ci95": [
+      0.1605,
+      0.3167
+     ],
+     "false_alarms": 20,
+     "false_alarm_rate": 0.0627,
+     "false_alarm_ci95": [
+      0.0409,
+      0.0949
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.034
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0119
+     ]
+    }
+   },
+   "ㅍ_as_ㅂ": {
+    "errors": 366,
+    "error_speakers": 10,
+    "correct": 309,
+    "baseline": {
+     "caught": 150,
+     "detection": 0.4098,
+     "detection_ci95": [
+      0.3606,
+      0.4609
+     ],
+     "false_alarms": 13,
+     "false_alarm_rate": 0.0421,
+     "false_alarm_ci95": [
+      0.0247,
+      0.0706
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0104
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0123
+     ]
+    }
+   },
+   "ㅍ_as_ㅃ": {
+    "errors": 20,
+    "error_speakers": 9,
+    "correct": 309,
+    "baseline": {
+     "caught": 4,
+     "detection": 0.2,
+     "detection_ci95": [
+      0.0807,
+      0.416
+     ],
+     "false_alarms": 13,
+     "false_alarm_rate": 0.0421,
+     "false_alarm_ci95": [
+      0.0247,
+      0.0706
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      -0.0,
+      0.1611
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0123
+     ]
+    }
+   },
+   "ㅓ_as_ㅗ": {
+    "errors": 445,
+    "error_speakers": 10,
+    "correct": 3027,
+    "baseline": {
+     "caught": 435,
+     "detection": 0.9775,
+     "detection_ci95": [
+      0.9591,
+      0.9877
+     ],
+     "false_alarms": 1915,
+     "false_alarm_rate": 0.6326,
+     "false_alarm_ci95": [
+      0.6153,
+      0.6496
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0086
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0013
+     ]
+    }
+   },
+   "ㅗ_as_ㅓ": {
+    "errors": 443,
+    "error_speakers": 10,
+    "correct": 1935,
+    "baseline": {
+     "caught": 337,
+     "detection": 0.7607,
+     "detection_ci95": [
+      0.7189,
+      0.7981
+     ],
+     "false_alarms": 1462,
+     "false_alarm_rate": 0.7556,
+     "false_alarm_ci95": [
+      0.7359,
+      0.7742
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0086
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.002
+     ]
+    }
+   },
+   "ㅜ_as_ㅡ": {
+    "errors": 456,
+    "error_speakers": 10,
+    "correct": 1467,
+    "baseline": {
+     "caught": 446,
+     "detection": 0.9781,
+     "detection_ci95": [
+      0.9601,
+      0.988
+     ],
+     "false_alarms": 1002,
+     "false_alarm_rate": 0.683,
+     "false_alarm_ci95": [
+      0.6588,
+      0.7063
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0084
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0026
+     ]
+    }
+   },
+   "ㅡ_as_ㅜ": {
+    "errors": 423,
+    "error_speakers": 10,
+    "correct": 2404,
+    "baseline": {
+     "caught": 416,
+     "detection": 0.9835,
+     "detection_ci95": [
+      0.9662,
+      0.992
+     ],
+     "false_alarms": 1675,
+     "false_alarm_rate": 0.6968,
+     "false_alarm_ci95": [
+      0.6781,
+      0.7148
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.009
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0016
+     ]
+    }
+   }
+  },
+  "tune": {
+   "ㄱ_as_ㄲ": {
+    "errors": 164,
+    "error_speakers": 16,
+    "correct": 5539,
+    "baseline": {
+     "caught": 15,
+     "detection": 0.0915,
+     "detection_ci95": [
+      0.0562,
+      0.1454
+     ],
+     "false_alarms": 3059,
+     "false_alarm_rate": 0.5523,
+     "false_alarm_ci95": [
+      0.5391,
+      0.5653
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0229
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0007
+     ]
+    }
+   },
+   "ㄱ_as_ㅋ": {
+    "errors": 164,
+    "error_speakers": 16,
+    "correct": 5539,
+    "baseline": {
+     "caught": 5,
+     "detection": 0.0305,
+     "detection_ci95": [
+      0.0131,
+      0.0694
+     ],
+     "false_alarms": 3059,
+     "false_alarm_rate": 0.5523,
+     "false_alarm_ci95": [
+      0.5391,
+      0.5653
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0229
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0007
+     ]
+    }
+   },
+   "ㄲ_as_ㄱ": {
+    "errors": 891,
+    "error_speakers": 16,
+    "correct": 699,
+    "baseline": {
+     "caught": 506,
+     "detection": 0.5679,
+     "detection_ci95": [
+      0.5352,
+      0.6001
+     ],
+     "false_alarms": 86,
+     "false_alarm_rate": 0.123,
+     "false_alarm_ci95": [
+      0.1007,
+      0.1495
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0043
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0055
+     ]
+    }
+   },
+   "ㄲ_as_ㅋ": {
+    "errors": 162,
+    "error_speakers": 16,
+    "correct": 699,
+    "baseline": {
+     "caught": 6,
+     "detection": 0.037,
+     "detection_ci95": [
+      0.0171,
+      0.0784
+     ],
+     "false_alarms": 86,
+     "false_alarm_rate": 0.123,
+     "false_alarm_ci95": [
+      0.1007,
+      0.1495
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      -0.0,
+      0.0232
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0055
+     ]
+    }
+   },
+   "ㄷ_as_ㄸ": {
+    "errors": 160,
+    "error_speakers": 16,
+    "correct": 3732,
+    "baseline": {
+     "caught": 16,
+     "detection": 0.1,
+     "detection_ci95": [
+      0.0625,
+      0.1563
+     ],
+     "false_alarms": 2408,
+     "false_alarm_rate": 0.6452,
+     "false_alarm_ci95": [
+      0.6297,
+      0.6604
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      -0.0,
+      0.0234
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.001
+     ]
+    }
+   },
+   "ㄷ_as_ㅌ": {
+    "errors": 409,
+    "error_speakers": 16,
+    "correct": 3732,
+    "baseline": {
+     "caught": 21,
+     "detection": 0.0513,
+     "detection_ci95": [
+      0.0338,
+      0.0772
+     ],
+     "false_alarms": 2408,
+     "false_alarm_rate": 0.6452,
+     "false_alarm_ci95": [
+      0.6297,
+      0.6604
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0093
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.001
+     ]
+    }
+   },
+   "ㄸ_as_ㄷ": {
+    "errors": 864,
+    "error_speakers": 16,
+    "correct": 1011,
+    "baseline": {
+     "caught": 493,
+     "detection": 0.5706,
+     "detection_ci95": [
+      0.5374,
+      0.6032
+     ],
+     "false_alarms": 111,
+     "false_alarm_rate": 0.1098,
+     "false_alarm_ci95": [
+      0.092,
+      0.1306
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0044
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0038
+     ]
+    }
+   },
+   "ㄸ_as_ㅌ": {
+    "errors": 417,
+    "error_speakers": 16,
+    "correct": 1011,
+    "baseline": {
+     "caught": 20,
+     "detection": 0.048,
+     "detection_ci95": [
+      0.0313,
+      0.0729
+     ],
+     "false_alarms": 111,
+     "false_alarm_rate": 0.1098,
+     "false_alarm_ci95": [
+      0.092,
+      0.1306
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      -0.0,
+      0.0091
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0038
+     ]
+    }
+   },
+   "ㅂ_as_ㅃ": {
+    "errors": 34,
+    "error_speakers": 16,
+    "correct": 2321,
+    "baseline": {
+     "caught": 6,
+     "detection": 0.1765,
+     "detection_ci95": [
+      0.0835,
+      0.3351
+     ],
+     "false_alarms": 1166,
+     "false_alarm_rate": 0.5024,
+     "false_alarm_ci95": [
+      0.482,
+      0.5227
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.1015
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0017
+     ]
+    }
+   },
+   "ㅂ_as_ㅍ": {
+    "errors": 382,
+    "error_speakers": 16,
+    "correct": 2321,
+    "baseline": {
+     "caught": 14,
+     "detection": 0.0366,
+     "detection_ci95": [
+      0.022,
+      0.0606
+     ],
+     "false_alarms": 1166,
+     "false_alarm_rate": 0.5024,
+     "false_alarm_ci95": [
+      0.482,
+      0.5227
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.01
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0017
+     ]
+    }
+   },
+   "ㅃ_as_ㅂ": {
+    "errors": 723,
+    "error_speakers": 16,
+    "correct": 165,
+    "baseline": {
+     "caught": 351,
+     "detection": 0.4855,
+     "detection_ci95": [
+      0.4492,
+      0.5219
+     ],
+     "false_alarms": 36,
+     "false_alarm_rate": 0.2182,
+     "false_alarm_ci95": [
+      0.162,
+      0.2872
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0053
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0228
+     ]
+    }
+   },
+   "ㅃ_as_ㅍ": {
+    "errors": 406,
+    "error_speakers": 16,
+    "correct": 165,
+    "baseline": {
+     "caught": 17,
+     "detection": 0.0419,
+     "detection_ci95": [
+      0.0263,
+      0.066
+     ],
+     "false_alarms": 36,
+     "false_alarm_rate": 0.2182,
+     "false_alarm_ci95": [
+      0.162,
+      0.2872
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0094
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0228
+     ]
+    }
+   },
+   "ㅋ_as_ㄱ": {
+    "errors": 891,
+    "error_speakers": 16,
+    "correct": 480,
+    "baseline": {
+     "caught": 522,
+     "detection": 0.5859,
+     "detection_ci95": [
+      0.5532,
+      0.6178
+     ],
+     "false_alarms": 26,
+     "false_alarm_rate": 0.0542,
+     "false_alarm_ci95": [
+      0.0372,
+      0.0782
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0043
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0079
+     ]
+    }
+   },
+   "ㅋ_as_ㄲ": {
+    "errors": 174,
+    "error_speakers": 16,
+    "correct": 480,
+    "baseline": {
+     "caught": 15,
+     "detection": 0.0862,
+     "detection_ci95": [
+      0.0529,
+      0.1374
+     ],
+     "false_alarms": 26,
+     "false_alarm_rate": 0.0542,
+     "false_alarm_ci95": [
+      0.0372,
+      0.0782
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0216
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      -0.0,
+      0.0079
+     ]
+    }
+   },
+   "ㅌ_as_ㄷ": {
+    "errors": 864,
+    "error_speakers": 16,
+    "correct": 660,
+    "baseline": {
+     "caught": 510,
+     "detection": 0.5903,
+     "detection_ci95": [
+      0.5572,
+      0.6226
+     ],
+     "false_alarms": 33,
+     "false_alarm_rate": 0.05,
+     "false_alarm_ci95": [
+      0.0358,
+      0.0694
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0044
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0058
+     ]
+    }
+   },
+   "ㅌ_as_ㄸ": {
+    "errors": 190,
+    "error_speakers": 16,
+    "correct": 660,
+    "baseline": {
+     "caught": 22,
+     "detection": 0.1158,
+     "detection_ci95": [
+      0.0777,
+      0.1691
+     ],
+     "false_alarms": 33,
+     "false_alarm_rate": 0.05,
+     "false_alarm_ci95": [
+      0.0358,
+      0.0694
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0198
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0058
+     ]
+    }
+   },
+   "ㅍ_as_ㅂ": {
+    "errors": 720,
+    "error_speakers": 16,
+    "correct": 653,
+    "baseline": {
+     "caught": 341,
+     "detection": 0.4736,
+     "detection_ci95": [
+      0.4374,
+      0.5101
+     ],
+     "false_alarms": 29,
+     "false_alarm_rate": 0.0444,
+     "false_alarm_ci95": [
+      0.0311,
+      0.0631
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0053
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0058
+     ]
+    }
+   },
+   "ㅍ_as_ㅃ": {
+    "errors": 46,
+    "error_speakers": 16,
+    "correct": 653,
+    "baseline": {
+     "caught": 9,
+     "detection": 0.1957,
+     "detection_ci95": [
+      0.1065,
+      0.3317
+     ],
+     "false_alarms": 29,
+     "false_alarm_rate": 0.0444,
+     "false_alarm_ci95": [
+      0.0311,
+      0.0631
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      -0.0,
+      0.0771
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0058
+     ]
+    }
+   },
+   "ㅓ_as_ㅗ": {
+    "errors": 877,
+    "error_speakers": 16,
+    "correct": 6117,
+    "baseline": {
+     "caught": 865,
+     "detection": 0.9863,
+     "detection_ci95": [
+      0.9762,
+      0.9922
+     ],
+     "false_alarms": 3576,
+     "false_alarm_rate": 0.5846,
+     "false_alarm_ci95": [
+      0.5722,
+      0.5969
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0044
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0006
+     ]
+    }
+   },
+   "ㅗ_as_ㅓ": {
+    "errors": 885,
+    "error_speakers": 16,
+    "correct": 4013,
+    "baseline": {
+     "caught": 706,
+     "detection": 0.7977,
+     "detection_ci95": [
+      0.77,
+      0.8229
+     ],
+     "false_alarms": 3102,
+     "false_alarm_rate": 0.773,
+     "false_alarm_ci95": [
+      0.7598,
+      0.7857
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0043
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.001
+     ]
+    }
+   },
+   "ㅜ_as_ㅡ": {
+    "errors": 905,
+    "error_speakers": 16,
+    "correct": 2817,
+    "baseline": {
+     "caught": 882,
+     "detection": 0.9746,
+     "detection_ci95": [
+      0.9622,
+      0.983
+     ],
+     "false_alarms": 1916,
+     "false_alarm_rate": 0.6802,
+     "false_alarm_ci95": [
+      0.6627,
+      0.6971
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0042
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0014
+     ]
+    }
+   },
+   "ㅡ_as_ㅜ": {
+    "errors": 839,
+    "error_speakers": 16,
+    "correct": 4612,
+    "baseline": {
+     "caught": 811,
+     "detection": 0.9666,
+     "detection_ci95": [
+      0.9522,
+      0.9768
+     ],
+     "false_alarms": 3097,
+     "false_alarm_rate": 0.6715,
+     "false_alarm_ci95": [
+      0.6578,
+      0.6849
+     ]
+    },
+    "app": {
+     "caught": 0,
+     "detection": 0.0,
+     "detection_ci95": [
+      0.0,
+      0.0046
+     ],
+     "false_alarms": 0,
+     "false_alarm_rate": 0.0,
+     "false_alarm_ci95": [
+      0.0,
+      0.0008
+     ]
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,132 @@
+{
+  "id": "en-bar-restaurant",
+  "lang": "en",
+  "name": "Bar & restaurant",
+  "dev_only": false,
+  "reviewed": true,
+  "source": "Written for this project with an LLM (Claude, Anthropic); English reviewed by the author. Korean translations (존댓말 + 반말) also LLM-written.",
+  "license": "This project's own content",
+  "items": [
+    {
+      "id": "en_bar_restaurant_01",
+      "text": "A table for two, please.",
+      "translation": "두 명이요.",
+      "translation_informal": "두 명이야.",
+      "tags": [
+        "f_as_p",
+        "iy_as_ih",
+        "l_as_r",
+        "r_as_l"
+      ]
+    },
+    {
+      "id": "en_bar_restaurant_02",
+      "text": "Can I see the menu?",
+      "translation": "메뉴 좀 볼 수 있을까요?",
+      "translation_informal": "메뉴 좀 볼 수 있을까?",
+      "tags": [
+        "dh_as_d",
+        "iy_as_ih"
+      ]
+    },
+    {
+      "id": "en_bar_restaurant_03",
+      "text": "I'd like the fish, please.",
+      "translation": "생선으로 할게요.",
+      "translation_informal": "난 생선으로 할래.",
+      "tags": [
+        "dh_as_d",
+        "f_as_p",
+        "ih_as_iy",
+        "iy_as_ih",
+        "l_as_r"
+      ]
+    },
+    {
+      "id": "en_bar_restaurant_04",
+      "text": "Could we have some more water?",
+      "translation": "물 좀 더 주실 수 있어요?",
+      "translation_informal": "물 좀 더 줄 수 있어?",
+      "tags": [
+        "iy_as_ih",
+        "r_as_l",
+        "v_as_b"
+      ]
+    },
+    {
+      "id": "en_bar_restaurant_05",
+      "text": "The food here is really good.",
+      "translation": "여기 음식 정말 맛있어요.",
+      "translation_informal": "여기 음식 진짜 맛있어.",
+      "tags": [
+        "dh_as_d",
+        "f_as_p",
+        "ih_as_iy",
+        "iy_as_ih",
+        "l_as_r",
+        "r_as_l"
+      ]
+    },
+    {
+      "id": "en_bar_restaurant_06",
+      "text": "Can I get the bill, please?",
+      "translation": "계산서 주세요.",
+      "translation_informal": "계산서 좀 줘.",
+      "tags": [
+        "dh_as_d",
+        "ih_as_iy",
+        "iy_as_ih",
+        "l_as_r"
+      ]
+    },
+    {
+      "id": "en_bar_restaurant_07",
+      "text": "Let's order another round.",
+      "translation": "한 잔씩 더 시켜요.",
+      "translation_informal": "한 잔씩 더 시키자.",
+      "tags": [
+        "dh_as_d",
+        "l_as_r",
+        "r_as_l"
+      ]
+    },
+    {
+      "id": "en_bar_restaurant_08",
+      "text": "This beer is really cold.",
+      "translation": "이 맥주 정말 시원해요.",
+      "translation_informal": "이 맥주 진짜 시원해.",
+      "tags": [
+        "dh_as_d",
+        "ih_as_iy",
+        "iy_as_ih",
+        "l_as_r",
+        "r_as_l"
+      ]
+    },
+    {
+      "id": "en_bar_restaurant_09",
+      "text": "Thanks, that was delicious.",
+      "translation": "감사합니다, 정말 맛있었어요.",
+      "translation_informal": "고마워, 진짜 맛있었어.",
+      "tags": [
+        "dh_as_d",
+        "ih_as_iy",
+        "l_as_r",
+        "th_as_s"
+      ]
+    },
+    {
+      "id": "en_bar_restaurant_10",
+      "text": "Is this seat free?",
+      "translation": "이 자리 비었어요?",
+      "translation_informal": "이 자리 비었어?",
+      "tags": [
+        "dh_as_d",
+        "f_as_p",
+        "ih_as_iy",
+        "iy_as_ih",
+        "r_as_l"
+      ]
+    }
+  ]
+}

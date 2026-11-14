@@ -1,0 +1,4043 @@
+{
+  "rule": "false-alarm cap per pair, >= 50% of reds right, >= 1 caught; tuning = dev speakers only, both listeners",
+  "rows": {
+    "tuning (dev)": {
+      "old": 35588,
+      "new": 35588
+    },
+    "korean test": {
+      "old": 11418,
+      "new": 11418
+    },
+    "dropped (not scored by both)": {
+      "old": 0,
+      "new": 0
+    }
+  },
+  "pairs": {
+    "r_as_l": {
+      "old": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "B",
+          "margin": -1.0001,
+          "tuning (others)": {
+            "caught": {
+              "k": 7,
+              "n": 11,
+              "rate": 0.6364,
+              "ci95": [
+                0.3538,
+                0.8483
+              ]
+            },
+            "false_alarms": {
+              "k": 14,
+              "n": 3303,
+              "rate": 0.0042,
+              "ci95": [
+                0.0025,
+                0.0071
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 11,
+              "n": 18,
+              "rate": 0.6111,
+              "ci95": [
+                0.3862,
+                0.797
+              ]
+            },
+            "false_alarms": {
+              "k": 2,
+              "n": 1070,
+              "rate": 0.0019,
+              "ci95": [
+                0.0005,
+                0.0068
+              ]
+            },
+            "precision": 0.8462
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 15,
+              "n": 18,
+              "rate": 0.8333,
+              "ci95": [
+                0.6078,
+                0.9416
+              ]
+            },
+            "false_alarms": {
+              "k": 317,
+              "n": 1070,
+              "rate": 0.2963,
+              "ci95": [
+                0.2697,
+                0.3243
+              ]
+            }
+          },
+          "enabled": true,
+          "excluded (korean)": {
+            "other": 96,
+            "unlabelled": 15
+          }
+        },
+        "passes bar": true
+      },
+      "new": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "B",
+          "margin": -1.0001,
+          "tuning (others)": {
+            "caught": {
+              "k": 6,
+              "n": 11,
+              "rate": 0.5455,
+              "ci95": [
+                0.2801,
+                0.7873
+              ]
+            },
+            "false_alarms": {
+              "k": 12,
+              "n": 3303,
+              "rate": 0.0036,
+              "ci95": [
+                0.0021,
+                0.0063
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 9,
+              "n": 18,
+              "rate": 0.5,
+              "ci95": [
+                0.2903,
+                0.7097
+              ]
+            },
+            "false_alarms": {
+              "k": 1,
+              "n": 1070,
+              "rate": 0.0009,
+              "ci95": [
+                0.0002,
+                0.0053
+              ]
+            },
+            "precision": 0.9
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 12,
+              "n": 18,
+              "rate": 0.6667,
+              "ci95": [
+                0.4375,
+                0.8372
+              ]
+            },
+            "false_alarms": {
+              "k": 127,
+              "n": 1070,
+              "rate": 0.1187,
+              "ci95": [
+                0.1007,
+                0.1394
+              ]
+            }
+          },
+          "enabled": true,
+          "excluded (korean)": {
+            "other": 96,
+            "unlabelled": 15
+          }
+        },
+        "passes bar": true
+      }
+    },
+    "l_as_r": {
+      "old": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "F",
+          "feature": "f3_dip",
+          "margin": 0.865399999,
+          "m_lo": -0.008100000999999999,
+          "dip": -1.8006999989999999,
+          "tuning (others)": {
+            "caught": {
+              "k": 10,
+              "n": 14,
+              "rate": 0.7143,
+              "ci95": [
+                0.4535,
+                0.8828
+              ]
+            },
+            "false_alarms": {
+              "k": 15,
+              "n": 3373,
+              "rate": 0.0044,
+              "ci95": [
+                0.0027,
+                0.0073
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 10,
+              "n": 37,
+              "rate": 0.2703,
+              "ci95": [
+                0.154,
+                0.4298
+              ]
+            },
+            "false_alarms": {
+              "k": 12,
+              "n": 1002,
+              "rate": 0.012,
+              "ci95": [
+                0.0069,
+                0.0208
+              ]
+            },
+            "precision": 0.4545
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 27,
+              "n": 37,
+              "rate": 0.7297,
+              "ci95": [
+                0.5702,
+                0.846
+              ]
+            },
+            "false_alarms": {
+              "k": 95,
+              "n": 1002,
+              "rate": 0.0948,
+              "ci95": [
+                0.0782,
+                0.1145
+              ]
+            }
+          },
+          "enabled": false,
+          "excluded (korean)": {
+            "other": 17,
+            "unlabelled": 3
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 3373,
+            "error": 14
+          },
+          "enabled": false,
+          "margin_auc": 0.9682139680657321,
+          "oof_auc": 0.8883571216805726,
+          "feasible": true,
+          "threshold": 0.9396975711156528,
+          "weights": {
+            "margin": 0.75,
+            "heard_agrees": 0.096,
+            "heard_nothing": -0.028,
+            "dur": -0.078,
+            "f1_z": 0.025,
+            "f2_z": -0.149,
+            "f3_z": -0.66,
+            "voiced": -0.286,
+            "hiss": -0.433,
+            "centroid": 0.061,
+            "closure": -0.058,
+            "burst": -0.195,
+            "after_voiced": -0.288,
+            "no_formants": -0.283,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 8,
+              "n": 14,
+              "rate": 0.5714,
+              "ci95": [
+                0.3259,
+                0.7862
+              ]
+            },
+            "false_alarms": {
+              "k": 16,
+              "n": 3373,
+              "rate": 0.0047,
+              "ci95": [
+                0.0029,
+                0.0077
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 12,
+              "n": 37,
+              "rate": 0.3243,
+              "ci95": [
+                0.1963,
+                0.4854
+              ]
+            },
+            "false_alarms": {
+              "k": 14,
+              "n": 1002,
+              "rate": 0.014,
+              "ci95": [
+                0.0083,
+                0.0233
+              ]
+            },
+            "precision": 0.4615
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 11,
+                "n": 27,
+                "rate": 0.4074,
+                "ci95": [
+                  0.2451,
+                  0.5927
+                ]
+              },
+              "false_alarms": {
+                "k": 10,
+                "n": 715,
+                "rate": 0.014,
+                "ci95": [
+                  0.0076,
+                  0.0256
+                ]
+              },
+              "precision": 0.5238
+            },
+            "saa": {
+              "caught": {
+                "k": 1,
+                "n": 8,
+                "rate": 0.125,
+                "ci95": [
+                  0.0224,
+                  0.4709
+                ]
+              },
+              "false_alarms": {
+                "k": 4,
+                "n": 209,
+                "rate": 0.0191,
+                "ci95": [
+                  0.0075,
+                  0.0482
+                ]
+              },
+              "precision": 0.2
+            },
+            "suitcase": {
+              "caught": {
+                "k": 0,
+                "n": 2,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.6576
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 78,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0469
+                ]
+              },
+              "precision": null
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 10,
+              "n": 37,
+              "rate": 0.2703,
+              "ci95": [
+                0.154,
+                0.4298
+              ]
+            },
+            "false_alarms": {
+              "k": 12,
+              "n": 1002,
+              "rate": 0.012,
+              "ci95": [
+                0.0069,
+                0.0208
+              ]
+            },
+            "precision": 0.4545
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 27,
+              "n": 37,
+              "rate": 0.7297,
+              "ci95": [
+                0.5702,
+                0.846
+              ]
+            },
+            "false_alarms": {
+              "k": 95,
+              "n": 1002,
+              "rate": 0.0948,
+              "ci95": [
+                0.0782,
+                0.1145
+              ]
+            }
+          }
+        },
+        "passes bar": false
+      },
+      "new": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "F",
+          "feature": "f3_dip",
+          "margin": 0.996199999,
+          "m_lo": -0.535900001,
+          "dip": -1.449099999,
+          "tuning (others)": {
+            "caught": {
+              "k": 8,
+              "n": 14,
+              "rate": 0.5714,
+              "ci95": [
+                0.3259,
+                0.7862
+              ]
+            },
+            "false_alarms": {
+              "k": 15,
+              "n": 3373,
+              "rate": 0.0044,
+              "ci95": [
+                0.0027,
+                0.0073
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 13,
+              "n": 37,
+              "rate": 0.3514,
+              "ci95": [
+                0.2183,
+                0.5124
+              ]
+            },
+            "false_alarms": {
+              "k": 13,
+              "n": 1002,
+              "rate": 0.013,
+              "ci95": [
+                0.0076,
+                0.0221
+              ]
+            },
+            "precision": 0.5
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 21,
+              "n": 37,
+              "rate": 0.5676,
+              "ci95": [
+                0.4091,
+                0.7133
+              ]
+            },
+            "false_alarms": {
+              "k": 40,
+              "n": 1002,
+              "rate": 0.0399,
+              "ci95": [
+                0.0295,
+                0.0539
+              ]
+            }
+          },
+          "enabled": false,
+          "excluded (korean)": {
+            "other": 17,
+            "unlabelled": 3
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 3373,
+            "error": 14
+          },
+          "enabled": false,
+          "margin_auc": 0.9613209944517386,
+          "oof_auc": 0.8846300453178603,
+          "feasible": true,
+          "threshold": 0.981847063007823,
+          "weights": {
+            "margin": 1.005,
+            "heard_agrees": -0.215,
+            "heard_nothing": -0.209,
+            "dur": -0.302,
+            "f1_z": 0.095,
+            "f2_z": -0.154,
+            "f3_z": -0.778,
+            "voiced": -0.126,
+            "hiss": -0.761,
+            "centroid": -0.073,
+            "closure": -0.284,
+            "burst": 0.172,
+            "after_voiced": -0.089,
+            "no_formants": -0.356,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 5,
+              "n": 14,
+              "rate": 0.3571,
+              "ci95": [
+                0.1634,
+                0.6124
+              ]
+            },
+            "false_alarms": {
+              "k": 16,
+              "n": 3373,
+              "rate": 0.0047,
+              "ci95": [
+                0.0029,
+                0.0077
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 10,
+              "n": 37,
+              "rate": 0.2703,
+              "ci95": [
+                0.154,
+                0.4298
+              ]
+            },
+            "false_alarms": {
+              "k": 12,
+              "n": 1002,
+              "rate": 0.012,
+              "ci95": [
+                0.0069,
+                0.0208
+              ]
+            },
+            "precision": 0.4545
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 10,
+                "n": 27,
+                "rate": 0.3704,
+                "ci95": [
+                  0.2153,
+                  0.5577
+                ]
+              },
+              "false_alarms": {
+                "k": 8,
+                "n": 715,
+                "rate": 0.0112,
+                "ci95": [
+                  0.0057,
+                  0.0219
+                ]
+              },
+              "precision": 0.5556
+            },
+            "saa": {
+              "caught": {
+                "k": 0,
+                "n": 8,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.3244
+                ]
+              },
+              "false_alarms": {
+                "k": 4,
+                "n": 209,
+                "rate": 0.0191,
+                "ci95": [
+                  0.0075,
+                  0.0482
+                ]
+              },
+              "precision": 0.0
+            },
+            "suitcase": {
+              "caught": {
+                "k": 0,
+                "n": 2,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.6576
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 78,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0469
+                ]
+              },
+              "precision": null
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 13,
+              "n": 37,
+              "rate": 0.3514,
+              "ci95": [
+                0.2183,
+                0.5124
+              ]
+            },
+            "false_alarms": {
+              "k": 13,
+              "n": 1002,
+              "rate": 0.013,
+              "ci95": [
+                0.0076,
+                0.0221
+              ]
+            },
+            "precision": 0.5
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 21,
+              "n": 37,
+              "rate": 0.5676,
+              "ci95": [
+                0.4091,
+                0.7133
+              ]
+            },
+            "false_alarms": {
+              "k": 40,
+              "n": 1002,
+              "rate": 0.0399,
+              "ci95": [
+                0.0295,
+                0.0539
+              ]
+            }
+          }
+        },
+        "passes bar": false
+      }
+    },
+    "f_as_p": {
+      "old": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "A",
+          "margin": -0.004,
+          "tuning (others)": {
+            "caught": {
+              "k": 4,
+              "n": 7,
+              "rate": 0.5714,
+              "ci95": [
+                0.2505,
+                0.8418
+              ]
+            },
+            "false_alarms": {
+              "k": 11,
+              "n": 2200,
+              "rate": 0.005,
+              "ci95": [
+                0.0028,
+                0.0089
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 9,
+              "n": 14,
+              "rate": 0.6429,
+              "ci95": [
+                0.3876,
+                0.8366
+              ]
+            },
+            "false_alarms": {
+              "k": 19,
+              "n": 604,
+              "rate": 0.0315,
+              "ci95": [
+                0.0202,
+                0.0486
+              ]
+            },
+            "precision": 0.3214
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 9,
+              "n": 14,
+              "rate": 0.6429,
+              "ci95": [
+                0.3876,
+                0.8366
+              ]
+            },
+            "false_alarms": {
+              "k": 27,
+              "n": 604,
+              "rate": 0.0447,
+              "ci95": [
+                0.0309,
+                0.0643
+              ]
+            }
+          },
+          "enabled": false,
+          "excluded (korean)": {
+            "other": 4,
+            "unlabelled": 4
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 2200,
+            "error": 7
+          },
+          "enabled": false,
+          "margin_auc": 0.9914285714285714,
+          "oof_auc": 0.785974025974026,
+          "feasible": true,
+          "threshold": 0.966212638131971,
+          "weights": {
+            "margin": 0.85,
+            "heard_agrees": -0.117,
+            "heard_nothing": -0.006,
+            "dur": -0.138,
+            "f1_z": -0.147,
+            "f2_z": -0.235,
+            "f3_z": 0.002,
+            "voiced": 0.157,
+            "hiss": -0.466,
+            "centroid": -0.252,
+            "closure": 0.351,
+            "burst": -0.05,
+            "after_voiced": -0.166,
+            "no_formants": -0.109,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 5,
+              "n": 7,
+              "rate": 0.7143,
+              "ci95": [
+                0.3589,
+                0.9178
+              ]
+            },
+            "false_alarms": {
+              "k": 11,
+              "n": 2200,
+              "rate": 0.005,
+              "ci95": [
+                0.0028,
+                0.0089
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 9,
+              "n": 14,
+              "rate": 0.6429,
+              "ci95": [
+                0.3876,
+                0.8366
+              ]
+            },
+            "false_alarms": {
+              "k": 15,
+              "n": 604,
+              "rate": 0.0248,
+              "ci95": [
+                0.0151,
+                0.0406
+              ]
+            },
+            "precision": 0.375
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 3,
+                "n": 7,
+                "rate": 0.4286,
+                "ci95": [
+                  0.1582,
+                  0.7495
+                ]
+              },
+              "false_alarms": {
+                "k": 7,
+                "n": 409,
+                "rate": 0.0171,
+                "ci95": [
+                  0.0083,
+                  0.0349
+                ]
+              },
+              "precision": 0.3
+            },
+            "saa": {
+              "caught": {
+                "k": 5,
+                "n": 6,
+                "rate": 0.8333,
+                "ci95": [
+                  0.4365,
+                  0.9699
+                ]
+              },
+              "false_alarms": {
+                "k": 7,
+                "n": 150,
+                "rate": 0.0467,
+                "ci95": [
+                  0.0228,
+                  0.0932
+                ]
+              },
+              "precision": 0.4167
+            },
+            "suitcase": {
+              "caught": {
+                "k": 1,
+                "n": 1,
+                "rate": 1.0,
+                "ci95": [
+                  0.2065,
+                  1.0
+                ]
+              },
+              "false_alarms": {
+                "k": 1,
+                "n": 45,
+                "rate": 0.0222,
+                "ci95": [
+                  0.0039,
+                  0.1157
+                ]
+              },
+              "precision": 0.5
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 9,
+              "n": 14,
+              "rate": 0.6429,
+              "ci95": [
+                0.3876,
+                0.8366
+              ]
+            },
+            "false_alarms": {
+              "k": 19,
+              "n": 604,
+              "rate": 0.0315,
+              "ci95": [
+                0.0202,
+                0.0486
+              ]
+            },
+            "precision": 0.3214
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 9,
+              "n": 14,
+              "rate": 0.6429,
+              "ci95": [
+                0.3876,
+                0.8366
+              ]
+            },
+            "false_alarms": {
+              "k": 27,
+              "n": 604,
+              "rate": 0.0447,
+              "ci95": [
+                0.0309,
+                0.0643
+              ]
+            }
+          }
+        },
+        "passes bar": false
+      },
+      "new": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "A",
+          "margin": -0.507,
+          "tuning (others)": {
+            "caught": {
+              "k": 6,
+              "n": 7,
+              "rate": 0.8571,
+              "ci95": [
+                0.4869,
+                0.9743
+              ]
+            },
+            "false_alarms": {
+              "k": 11,
+              "n": 2200,
+              "rate": 0.005,
+              "ci95": [
+                0.0028,
+                0.0089
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 8,
+              "n": 14,
+              "rate": 0.5714,
+              "ci95": [
+                0.3259,
+                0.7862
+              ]
+            },
+            "false_alarms": {
+              "k": 10,
+              "n": 604,
+              "rate": 0.0166,
+              "ci95": [
+                0.009,
+                0.0302
+              ]
+            },
+            "precision": 0.4444
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 8,
+              "n": 14,
+              "rate": 0.5714,
+              "ci95": [
+                0.3259,
+                0.7862
+              ]
+            },
+            "false_alarms": {
+              "k": 9,
+              "n": 604,
+              "rate": 0.0149,
+              "ci95": [
+                0.0079,
+                0.0281
+              ]
+            }
+          },
+          "enabled": false,
+          "excluded (korean)": {
+            "other": 4,
+            "unlabelled": 4
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 2200,
+            "error": 7
+          },
+          "enabled": false,
+          "margin_auc": 0.9926623376623377,
+          "oof_auc": 0.9318831168831169,
+          "feasible": true,
+          "threshold": 0.8913165425338043,
+          "weights": {
+            "margin": 0.713,
+            "heard_agrees": -0.067,
+            "heard_nothing": 0.0,
+            "dur": -0.114,
+            "f1_z": -0.166,
+            "f2_z": -0.28,
+            "f3_z": -0.013,
+            "voiced": 0.442,
+            "hiss": -0.374,
+            "centroid": -0.231,
+            "closure": 0.418,
+            "burst": -0.083,
+            "after_voiced": -0.141,
+            "no_formants": -0.061,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 5,
+              "n": 7,
+              "rate": 0.7143,
+              "ci95": [
+                0.3589,
+                0.9178
+              ]
+            },
+            "false_alarms": {
+              "k": 11,
+              "n": 2200,
+              "rate": 0.005,
+              "ci95": [
+                0.0028,
+                0.0089
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 8,
+              "n": 14,
+              "rate": 0.5714,
+              "ci95": [
+                0.3259,
+                0.7862
+              ]
+            },
+            "false_alarms": {
+              "k": 9,
+              "n": 604,
+              "rate": 0.0149,
+              "ci95": [
+                0.0079,
+                0.0281
+              ]
+            },
+            "precision": 0.4706
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 3,
+                "n": 7,
+                "rate": 0.4286,
+                "ci95": [
+                  0.1582,
+                  0.7495
+                ]
+              },
+              "false_alarms": {
+                "k": 6,
+                "n": 409,
+                "rate": 0.0147,
+                "ci95": [
+                  0.0067,
+                  0.0316
+                ]
+              },
+              "precision": 0.3333
+            },
+            "saa": {
+              "caught": {
+                "k": 4,
+                "n": 6,
+                "rate": 0.6667,
+                "ci95": [
+                  0.3,
+                  0.9032
+                ]
+              },
+              "false_alarms": {
+                "k": 3,
+                "n": 150,
+                "rate": 0.02,
+                "ci95": [
+                  0.0068,
+                  0.0571
+                ]
+              },
+              "precision": 0.5714
+            },
+            "suitcase": {
+              "caught": {
+                "k": 1,
+                "n": 1,
+                "rate": 1.0,
+                "ci95": [
+                  0.2065,
+                  1.0
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 45,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0787
+                ]
+              },
+              "precision": 1.0
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 8,
+              "n": 14,
+              "rate": 0.5714,
+              "ci95": [
+                0.3259,
+                0.7862
+              ]
+            },
+            "false_alarms": {
+              "k": 10,
+              "n": 604,
+              "rate": 0.0166,
+              "ci95": [
+                0.009,
+                0.0302
+              ]
+            },
+            "precision": 0.4444
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 8,
+              "n": 14,
+              "rate": 0.5714,
+              "ci95": [
+                0.3259,
+                0.7862
+              ]
+            },
+            "false_alarms": {
+              "k": 9,
+              "n": 604,
+              "rate": 0.0149,
+              "ci95": [
+                0.0079,
+                0.0281
+              ]
+            }
+          }
+        },
+        "passes bar": false
+      }
+    },
+    "v_as_b": {
+      "old": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "B",
+          "margin": 0.7105,
+          "tuning (others)": {
+            "caught": {
+              "k": 1,
+              "n": 11,
+              "rate": 0.0909,
+              "ci95": [
+                0.0162,
+                0.3774
+              ]
+            },
+            "false_alarms": {
+              "k": 4,
+              "n": 885,
+              "rate": 0.0045,
+              "ci95": [
+                0.0018,
+                0.0116
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 6,
+              "n": 22,
+              "rate": 0.2727,
+              "ci95": [
+                0.1315,
+                0.4815
+              ]
+            },
+            "false_alarms": {
+              "k": 8,
+              "n": 474,
+              "rate": 0.0169,
+              "ci95": [
+                0.0086,
+                0.0329
+              ]
+            },
+            "precision": 0.4286
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 11,
+              "n": 22,
+              "rate": 0.5,
+              "ci95": [
+                0.3072,
+                0.6928
+              ]
+            },
+            "false_alarms": {
+              "k": 42,
+              "n": 474,
+              "rate": 0.0886,
+              "ci95": [
+                0.0662,
+                0.1176
+              ]
+            }
+          },
+          "enabled": false,
+          "excluded (korean)": {
+            "other": 53,
+            "unlabelled": 0
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 885,
+            "error": 11
+          },
+          "enabled": false,
+          "margin_auc": 0.8766307139188495,
+          "oof_auc": 0.8424242424242424,
+          "feasible": true,
+          "threshold": 0.928170775289401,
+          "weights": {
+            "margin": 0.687,
+            "heard_agrees": -0.005,
+            "heard_nothing": 0.147,
+            "dur": 0.329,
+            "f1_z": -0.243,
+            "f2_z": 0.148,
+            "f3_z": -0.056,
+            "voiced": 0.537,
+            "hiss": -0.542,
+            "centroid": -0.348,
+            "closure": -0.211,
+            "burst": 0.576,
+            "after_voiced": -0.086,
+            "no_formants": -0.544,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 1,
+              "n": 11,
+              "rate": 0.0909,
+              "ci95": [
+                0.0162,
+                0.3774
+              ]
+            },
+            "false_alarms": {
+              "k": 4,
+              "n": 885,
+              "rate": 0.0045,
+              "ci95": [
+                0.0018,
+                0.0116
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 1,
+              "n": 22,
+              "rate": 0.0455,
+              "ci95": [
+                0.0081,
+                0.218
+              ]
+            },
+            "false_alarms": {
+              "k": 6,
+              "n": 474,
+              "rate": 0.0127,
+              "ci95": [
+                0.0058,
+                0.0273
+              ]
+            },
+            "precision": 0.1429
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 1,
+                "n": 19,
+                "rate": 0.0526,
+                "ci95": [
+                  0.0094,
+                  0.2464
+                ]
+              },
+              "false_alarms": {
+                "k": 1,
+                "n": 410,
+                "rate": 0.0024,
+                "ci95": [
+                  0.0004,
+                  0.0137
+                ]
+              },
+              "precision": 0.5
+            },
+            "saa": {
+              "caught": {
+                "k": 0,
+                "n": 1,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.7935
+                ]
+              },
+              "false_alarms": {
+                "k": 5,
+                "n": 44,
+                "rate": 0.1136,
+                "ci95": [
+                  0.0495,
+                  0.2398
+                ]
+              },
+              "precision": 0.0
+            },
+            "suitcase": {
+              "caught": {
+                "k": 0,
+                "n": 2,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.6576
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 20,
+                "rate": 0.0,
+                "ci95": [
+                  -0.0,
+                  0.1611
+                ]
+              },
+              "precision": null
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 6,
+              "n": 22,
+              "rate": 0.2727,
+              "ci95": [
+                0.1315,
+                0.4815
+              ]
+            },
+            "false_alarms": {
+              "k": 8,
+              "n": 474,
+              "rate": 0.0169,
+              "ci95": [
+                0.0086,
+                0.0329
+              ]
+            },
+            "precision": 0.4286
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 11,
+              "n": 22,
+              "rate": 0.5,
+              "ci95": [
+                0.3072,
+                0.6928
+              ]
+            },
+            "false_alarms": {
+              "k": 42,
+              "n": 474,
+              "rate": 0.0886,
+              "ci95": [
+                0.0662,
+                0.1176
+              ]
+            }
+          }
+        },
+        "passes bar": false
+      },
+      "new": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "B",
+          "margin": 0.2079,
+          "tuning (others)": {
+            "caught": {
+              "k": 3,
+              "n": 11,
+              "rate": 0.2727,
+              "ci95": [
+                0.0975,
+                0.5657
+              ]
+            },
+            "false_alarms": {
+              "k": 4,
+              "n": 885,
+              "rate": 0.0045,
+              "ci95": [
+                0.0018,
+                0.0116
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 11,
+              "n": 22,
+              "rate": 0.5,
+              "ci95": [
+                0.3072,
+                0.6928
+              ]
+            },
+            "false_alarms": {
+              "k": 15,
+              "n": 474,
+              "rate": 0.0316,
+              "ci95": [
+                0.0193,
+                0.0516
+              ]
+            },
+            "precision": 0.4231
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 12,
+              "n": 22,
+              "rate": 0.5455,
+              "ci95": [
+                0.3466,
+                0.7308
+              ]
+            },
+            "false_alarms": {
+              "k": 44,
+              "n": 474,
+              "rate": 0.0928,
+              "ci95": [
+                0.0699,
+                0.1223
+              ]
+            }
+          },
+          "enabled": false,
+          "excluded (korean)": {
+            "other": 53,
+            "unlabelled": 0
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 885,
+            "error": 11
+          },
+          "enabled": false,
+          "margin_auc": 0.8405752439650744,
+          "oof_auc": 0.7470980996404725,
+          "feasible": true,
+          "threshold": 0.929771709240758,
+          "weights": {
+            "margin": 0.713,
+            "heard_agrees": 0.049,
+            "heard_nothing": -0.32,
+            "dur": -0.075,
+            "f1_z": -0.47,
+            "f2_z": 0.067,
+            "f3_z": 0.086,
+            "voiced": 0.187,
+            "hiss": -0.446,
+            "centroid": -0.348,
+            "closure": -0.132,
+            "burst": 0.197,
+            "after_voiced": -0.143,
+            "no_formants": -0.025,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 3,
+              "n": 11,
+              "rate": 0.2727,
+              "ci95": [
+                0.0975,
+                0.5657
+              ]
+            },
+            "false_alarms": {
+              "k": 4,
+              "n": 885,
+              "rate": 0.0045,
+              "ci95": [
+                0.0018,
+                0.0116
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 7,
+              "n": 22,
+              "rate": 0.3182,
+              "ci95": [
+                0.1636,
+                0.5268
+              ]
+            },
+            "false_alarms": {
+              "k": 14,
+              "n": 474,
+              "rate": 0.0295,
+              "ci95": [
+                0.0177,
+                0.049
+              ]
+            },
+            "precision": 0.3333
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 6,
+                "n": 19,
+                "rate": 0.3158,
+                "ci95": [
+                  0.1536,
+                  0.5399
+                ]
+              },
+              "false_alarms": {
+                "k": 12,
+                "n": 410,
+                "rate": 0.0293,
+                "ci95": [
+                  0.0168,
+                  0.0505
+                ]
+              },
+              "precision": 0.3333
+            },
+            "saa": {
+              "caught": {
+                "k": 0,
+                "n": 1,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.7935
+                ]
+              },
+              "false_alarms": {
+                "k": 2,
+                "n": 44,
+                "rate": 0.0455,
+                "ci95": [
+                  0.0126,
+                  0.1514
+                ]
+              },
+              "precision": 0.0
+            },
+            "suitcase": {
+              "caught": {
+                "k": 1,
+                "n": 2,
+                "rate": 0.5,
+                "ci95": [
+                  0.0945,
+                  0.9055
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 20,
+                "rate": 0.0,
+                "ci95": [
+                  -0.0,
+                  0.1611
+                ]
+              },
+              "precision": 1.0
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 11,
+              "n": 22,
+              "rate": 0.5,
+              "ci95": [
+                0.3072,
+                0.6928
+              ]
+            },
+            "false_alarms": {
+              "k": 15,
+              "n": 474,
+              "rate": 0.0316,
+              "ci95": [
+                0.0193,
+                0.0516
+              ]
+            },
+            "precision": 0.4231
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 12,
+              "n": 22,
+              "rate": 0.5455,
+              "ci95": [
+                0.3466,
+                0.7308
+              ]
+            },
+            "false_alarms": {
+              "k": 44,
+              "n": 474,
+              "rate": 0.0928,
+              "ci95": [
+                0.0699,
+                0.1223
+              ]
+            }
+          }
+        },
+        "passes bar": false
+      }
+    },
+    "th_as_s": {
+      "old": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "B",
+          "margin": 0.9822,
+          "tuning (others)": {
+            "caught": {
+              "k": 25,
+              "n": 347,
+              "rate": 0.072,
+              "ci95": [
+                0.0493,
+                0.1042
+              ]
+            },
+            "false_alarms": {
+              "k": 4,
+              "n": 803,
+              "rate": 0.005,
+              "ci95": [
+                0.0019,
+                0.0127
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 5,
+              "n": 64,
+              "rate": 0.0781,
+              "ci95": [
+                0.0338,
+                0.1702
+              ]
+            },
+            "false_alarms": {
+              "k": 1,
+              "n": 155,
+              "rate": 0.0065,
+              "ci95": [
+                0.0011,
+                0.0356
+              ]
+            },
+            "precision": 0.8333
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 52,
+              "n": 64,
+              "rate": 0.8125,
+              "ci95": [
+                0.7003,
+                0.8894
+              ]
+            },
+            "false_alarms": {
+              "k": 41,
+              "n": 155,
+              "rate": 0.2645,
+              "ci95": [
+                0.2014,
+                0.339
+              ]
+            }
+          },
+          "enabled": false,
+          "excluded (korean)": {
+            "other": 4,
+            "unlabelled": 8
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 803,
+            "error": 347
+          },
+          "enabled": true,
+          "margin_auc": 0.8587680922764417,
+          "oof_auc": 0.8557606382406036,
+          "feasible": true,
+          "threshold": 0.9500028916574149,
+          "weights": {
+            "margin": 1.848,
+            "heard_agrees": -0.353,
+            "heard_nothing": -0.016,
+            "dur": 0.248,
+            "f1_z": -0.088,
+            "f2_z": -0.207,
+            "f3_z": 0.086,
+            "voiced": -0.39,
+            "hiss": 0.046,
+            "centroid": -0.013,
+            "closure": 0.186,
+            "burst": -0.24,
+            "after_voiced": 0.133,
+            "no_formants": -0.146,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 25,
+              "n": 347,
+              "rate": 0.072,
+              "ci95": [
+                0.0493,
+                0.1042
+              ]
+            },
+            "false_alarms": {
+              "k": 4,
+              "n": 803,
+              "rate": 0.005,
+              "ci95": [
+                0.0019,
+                0.0127
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 2,
+              "n": 64,
+              "rate": 0.0312,
+              "ci95": [
+                0.0086,
+                0.107
+              ]
+            },
+            "false_alarms": {
+              "k": 0,
+              "n": 155,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0242
+              ]
+            },
+            "precision": 1.0
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 2,
+                "n": 27,
+                "rate": 0.0741,
+                "ci95": [
+                  0.0206,
+                  0.2337
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 81,
+                "rate": 0.0,
+                "ci95": [
+                  -0.0,
+                  0.0453
+                ]
+              },
+              "precision": 1.0
+            },
+            "saa": {
+              "caught": {
+                "k": 0,
+                "n": 35,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0989
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 68,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0535
+                ]
+              },
+              "precision": null
+            },
+            "suitcase": {
+              "caught": {
+                "k": 0,
+                "n": 2,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.6576
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 6,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.3903
+                ]
+              },
+              "precision": null
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 5,
+              "n": 64,
+              "rate": 0.0781,
+              "ci95": [
+                0.0338,
+                0.1702
+              ]
+            },
+            "false_alarms": {
+              "k": 1,
+              "n": 155,
+              "rate": 0.0065,
+              "ci95": [
+                0.0011,
+                0.0356
+              ]
+            },
+            "precision": 0.8333
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 52,
+              "n": 64,
+              "rate": 0.8125,
+              "ci95": [
+                0.7003,
+                0.8894
+              ]
+            },
+            "false_alarms": {
+              "k": 41,
+              "n": 155,
+              "rate": 0.2645,
+              "ci95": [
+                0.2014,
+                0.339
+              ]
+            }
+          }
+        },
+        "passes bar": true
+      },
+      "new": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "A",
+          "margin": 0.9938,
+          "tuning (others)": {
+            "caught": {
+              "k": 33,
+              "n": 347,
+              "rate": 0.0951,
+              "ci95": [
+                0.0685,
+                0.1305
+              ]
+            },
+            "false_alarms": {
+              "k": 4,
+              "n": 803,
+              "rate": 0.005,
+              "ci95": [
+                0.0019,
+                0.0127
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 1,
+              "n": 64,
+              "rate": 0.0156,
+              "ci95": [
+                0.0028,
+                0.0833
+              ]
+            },
+            "false_alarms": {
+              "k": 0,
+              "n": 155,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0242
+              ]
+            },
+            "precision": 1.0
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 46,
+              "n": 64,
+              "rate": 0.7188,
+              "ci95": [
+                0.5987,
+                0.8141
+              ]
+            },
+            "false_alarms": {
+              "k": 18,
+              "n": 155,
+              "rate": 0.1161,
+              "ci95": [
+                0.0747,
+                0.1761
+              ]
+            }
+          },
+          "enabled": true,
+          "excluded (korean)": {
+            "other": 4,
+            "unlabelled": 8
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 803,
+            "error": 347
+          },
+          "enabled": true,
+          "margin_auc": 0.9416740537106887,
+          "oof_auc": 0.9258795367515907,
+          "feasible": true,
+          "threshold": 0.9729496794798673,
+          "weights": {
+            "margin": 2.514,
+            "heard_agrees": -0.375,
+            "heard_nothing": -0.366,
+            "dur": 0.17,
+            "f1_z": -0.141,
+            "f2_z": -0.189,
+            "f3_z": 0.167,
+            "voiced": -0.312,
+            "hiss": -0.142,
+            "centroid": -0.107,
+            "closure": 0.316,
+            "burst": -0.13,
+            "after_voiced": 0.079,
+            "no_formants": -0.095,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 10,
+              "n": 347,
+              "rate": 0.0288,
+              "ci95": [
+                0.0157,
+                0.0522
+              ]
+            },
+            "false_alarms": {
+              "k": 4,
+              "n": 803,
+              "rate": 0.005,
+              "ci95": [
+                0.0019,
+                0.0127
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 5,
+              "n": 64,
+              "rate": 0.0781,
+              "ci95": [
+                0.0338,
+                0.1702
+              ]
+            },
+            "false_alarms": {
+              "k": 0,
+              "n": 155,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0242
+              ]
+            },
+            "precision": 1.0
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 5,
+                "n": 27,
+                "rate": 0.1852,
+                "ci95": [
+                  0.0818,
+                  0.367
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 81,
+                "rate": 0.0,
+                "ci95": [
+                  -0.0,
+                  0.0453
+                ]
+              },
+              "precision": 1.0
+            },
+            "saa": {
+              "caught": {
+                "k": 0,
+                "n": 35,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0989
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 68,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0535
+                ]
+              },
+              "precision": null
+            },
+            "suitcase": {
+              "caught": {
+                "k": 0,
+                "n": 2,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.6576
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 6,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.3903
+                ]
+              },
+              "precision": null
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 1,
+              "n": 64,
+              "rate": 0.0156,
+              "ci95": [
+                0.0028,
+                0.0833
+              ]
+            },
+            "false_alarms": {
+              "k": 0,
+              "n": 155,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0242
+              ]
+            },
+            "precision": 1.0
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 46,
+              "n": 64,
+              "rate": 0.7188,
+              "ci95": [
+                0.5987,
+                0.8141
+              ]
+            },
+            "false_alarms": {
+              "k": 18,
+              "n": 155,
+              "rate": 0.1161,
+              "ci95": [
+                0.0747,
+                0.1761
+              ]
+            }
+          }
+        },
+        "passes bar": true
+      }
+    },
+    "dh_as_d": {
+      "old": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "A",
+          "margin": 0.9714,
+          "tuning (others)": {
+            "caught": {
+              "k": 48,
+              "n": 1020,
+              "rate": 0.0471,
+              "ci95": [
+                0.0357,
+                0.0618
+              ]
+            },
+            "false_alarms": {
+              "k": 7,
+              "n": 1501,
+              "rate": 0.0047,
+              "ci95": [
+                0.0023,
+                0.0096
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 23,
+              "n": 619,
+              "rate": 0.0372,
+              "ci95": [
+                0.0249,
+                0.0551
+              ]
+            },
+            "false_alarms": {
+              "k": 5,
+              "n": 352,
+              "rate": 0.0142,
+              "ci95": [
+                0.0061,
+                0.0328
+              ]
+            },
+            "precision": 0.8214
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 175,
+              "n": 619,
+              "rate": 0.2827,
+              "ci95": [
+                0.2487,
+                0.3194
+              ]
+            },
+            "false_alarms": {
+              "k": 70,
+              "n": 352,
+              "rate": 0.1989,
+              "ci95": [
+                0.1605,
+                0.2437
+              ]
+            }
+          },
+          "enabled": false,
+          "excluded (korean)": {
+            "other": 28,
+            "unlabelled": 12
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 1501,
+            "error": 1020
+          },
+          "enabled": false,
+          "margin_auc": 0.7226992462541312,
+          "oof_auc": 0.6901163929929067,
+          "feasible": false
+        },
+        "passes bar": false
+      },
+      "new": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "B",
+          "margin": 0.946,
+          "tuning (others)": {
+            "caught": {
+              "k": 211,
+              "n": 1020,
+              "rate": 0.2069,
+              "ci95": [
+                0.1831,
+                0.2328
+              ]
+            },
+            "false_alarms": {
+              "k": 7,
+              "n": 1501,
+              "rate": 0.0047,
+              "ci95": [
+                0.0023,
+                0.0096
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 78,
+              "n": 619,
+              "rate": 0.126,
+              "ci95": [
+                0.1022,
+                0.1545
+              ]
+            },
+            "false_alarms": {
+              "k": 14,
+              "n": 352,
+              "rate": 0.0398,
+              "ci95": [
+                0.0238,
+                0.0656
+              ]
+            },
+            "precision": 0.8478
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 476,
+              "n": 619,
+              "rate": 0.769,
+              "ci95": [
+                0.7342,
+                0.8005
+              ]
+            },
+            "false_alarms": {
+              "k": 229,
+              "n": 352,
+              "rate": 0.6506,
+              "ci95": [
+                0.5994,
+                0.6985
+              ]
+            }
+          },
+          "enabled": false,
+          "excluded (korean)": {
+            "other": 28,
+            "unlabelled": 12
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 1501,
+            "error": 1020
+          },
+          "enabled": false,
+          "margin_auc": 0.9223615628796489,
+          "oof_auc": 0.914818878917323,
+          "feasible": true,
+          "threshold": 0.9595896540354648,
+          "weights": {
+            "margin": 2.287,
+            "heard_agrees": -0.089,
+            "heard_nothing": -0.001,
+            "dur": -0.017,
+            "f1_z": 0.084,
+            "f2_z": -0.077,
+            "f3_z": 0.056,
+            "voiced": -0.252,
+            "hiss": 0.091,
+            "centroid": -0.132,
+            "closure": 0.198,
+            "burst": 0.096,
+            "after_voiced": -0.142,
+            "no_formants": -0.178,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 105,
+              "n": 1020,
+              "rate": 0.1029,
+              "ci95": [
+                0.0858,
+                0.1231
+              ]
+            },
+            "false_alarms": {
+              "k": 7,
+              "n": 1501,
+              "rate": 0.0047,
+              "ci95": [
+                0.0023,
+                0.0096
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 57,
+              "n": 619,
+              "rate": 0.0921,
+              "ci95": [
+                0.0718,
+                0.1174
+              ]
+            },
+            "false_alarms": {
+              "k": 20,
+              "n": 352,
+              "rate": 0.0568,
+              "ci95": [
+                0.0371,
+                0.0861
+              ]
+            },
+            "precision": 0.7403
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 14,
+                "n": 365,
+                "rate": 0.0384,
+                "ci95": [
+                  0.023,
+                  0.0633
+                ]
+              },
+              "false_alarms": {
+                "k": 17,
+                "n": 265,
+                "rate": 0.0642,
+                "ci95": [
+                  0.0404,
+                  0.1003
+                ]
+              },
+              "precision": 0.4516
+            },
+            "saa": {
+              "caught": {
+                "k": 21,
+                "n": 116,
+                "rate": 0.181,
+                "ci95": [
+                  0.1216,
+                  0.261
+                ]
+              },
+              "false_alarms": {
+                "k": 1,
+                "n": 49,
+                "rate": 0.0204,
+                "ci95": [
+                  0.0036,
+                  0.1069
+                ]
+              },
+              "precision": 0.9545
+            },
+            "suitcase": {
+              "caught": {
+                "k": 22,
+                "n": 138,
+                "rate": 0.1594,
+                "ci95": [
+                  0.1077,
+                  0.2296
+                ]
+              },
+              "false_alarms": {
+                "k": 2,
+                "n": 38,
+                "rate": 0.0526,
+                "ci95": [
+                  0.0146,
+                  0.1729
+                ]
+              },
+              "precision": 0.9167
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 78,
+              "n": 619,
+              "rate": 0.126,
+              "ci95": [
+                0.1022,
+                0.1545
+              ]
+            },
+            "false_alarms": {
+              "k": 14,
+              "n": 352,
+              "rate": 0.0398,
+              "ci95": [
+                0.0238,
+                0.0656
+              ]
+            },
+            "precision": 0.8478
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 476,
+              "n": 619,
+              "rate": 0.769,
+              "ci95": [
+                0.7342,
+                0.8005
+              ]
+            },
+            "false_alarms": {
+              "k": 229,
+              "n": 352,
+              "rate": 0.6506,
+              "ci95": [
+                0.5994,
+                0.6985
+              ]
+            }
+          }
+        },
+        "passes bar": false
+      }
+    },
+    "ih_as_iy": {
+      "old": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "B",
+          "margin": 0.9069,
+          "tuning (others)": {
+            "caught": {
+              "k": 19,
+              "n": 596,
+              "rate": 0.0319,
+              "ci95": [
+                0.0205,
+                0.0493
+              ]
+            },
+            "false_alarms": {
+              "k": 20,
+              "n": 4172,
+              "rate": 0.0048,
+              "ci95": [
+                0.0031,
+                0.0074
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 2,
+              "n": 187,
+              "rate": 0.0107,
+              "ci95": [
+                0.0029,
+                0.0382
+              ]
+            },
+            "false_alarms": {
+              "k": 2,
+              "n": 1401,
+              "rate": 0.0014,
+              "ci95": [
+                0.0004,
+                0.0052
+              ]
+            },
+            "precision": 0.5
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 56,
+              "n": 187,
+              "rate": 0.2995,
+              "ci95": [
+                0.2384,
+                0.3686
+              ]
+            },
+            "false_alarms": {
+              "k": 132,
+              "n": 1401,
+              "rate": 0.0942,
+              "ci95": [
+                0.08,
+                0.1106
+              ]
+            }
+          },
+          "enabled": true,
+          "excluded (korean)": {
+            "other": 12,
+            "unlabelled": 52
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 4172,
+            "error": 596
+          },
+          "enabled": false,
+          "margin_auc": 0.6950650147676746,
+          "oof_auc": 0.7257045210318711,
+          "feasible": true,
+          "threshold": 0.9237456077304783,
+          "weights": {
+            "margin": 0.452,
+            "heard_agrees": 0.121,
+            "heard_nothing": -0.032,
+            "dur": 0.098,
+            "f1_z": -0.403,
+            "f2_z": 0.106,
+            "f3_z": 0.208,
+            "voiced": 0.081,
+            "hiss": 0.1,
+            "centroid": -0.178,
+            "closure": -0.047,
+            "burst": -0.049,
+            "after_voiced": -0.385,
+            "no_formants": 0.013,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 12,
+              "n": 596,
+              "rate": 0.0201,
+              "ci95": [
+                0.0116,
+                0.0349
+              ]
+            },
+            "false_alarms": {
+              "k": 20,
+              "n": 4172,
+              "rate": 0.0048,
+              "ci95": [
+                0.0031,
+                0.0074
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 3,
+              "n": 187,
+              "rate": 0.016,
+              "ci95": [
+                0.0055,
+                0.0461
+              ]
+            },
+            "false_alarms": {
+              "k": 5,
+              "n": 1401,
+              "rate": 0.0036,
+              "ci95": [
+                0.0015,
+                0.0083
+              ]
+            },
+            "precision": 0.375
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 3,
+                "n": 101,
+                "rate": 0.0297,
+                "ci95": [
+                  0.0102,
+                  0.0837
+                ]
+              },
+              "false_alarms": {
+                "k": 4,
+                "n": 1051,
+                "rate": 0.0038,
+                "ci95": [
+                  0.0015,
+                  0.0097
+                ]
+              },
+              "precision": 0.4286
+            },
+            "saa": {
+              "caught": {
+                "k": 0,
+                "n": 65,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0558
+                ]
+              },
+              "false_alarms": {
+                "k": 1,
+                "n": 215,
+                "rate": 0.0047,
+                "ci95": [
+                  0.0008,
+                  0.0259
+                ]
+              },
+              "precision": 0.0
+            },
+            "suitcase": {
+              "caught": {
+                "k": 0,
+                "n": 21,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.1546
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 135,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0277
+                ]
+              },
+              "precision": null
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 2,
+              "n": 187,
+              "rate": 0.0107,
+              "ci95": [
+                0.0029,
+                0.0382
+              ]
+            },
+            "false_alarms": {
+              "k": 2,
+              "n": 1401,
+              "rate": 0.0014,
+              "ci95": [
+                0.0004,
+                0.0052
+              ]
+            },
+            "precision": 0.5
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 56,
+              "n": 187,
+              "rate": 0.2995,
+              "ci95": [
+                0.2384,
+                0.3686
+              ]
+            },
+            "false_alarms": {
+              "k": 132,
+              "n": 1401,
+              "rate": 0.0942,
+              "ci95": [
+                0.08,
+                0.1106
+              ]
+            }
+          }
+        },
+        "passes bar": true
+      },
+      "new": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "B",
+          "margin": 0.8902,
+          "tuning (others)": {
+            "caught": {
+              "k": 28,
+              "n": 596,
+              "rate": 0.047,
+              "ci95": [
+                0.0327,
+                0.0671
+              ]
+            },
+            "false_alarms": {
+              "k": 20,
+              "n": 4172,
+              "rate": 0.0048,
+              "ci95": [
+                0.0031,
+                0.0074
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 7,
+              "n": 187,
+              "rate": 0.0374,
+              "ci95": [
+                0.0182,
+                0.0752
+              ]
+            },
+            "false_alarms": {
+              "k": 6,
+              "n": 1401,
+              "rate": 0.0043,
+              "ci95": [
+                0.002,
+                0.0093
+              ]
+            },
+            "precision": 0.5385
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 60,
+              "n": 187,
+              "rate": 0.3209,
+              "ci95": [
+                0.2581,
+                0.3908
+              ]
+            },
+            "false_alarms": {
+              "k": 102,
+              "n": 1401,
+              "rate": 0.0728,
+              "ci95": [
+                0.0603,
+                0.0876
+              ]
+            }
+          },
+          "enabled": true,
+          "excluded (korean)": {
+            "other": 12,
+            "unlabelled": 52
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 4172,
+            "error": 596
+          },
+          "enabled": false,
+          "margin_auc": 0.8291860244390535,
+          "oof_auc": 0.8099590912893242,
+          "feasible": true,
+          "threshold": 0.9768277445431284,
+          "weights": {
+            "margin": 1.227,
+            "heard_agrees": -0.199,
+            "heard_nothing": -0.355,
+            "dur": -0.057,
+            "f1_z": -0.148,
+            "f2_z": 0.081,
+            "f3_z": 0.067,
+            "voiced": -0.002,
+            "hiss": 0.082,
+            "centroid": -0.057,
+            "closure": -0.004,
+            "burst": -0.068,
+            "after_voiced": -0.299,
+            "no_formants": 0.006,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 39,
+              "n": 596,
+              "rate": 0.0654,
+              "ci95": [
+                0.0482,
+                0.0882
+              ]
+            },
+            "false_alarms": {
+              "k": 20,
+              "n": 4172,
+              "rate": 0.0048,
+              "ci95": [
+                0.0031,
+                0.0074
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 8,
+              "n": 187,
+              "rate": 0.0428,
+              "ci95": [
+                0.0218,
+                0.0821
+              ]
+            },
+            "false_alarms": {
+              "k": 9,
+              "n": 1401,
+              "rate": 0.0064,
+              "ci95": [
+                0.0034,
+                0.0122
+              ]
+            },
+            "precision": 0.4706
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 5,
+                "n": 101,
+                "rate": 0.0495,
+                "ci95": [
+                  0.0213,
+                  0.1107
+                ]
+              },
+              "false_alarms": {
+                "k": 6,
+                "n": 1051,
+                "rate": 0.0057,
+                "ci95": [
+                  0.0026,
+                  0.0124
+                ]
+              },
+              "precision": 0.4545
+            },
+            "saa": {
+              "caught": {
+                "k": 3,
+                "n": 65,
+                "rate": 0.0462,
+                "ci95": [
+                  0.0158,
+                  0.1271
+                ]
+              },
+              "false_alarms": {
+                "k": 2,
+                "n": 215,
+                "rate": 0.0093,
+                "ci95": [
+                  0.0026,
+                  0.0333
+                ]
+              },
+              "precision": 0.6
+            },
+            "suitcase": {
+              "caught": {
+                "k": 0,
+                "n": 21,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.1546
+                ]
+              },
+              "false_alarms": {
+                "k": 1,
+                "n": 135,
+                "rate": 0.0074,
+                "ci95": [
+                  0.0013,
+                  0.0408
+                ]
+              },
+              "precision": 0.0
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 7,
+              "n": 187,
+              "rate": 0.0374,
+              "ci95": [
+                0.0182,
+                0.0752
+              ]
+            },
+            "false_alarms": {
+              "k": 6,
+              "n": 1401,
+              "rate": 0.0043,
+              "ci95": [
+                0.002,
+                0.0093
+              ]
+            },
+            "precision": 0.5385
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 60,
+              "n": 187,
+              "rate": 0.3209,
+              "ci95": [
+                0.2581,
+                0.3908
+              ]
+            },
+            "false_alarms": {
+              "k": 102,
+              "n": 1401,
+              "rate": 0.0728,
+              "ci95": [
+                0.0603,
+                0.0876
+              ]
+            }
+          }
+        },
+        "passes bar": true
+      }
+    },
+    "iy_as_ih": {
+      "old": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "B",
+          "margin": 0.7363,
+          "tuning (others)": {
+            "caught": {
+              "k": 37,
+              "n": 386,
+              "rate": 0.0959,
+              "ci95": [
+                0.0703,
+                0.1293
+              ]
+            },
+            "false_alarms": {
+              "k": 20,
+              "n": 4075,
+              "rate": 0.0049,
+              "ci95": [
+                0.0032,
+                0.0076
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 12,
+              "n": 83,
+              "rate": 0.1446,
+              "ci95": [
+                0.0847,
+                0.2359
+              ]
+            },
+            "false_alarms": {
+              "k": 10,
+              "n": 1080,
+              "rate": 0.0093,
+              "ci95": [
+                0.005,
+                0.017
+              ]
+            },
+            "precision": 0.5455
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 66,
+              "n": 83,
+              "rate": 0.7952,
+              "ci95": [
+                0.6962,
+                0.868
+              ]
+            },
+            "false_alarms": {
+              "k": 559,
+              "n": 1080,
+              "rate": 0.5176,
+              "ci95": [
+                0.4878,
+                0.5473
+              ]
+            }
+          },
+          "enabled": false,
+          "excluded (korean)": {
+            "other": 15,
+            "unlabelled": 3
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 4075,
+            "error": 386
+          },
+          "enabled": false,
+          "margin_auc": 0.8684579929431959,
+          "oof_auc": 0.8940710130646238,
+          "feasible": true,
+          "threshold": 0.9657053232861799,
+          "weights": {
+            "margin": 1.464,
+            "heard_agrees": -0.551,
+            "heard_nothing": -0.11,
+            "dur": 0.203,
+            "f1_z": 0.439,
+            "f2_z": -0.637,
+            "f3_z": -0.096,
+            "voiced": -0.372,
+            "hiss": 0.015,
+            "centroid": -0.028,
+            "closure": 0.209,
+            "burst": -0.071,
+            "after_voiced": -0.495,
+            "no_formants": -0.084,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 68,
+              "n": 386,
+              "rate": 0.1762,
+              "ci95": [
+                0.1414,
+                0.2173
+              ]
+            },
+            "false_alarms": {
+              "k": 20,
+              "n": 4075,
+              "rate": 0.0049,
+              "ci95": [
+                0.0032,
+                0.0076
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 8,
+              "n": 83,
+              "rate": 0.0964,
+              "ci95": [
+                0.0497,
+                0.1788
+              ]
+            },
+            "false_alarms": {
+              "k": 12,
+              "n": 1080,
+              "rate": 0.0111,
+              "ci95": [
+                0.0064,
+                0.0193
+              ]
+            },
+            "precision": 0.4
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 3,
+                "n": 27,
+                "rate": 0.1111,
+                "ci95": [
+                  0.0385,
+                  0.2806
+                ]
+              },
+              "false_alarms": {
+                "k": 8,
+                "n": 709,
+                "rate": 0.0113,
+                "ci95": [
+                  0.0057,
+                  0.0221
+                ]
+              },
+              "precision": 0.2727
+            },
+            "saa": {
+              "caught": {
+                "k": 5,
+                "n": 43,
+                "rate": 0.1163,
+                "ci95": [
+                  0.0507,
+                  0.2448
+                ]
+              },
+              "false_alarms": {
+                "k": 2,
+                "n": 286,
+                "rate": 0.007,
+                "ci95": [
+                  0.0019,
+                  0.0251
+                ]
+              },
+              "precision": 0.7143
+            },
+            "suitcase": {
+              "caught": {
+                "k": 0,
+                "n": 13,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.2281
+                ]
+              },
+              "false_alarms": {
+                "k": 2,
+                "n": 85,
+                "rate": 0.0235,
+                "ci95": [
+                  0.0065,
+                  0.0818
+                ]
+              },
+              "precision": 0.0
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 12,
+              "n": 83,
+              "rate": 0.1446,
+              "ci95": [
+                0.0847,
+                0.2359
+              ]
+            },
+            "false_alarms": {
+              "k": 10,
+              "n": 1080,
+              "rate": 0.0093,
+              "ci95": [
+                0.005,
+                0.017
+              ]
+            },
+            "precision": 0.5455
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 66,
+              "n": 83,
+              "rate": 0.7952,
+              "ci95": [
+                0.6962,
+                0.868
+              ]
+            },
+            "false_alarms": {
+              "k": 559,
+              "n": 1080,
+              "rate": 0.5176,
+              "ci95": [
+                0.4878,
+                0.5473
+              ]
+            }
+          }
+        },
+        "passes bar": false
+      },
+      "new": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "B",
+          "margin": 0.6115,
+          "tuning (others)": {
+            "caught": {
+              "k": 38,
+              "n": 386,
+              "rate": 0.0984,
+              "ci95": [
+                0.0726,
+                0.1322
+              ]
+            },
+            "false_alarms": {
+              "k": 20,
+              "n": 4075,
+              "rate": 0.0049,
+              "ci95": [
+                0.0032,
+                0.0076
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 9,
+              "n": 83,
+              "rate": 0.1084,
+              "ci95": [
+                0.0581,
+                0.1934
+              ]
+            },
+            "false_alarms": {
+              "k": 8,
+              "n": 1080,
+              "rate": 0.0074,
+              "ci95": [
+                0.0038,
+                0.0145
+              ]
+            },
+            "precision": 0.5294
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 40,
+              "n": 83,
+              "rate": 0.4819,
+              "ci95": [
+                0.3776,
+                0.5878
+              ]
+            },
+            "false_alarms": {
+              "k": 24,
+              "n": 1080,
+              "rate": 0.0222,
+              "ci95": [
+                0.015,
+                0.0329
+              ]
+            }
+          },
+          "enabled": false,
+          "excluded (korean)": {
+            "other": 15,
+            "unlabelled": 3
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 4075,
+            "error": 386
+          },
+          "enabled": false,
+          "margin_auc": 0.9214574525572968,
+          "oof_auc": 0.9192727041546139,
+          "feasible": true,
+          "threshold": 0.9842039456913004,
+          "weights": {
+            "margin": 1.695,
+            "heard_agrees": -0.532,
+            "heard_nothing": -0.451,
+            "dur": 0.104,
+            "f1_z": 0.251,
+            "f2_z": -0.55,
+            "f3_z": -0.148,
+            "voiced": -0.225,
+            "hiss": 0.035,
+            "centroid": -0.028,
+            "closure": 0.197,
+            "burst": 0.001,
+            "after_voiced": -0.321,
+            "no_formants": -0.059,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 61,
+              "n": 386,
+              "rate": 0.158,
+              "ci95": [
+                0.125,
+                0.1978
+              ]
+            },
+            "false_alarms": {
+              "k": 20,
+              "n": 4075,
+              "rate": 0.0049,
+              "ci95": [
+                0.0032,
+                0.0076
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 8,
+              "n": 83,
+              "rate": 0.0964,
+              "ci95": [
+                0.0497,
+                0.1788
+              ]
+            },
+            "false_alarms": {
+              "k": 7,
+              "n": 1080,
+              "rate": 0.0065,
+              "ci95": [
+                0.0031,
+                0.0133
+              ]
+            },
+            "precision": 0.5333
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 2,
+                "n": 27,
+                "rate": 0.0741,
+                "ci95": [
+                  0.0206,
+                  0.2337
+                ]
+              },
+              "false_alarms": {
+                "k": 2,
+                "n": 709,
+                "rate": 0.0028,
+                "ci95": [
+                  0.0008,
+                  0.0102
+                ]
+              },
+              "precision": 0.5
+            },
+            "saa": {
+              "caught": {
+                "k": 6,
+                "n": 43,
+                "rate": 0.1395,
+                "ci95": [
+                  0.0656,
+                  0.2726
+                ]
+              },
+              "false_alarms": {
+                "k": 2,
+                "n": 286,
+                "rate": 0.007,
+                "ci95": [
+                  0.0019,
+                  0.0251
+                ]
+              },
+              "precision": 0.75
+            },
+            "suitcase": {
+              "caught": {
+                "k": 0,
+                "n": 13,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.2281
+                ]
+              },
+              "false_alarms": {
+                "k": 3,
+                "n": 85,
+                "rate": 0.0353,
+                "ci95": [
+                  0.0121,
+                  0.0987
+                ]
+              },
+              "precision": 0.0
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 9,
+              "n": 83,
+              "rate": 0.1084,
+              "ci95": [
+                0.0581,
+                0.1934
+              ]
+            },
+            "false_alarms": {
+              "k": 8,
+              "n": 1080,
+              "rate": 0.0074,
+              "ci95": [
+                0.0038,
+                0.0145
+              ]
+            },
+            "precision": 0.5294
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 40,
+              "n": 83,
+              "rate": 0.4819,
+              "ci95": [
+                0.3776,
+                0.5878
+              ]
+            },
+            "false_alarms": {
+              "k": 24,
+              "n": 1080,
+              "rate": 0.0222,
+              "ci95": [
+                0.015,
+                0.0329
+              ]
+            }
+          }
+        },
+        "passes bar": false
+      }
+    },
+    "extra_vowel": {
+      "old": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "B",
+          "margin": 0.722,
+          "tuning (others)": {
+            "caught": {
+              "k": 16,
+              "n": 113,
+              "rate": 0.1416,
+              "ci95": [
+                0.0891,
+                0.2177
+              ]
+            },
+            "false_alarms": {
+              "k": 63,
+              "n": 12771,
+              "rate": 0.0049,
+              "ci95": [
+                0.0039,
+                0.0063
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 5,
+              "n": 85,
+              "rate": 0.0588,
+              "ci95": [
+                0.0254,
+                0.1304
+              ]
+            },
+            "false_alarms": {
+              "k": 7,
+              "n": 4151,
+              "rate": 0.0017,
+              "ci95": [
+                0.0008,
+                0.0035
+              ]
+            },
+            "precision": 0.4167
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 37,
+              "n": 85,
+              "rate": 0.4353,
+              "ci95": [
+                0.335,
+                0.5412
+              ]
+            },
+            "false_alarms": {
+              "k": 64,
+              "n": 4151,
+              "rate": 0.0154,
+              "ci95": [
+                0.0121,
+                0.0196
+              ]
+            }
+          },
+          "enabled": false,
+          "excluded (korean)": {
+            "other": 1102,
+            "unlabelled": 0
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 12771,
+            "error": 113
+          },
+          "enabled": false,
+          "margin_auc": 0.7271161224649597,
+          "oof_auc": 0.8265761130548124,
+          "feasible": true,
+          "threshold": 0.9682111068760035,
+          "weights": {
+            "margin": 0.613,
+            "heard_agrees": -0.074,
+            "heard_nothing": -0.194,
+            "dur": 0.74,
+            "f1_z": -0.018,
+            "f2_z": 0.13,
+            "f3_z": -0.225,
+            "voiced": 0.72,
+            "hiss": -0.005,
+            "centroid": -0.218,
+            "closure": 0.188,
+            "burst": 0.332,
+            "after_voiced": -0.198,
+            "no_formants": 0.088,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 12,
+              "n": 113,
+              "rate": 0.1062,
+              "ci95": [
+                0.0618,
+                0.1765
+              ]
+            },
+            "false_alarms": {
+              "k": 63,
+              "n": 12771,
+              "rate": 0.0049,
+              "ci95": [
+                0.0039,
+                0.0063
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 8,
+              "n": 85,
+              "rate": 0.0941,
+              "ci95": [
+                0.0485,
+                0.1749
+              ]
+            },
+            "false_alarms": {
+              "k": 9,
+              "n": 4151,
+              "rate": 0.0022,
+              "ci95": [
+                0.0011,
+                0.0041
+              ]
+            },
+            "precision": 0.4706
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 3,
+                "n": 34,
+                "rate": 0.0882,
+                "ci95": [
+                  0.0305,
+                  0.2296
+                ]
+              },
+              "false_alarms": {
+                "k": 6,
+                "n": 3060,
+                "rate": 0.002,
+                "ci95": [
+                  0.0009,
+                  0.0043
+                ]
+              },
+              "precision": 0.3333
+            },
+            "saa": {
+              "caught": {
+                "k": 4,
+                "n": 46,
+                "rate": 0.087,
+                "ci95": [
+                  0.0343,
+                  0.2032
+                ]
+              },
+              "false_alarms": {
+                "k": 3,
+                "n": 702,
+                "rate": 0.0043,
+                "ci95": [
+                  0.0015,
+                  0.0125
+                ]
+              },
+              "precision": 0.5714
+            },
+            "suitcase": {
+              "caught": {
+                "k": 1,
+                "n": 5,
+                "rate": 0.2,
+                "ci95": [
+                  0.0362,
+                  0.6245
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 389,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0098
+                ]
+              },
+              "precision": 1.0
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 5,
+              "n": 85,
+              "rate": 0.0588,
+              "ci95": [
+                0.0254,
+                0.1304
+              ]
+            },
+            "false_alarms": {
+              "k": 7,
+              "n": 4151,
+              "rate": 0.0017,
+              "ci95": [
+                0.0008,
+                0.0035
+              ]
+            },
+            "precision": 0.4167
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 37,
+              "n": 85,
+              "rate": 0.4353,
+              "ci95": [
+                0.335,
+                0.5412
+              ]
+            },
+            "false_alarms": {
+              "k": 64,
+              "n": 4151,
+              "rate": 0.0154,
+              "ci95": [
+                0.0121,
+                0.0196
+              ]
+            }
+          }
+        },
+        "passes bar": false
+      },
+      "new": {
+        "margin rule": {
+          "cap": 0.005,
+          "variant": "B",
+          "margin": 0.823,
+          "tuning (others)": {
+            "caught": {
+              "k": 23,
+              "n": 113,
+              "rate": 0.2035,
+              "ci95": [
+                0.1396,
+                0.2869
+              ]
+            },
+            "false_alarms": {
+              "k": 63,
+              "n": 12771,
+              "rate": 0.0049,
+              "ci95": [
+                0.0039,
+                0.0063
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 17,
+              "n": 85,
+              "rate": 0.2,
+              "ci95": [
+                0.1288,
+                0.2972
+              ]
+            },
+            "false_alarms": {
+              "k": 9,
+              "n": 4151,
+              "rate": 0.0022,
+              "ci95": [
+                0.0011,
+                0.0041
+              ]
+            },
+            "precision": 0.6538
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 45,
+              "n": 85,
+              "rate": 0.5294,
+              "ci95": [
+                0.4243,
+                0.6319
+              ]
+            },
+            "false_alarms": {
+              "k": 60,
+              "n": 4151,
+              "rate": 0.0145,
+              "ci95": [
+                0.0112,
+                0.0186
+              ]
+            }
+          },
+          "enabled": true,
+          "excluded (korean)": {
+            "other": 1102,
+            "unlabelled": 0
+          }
+        },
+        "detector": {
+          "cap": 0.005,
+          "tuning rows": {
+            "correct": 12771,
+            "error": 113
+          },
+          "enabled": true,
+          "margin_auc": 0.7751449460648885,
+          "oof_auc": 0.8461925975817723,
+          "feasible": true,
+          "threshold": 0.9784013067117654,
+          "weights": {
+            "margin": 0.41,
+            "heard_agrees": 0.182,
+            "heard_nothing": 0.094,
+            "dur": 0.818,
+            "f1_z": -0.254,
+            "f2_z": 0.153,
+            "f3_z": -0.319,
+            "voiced": 0.402,
+            "hiss": -0.221,
+            "centroid": -0.122,
+            "closure": 0.202,
+            "burst": 0.203,
+            "after_voiced": -0.082,
+            "no_formants": -0.105,
+            "no_reference": 0.0
+          },
+          "tuning (others)": {
+            "caught": {
+              "k": 33,
+              "n": 113,
+              "rate": 0.292,
+              "ci95": [
+                0.2161,
+                0.3816
+              ]
+            },
+            "false_alarms": {
+              "k": 63,
+              "n": 12771,
+              "rate": 0.0049,
+              "ci95": [
+                0.0039,
+                0.0063
+              ]
+            }
+          },
+          "test (korean)": {
+            "caught": {
+              "k": 22,
+              "n": 85,
+              "rate": 0.2588,
+              "ci95": [
+                0.1776,
+                0.3609
+              ]
+            },
+            "false_alarms": {
+              "k": 13,
+              "n": 4151,
+              "rate": 0.0031,
+              "ci95": [
+                0.0018,
+                0.0054
+              ]
+            },
+            "precision": 0.6286
+          },
+          "test by source": {
+            "l2arctic": {
+              "caught": {
+                "k": 6,
+                "n": 34,
+                "rate": 0.1765,
+                "ci95": [
+                  0.0835,
+                  0.3351
+                ]
+              },
+              "false_alarms": {
+                "k": 6,
+                "n": 3060,
+                "rate": 0.002,
+                "ci95": [
+                  0.0009,
+                  0.0043
+                ]
+              },
+              "precision": 0.5
+            },
+            "saa": {
+              "caught": {
+                "k": 15,
+                "n": 46,
+                "rate": 0.3261,
+                "ci95": [
+                  0.2087,
+                  0.4703
+                ]
+              },
+              "false_alarms": {
+                "k": 7,
+                "n": 702,
+                "rate": 0.01,
+                "ci95": [
+                  0.0048,
+                  0.0204
+                ]
+              },
+              "precision": 0.6818
+            },
+            "suitcase": {
+              "caught": {
+                "k": 1,
+                "n": 5,
+                "rate": 0.2,
+                "ci95": [
+                  0.0362,
+                  0.6245
+                ]
+              },
+              "false_alarms": {
+                "k": 0,
+                "n": 389,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0098
+                ]
+              },
+              "precision": 1.0
+            }
+          },
+          "margin rule (korean)": {
+            "caught": {
+              "k": 17,
+              "n": 85,
+              "rate": 0.2,
+              "ci95": [
+                0.1288,
+                0.2972
+              ]
+            },
+            "false_alarms": {
+              "k": 9,
+              "n": 4151,
+              "rate": 0.0022,
+              "ci95": [
+                0.0011,
+                0.0041
+              ]
+            },
+            "precision": 0.6538
+          },
+          "baseline (korean)": {
+            "caught": {
+              "k": 45,
+              "n": 85,
+              "rate": 0.5294,
+              "ci95": [
+                0.4243,
+                0.6319
+              ]
+            },
+            "false_alarms": {
+              "k": 60,
+              "n": 4151,
+              "rate": 0.0145,
+              "ci95": [
+                0.0112,
+                0.0186
+              ]
+            }
+          }
+        },
+        "passes bar": true
+      }
+    }
+  },
+  "passing": {
+    "old": [
+      "r_as_l",
+      "th_as_s",
+      "ih_as_iy"
+    ],
+    "new": [
+      "r_as_l",
+      "th_as_s",
+      "ih_as_iy",
+      "extra_vowel"
+    ]
+  },
+  "listeners": {
+    "old": "facebook/wav2vec2-xlsr-53-espeak-cv-ft",
+    "new": "data/models/listener_v1/best"
+  }
+}

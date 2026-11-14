@@ -1,0 +1,620 @@
+{
+  "data": "Speech Accent Archive (accent.gmu.edu, CC BY-NC-SA 4.0): Korean speakers with a narrow IPA transcription; thresholds tuned on the 20 non-Korean L2-ARCTIC speakers (eval/run.py)",
+  "speakers": 26,
+  "pairs": {
+    "r_as_l": {
+      "labels (saa)": {
+        "correct": 249,
+        "deleted": 26,
+        "error": 4,
+        "tap": 7
+      },
+      "saa": {
+        "cap": 0.005,
+        "variant": "B",
+        "margin": -1.0001,
+        "tuning (others)": {
+          "caught": {
+            "k": 4,
+            "n": 31,
+            "rate": 0.129,
+            "ci95": [
+              0.0513,
+              0.2885
+            ]
+          },
+          "false_alarms": {
+            "k": 8,
+            "n": 2992,
+            "rate": 0.0027,
+            "ci95": [
+              0.0014,
+              0.0053
+            ]
+          }
+        },
+        "test (korean)": {
+          "caught": {
+            "k": 4,
+            "n": 4,
+            "rate": 1.0,
+            "ci95": [
+              0.5101,
+              1.0
+            ]
+          },
+          "false_alarms": {
+            "k": 1,
+            "n": 249,
+            "rate": 0.004,
+            "ci95": [
+              0.0007,
+              0.0224
+            ]
+          },
+          "precision": 0.8
+        },
+        "baseline (korean)": {
+          "caught": {
+            "k": 4,
+            "n": 4,
+            "rate": 1.0,
+            "ci95": [
+              0.5101,
+              1.0
+            ]
+          },
+          "false_alarms": {
+            "k": 61,
+            "n": 249,
+            "rate": 0.245,
+            "ci95": [
+              0.1957,
+              0.302
+            ]
+          }
+        },
+        "enabled": true,
+        "excluded (korean)": {
+          "other": 0,
+          "unlabelled": 0
+        }
+      },
+      "pooled (saa + l2arctic korean)": {
+        "cap": 0.005,
+        "variant": "B",
+        "margin": -1.0001,
+        "tuning (others)": {
+          "caught": {
+            "k": 4,
+            "n": 31,
+            "rate": 0.129,
+            "ci95": [
+              0.0513,
+              0.2885
+            ]
+          },
+          "false_alarms": {
+            "k": 8,
+            "n": 2992,
+            "rate": 0.0027,
+            "ci95": [
+              0.0014,
+              0.0053
+            ]
+          }
+        },
+        "test (korean)": {
+          "caught": {
+            "k": 11,
+            "n": 18,
+            "rate": 0.6111,
+            "ci95": [
+              0.3862,
+              0.797
+            ]
+          },
+          "false_alarms": {
+            "k": 2,
+            "n": 974,
+            "rate": 0.0021,
+            "ci95": [
+              0.0006,
+              0.0075
+            ]
+          },
+          "precision": 0.8462
+        },
+        "baseline (korean)": {
+          "caught": {
+            "k": 15,
+            "n": 18,
+            "rate": 0.8333,
+            "ci95": [
+              0.6078,
+              0.9416
+            ]
+          },
+          "false_alarms": {
+            "k": 280,
+            "n": 974,
+            "rate": 0.2875,
+            "ci95": [
+              0.2599,
+              0.3167
+            ]
+          }
+        },
+        "enabled": true,
+        "excluded (korean)": {
+          "other": 78,
+          "unlabelled": 11
+        }
+      },
+      "taps flagged (saa)": {
+        "k": 1,
+        "n": 7,
+        "rate": 0.1429,
+        "ci95": [
+          0.0257,
+          0.5131
+        ]
+      },
+      "info: variant A (saa)": {
+        "margin": 0.1613,
+        "caught": {
+          "k": 4,
+          "n": 4,
+          "rate": 1.0,
+          "ci95": [
+            0.5101,
+            1.0
+          ]
+        },
+        "false_alarms": {
+          "k": 1,
+          "n": 249,
+          "rate": 0.004,
+          "ci95": [
+            0.0007,
+            0.0224
+          ]
+        }
+      },
+      "info: variant B (saa)": {
+        "margin": -1.0001,
+        "caught": {
+          "k": 4,
+          "n": 4,
+          "rate": 1.0,
+          "ci95": [
+            0.5101,
+            1.0
+          ]
+        },
+        "false_alarms": {
+          "k": 1,
+          "n": 249,
+          "rate": 0.004,
+          "ci95": [
+            0.0007,
+            0.0224
+          ]
+        }
+      }
+    },
+    "l_as_r": {
+      "labels (saa)": {
+        "correct": 209,
+        "deleted": 6,
+        "error": 8,
+        "tap": 11
+      },
+      "saa": {
+        "cap": 0.005,
+        "variant": "F",
+        "feature": "f3_dip",
+        "margin": 0.689999999,
+        "m_lo": -0.638300001,
+        "dip": -5.2169999989999996,
+        "tuning (others)": {
+          "caught": {
+            "k": 8,
+            "n": 14,
+            "rate": 0.5714,
+            "ci95": [
+              0.3259,
+              0.7862
+            ]
+          },
+          "false_alarms": {
+            "k": 9,
+            "n": 3325,
+            "rate": 0.0027,
+            "ci95": [
+              0.0014,
+              0.0051
+            ]
+          }
+        },
+        "test (korean)": {
+          "caught": {
+            "k": 1,
+            "n": 8,
+            "rate": 0.125,
+            "ci95": [
+              0.0224,
+              0.4709
+            ]
+          },
+          "false_alarms": {
+            "k": 0,
+            "n": 209,
+            "rate": 0.0,
+            "ci95": [
+              -0.0,
+              0.018
+            ]
+          },
+          "precision": 1.0
+        },
+        "baseline (korean)": {
+          "caught": {
+            "k": 4,
+            "n": 8,
+            "rate": 0.5,
+            "ci95": [
+              0.2152,
+              0.7848
+            ]
+          },
+          "false_alarms": {
+            "k": 17,
+            "n": 209,
+            "rate": 0.0813,
+            "ci95": [
+              0.0514,
+              0.1264
+            ]
+          }
+        },
+        "enabled": true,
+        "excluded (korean)": {
+          "other": 0,
+          "unlabelled": 0
+        }
+      },
+      "pooled (saa + l2arctic korean)": {
+        "cap": 0.005,
+        "variant": "F",
+        "feature": "f3_dip",
+        "margin": 0.689999999,
+        "m_lo": -0.638300001,
+        "dip": -5.2169999989999996,
+        "tuning (others)": {
+          "caught": {
+            "k": 8,
+            "n": 14,
+            "rate": 0.5714,
+            "ci95": [
+              0.3259,
+              0.7862
+            ]
+          },
+          "false_alarms": {
+            "k": 9,
+            "n": 3325,
+            "rate": 0.0027,
+            "ci95": [
+              0.0014,
+              0.0051
+            ]
+          }
+        },
+        "test (korean)": {
+          "caught": {
+            "k": 6,
+            "n": 35,
+            "rate": 0.1714,
+            "ci95": [
+              0.081,
+              0.3268
+            ]
+          },
+          "false_alarms": {
+            "k": 5,
+            "n": 924,
+            "rate": 0.0054,
+            "ci95": [
+              0.0023,
+              0.0126
+            ]
+          },
+          "precision": 0.5455
+        },
+        "baseline (korean)": {
+          "caught": {
+            "k": 26,
+            "n": 35,
+            "rate": 0.7429,
+            "ci95": [
+              0.5793,
+              0.8584
+            ]
+          },
+          "false_alarms": {
+            "k": 91,
+            "n": 924,
+            "rate": 0.0985,
+            "ci95": [
+              0.0809,
+              0.1194
+            ]
+          }
+        },
+        "enabled": false,
+        "excluded (korean)": {
+          "other": 15,
+          "unlabelled": 3
+        }
+      },
+      "taps flagged (saa)": {
+        "k": 3,
+        "n": 11,
+        "rate": 0.2727,
+        "ci95": [
+          0.0975,
+          0.5657
+        ]
+      },
+      "info: variant A (saa)": {
+        "margin": 0.0028,
+        "caught": {
+          "k": 1,
+          "n": 8,
+          "rate": 0.125,
+          "ci95": [
+            0.0224,
+            0.4709
+          ]
+        },
+        "false_alarms": {
+          "k": 7,
+          "n": 209,
+          "rate": 0.0335,
+          "ci95": [
+            0.0163,
+            0.0675
+          ]
+        }
+      },
+      "info: variant B (saa)": {
+        "margin": -1.0001,
+        "caught": {
+          "k": 0,
+          "n": 8,
+          "rate": 0.0,
+          "ci95": [
+            0.0,
+            0.3244
+          ]
+        },
+        "false_alarms": {
+          "k": 1,
+          "n": 209,
+          "rate": 0.0048,
+          "ci95": [
+            0.0008,
+            0.0266
+          ]
+        }
+      }
+    },
+    "v_as_b": {
+      "labels (saa)": {
+        "correct": 44,
+        "other": 25,
+        "deleted": 8,
+        "error": 1
+      },
+      "saa": {
+        "cap": 0.005,
+        "variant": "A",
+        "margin": 0.842,
+        "tuning (others)": {
+          "caught": {
+            "k": 8,
+            "n": 79,
+            "rate": 0.1013,
+            "ci95": [
+              0.0522,
+              0.1873
+            ]
+          },
+          "false_alarms": {
+            "k": 7,
+            "n": 1461,
+            "rate": 0.0048,
+            "ci95": [
+              0.0023,
+              0.0099
+            ]
+          }
+        },
+        "test (korean)": {
+          "caught": {
+            "k": 0,
+            "n": 1,
+            "rate": 0.0,
+            "ci95": [
+              0.0,
+              0.7935
+            ]
+          },
+          "false_alarms": {
+            "k": 1,
+            "n": 44,
+            "rate": 0.0227,
+            "ci95": [
+              0.004,
+              0.1181
+            ]
+          },
+          "precision": 0.0
+        },
+        "baseline (korean)": {
+          "caught": {
+            "k": 0,
+            "n": 1,
+            "rate": 0.0,
+            "ci95": [
+              0.0,
+              0.7935
+            ]
+          },
+          "false_alarms": {
+            "k": 12,
+            "n": 44,
+            "rate": 0.2727,
+            "ci95": [
+              0.1635,
+              0.4185
+            ]
+          }
+        },
+        "enabled": false,
+        "excluded (korean)": {
+          "other": 25,
+          "unlabelled": 0
+        }
+      },
+      "pooled (saa + l2arctic korean)": {
+        "cap": 0.005,
+        "variant": "A",
+        "margin": 0.842,
+        "tuning (others)": {
+          "caught": {
+            "k": 8,
+            "n": 79,
+            "rate": 0.1013,
+            "ci95": [
+              0.0522,
+              0.1873
+            ]
+          },
+          "false_alarms": {
+            "k": 7,
+            "n": 1461,
+            "rate": 0.0048,
+            "ci95": [
+              0.0023,
+              0.0099
+            ]
+          }
+        },
+        "test (korean)": {
+          "caught": {
+            "k": 6,
+            "n": 20,
+            "rate": 0.3,
+            "ci95": [
+              0.1455,
+              0.519
+            ]
+          },
+          "false_alarms": {
+            "k": 4,
+            "n": 454,
+            "rate": 0.0088,
+            "ci95": [
+              0.0034,
+              0.0224
+            ]
+          },
+          "precision": 0.6
+        },
+        "baseline (korean)": {
+          "caught": {
+            "k": 11,
+            "n": 20,
+            "rate": 0.55,
+            "ci95": [
+              0.3421,
+              0.7418
+            ]
+          },
+          "false_alarms": {
+            "k": 39,
+            "n": 454,
+            "rate": 0.0859,
+            "ci95": [
+              0.0635,
+              0.1153
+            ]
+          }
+        },
+        "enabled": false,
+        "excluded (korean)": {
+          "other": 51,
+          "unlabelled": 0
+        }
+      },
+      "taps flagged (saa)": {
+        "k": 0,
+        "n": 0,
+        "rate": null,
+        "ci95": null
+      },
+      "info: variant A (saa)": {
+        "margin": 0.842,
+        "caught": {
+          "k": 0,
+          "n": 1,
+          "rate": 0.0,
+          "ci95": [
+            0.0,
+            0.7935
+          ]
+        },
+        "false_alarms": {
+          "k": 1,
+          "n": 44,
+          "rate": 0.0227,
+          "ci95": [
+            0.004,
+            0.1181
+          ]
+        }
+      },
+      "info: variant B (saa)": {
+        "margin": 0.842,
+        "caught": {
+          "k": 0,
+          "n": 1,
+          "rate": 0.0,
+          "ci95": [
+            0.0,
+            0.7935
+          ]
+        },
+        "false_alarms": {
+          "k": 1,
+          "n": 44,
+          "rate": 0.0227,
+          "ci95": [
+            0.004,
+            0.1181
+          ]
+        }
+      }
+    }
+  },
+  "labelling sanity": {
+    "slots": 598,
+    "share labelled (not deleted/other)": 0.8913
+  },
+  "pipeline seconds per recording": {
+    "median": 1.947,
+    "audio seconds median": 30.2
+  }
+}

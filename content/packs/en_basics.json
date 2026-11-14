@@ -1,0 +1,121 @@
+{
+  "id": "en-basics",
+  "lang": "en",
+  "name": "Basics",
+  "dev_only": false,
+  "reviewed": true,
+  "source": "Written for this project with an LLM (Claude, Anthropic); English reviewed by the author. Korean translations (존댓말 + 반말) also LLM-written.",
+  "license": "This project's own content",
+  "items": [
+    {
+      "id": "en_basics_01",
+      "text": "Thank you very much.",
+      "translation": "정말 감사합니다.",
+      "translation_informal": "정말 고마워.",
+      "tags": [
+        "iy_as_ih",
+        "r_as_l",
+        "th_as_s",
+        "v_as_b"
+      ]
+    },
+    {
+      "id": "en_basics_02",
+      "text": "Nice to meet you.",
+      "translation": "만나서 반가워요.",
+      "translation_informal": "만나서 반가워.",
+      "tags": [
+        "iy_as_ih"
+      ]
+    },
+    {
+      "id": "en_basics_03",
+      "text": "Where is the restroom?",
+      "translation": "화장실이 어디예요?",
+      "translation_informal": "화장실 어디야?",
+      "tags": [
+        "dh_as_d",
+        "ih_as_iy",
+        "r_as_l"
+      ]
+    },
+    {
+      "id": "en_basics_04",
+      "text": "I'm sorry, I'm late.",
+      "translation": "늦어서 죄송해요.",
+      "translation_informal": "늦어서 미안해.",
+      "tags": [
+        "iy_as_ih",
+        "l_as_r",
+        "r_as_l"
+      ]
+    },
+    {
+      "id": "en_basics_05",
+      "text": "Please speak more slowly.",
+      "translation": "좀 더 천천히 말씀해 주세요.",
+      "translation_informal": "좀 더 천천히 말해 줘.",
+      "tags": [
+        "iy_as_ih",
+        "l_as_r",
+        "r_as_l"
+      ]
+    },
+    {
+      "id": "en_basics_06",
+      "text": "I live in a big city.",
+      "translation": "저는 큰 도시에 살아요.",
+      "translation_informal": "나는 큰 도시에 살아.",
+      "tags": [
+        "ih_as_iy",
+        "iy_as_ih",
+        "l_as_r",
+        "v_as_b"
+      ]
+    },
+    {
+      "id": "en_basics_07",
+      "text": "Have a good weekend.",
+      "translation": "주말 잘 보내세요.",
+      "translation_informal": "주말 잘 보내.",
+      "tags": [
+        "iy_as_ih",
+        "v_as_b"
+      ]
+    },
+    {
+      "id": "en_basics_08",
+      "text": "I feel fine, thanks.",
+      "translation": "괜찮아요, 고마워요.",
+      "translation_informal": "괜찮아, 고마워.",
+      "tags": [
+        "f_as_p",
+        "iy_as_ih",
+        "l_as_r",
+        "th_as_s"
+      ]
+    },
+    {
+      "id": "en_basics_09",
+      "text": "This is my friend.",
+      "translation": "이쪽은 제 친구예요.",
+      "translation_informal": "얘는 내 친구야.",
+      "tags": [
+        "dh_as_d",
+        "f_as_p",
+        "ih_as_iy",
+        "r_as_l"
+      ]
+    },
+    {
+      "id": "en_basics_10",
+      "text": "Can you help me, please?",
+      "translation": "좀 도와주시겠어요?",
+      "translation_informal": "좀 도와줄래?",
+      "tags": [
+        "iy_as_ih",
+        "l_as_r"
+      ]
+    }
+  ]
+}

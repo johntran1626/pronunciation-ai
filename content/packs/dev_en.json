@@ -1,0 +1,118 @@
+{
+ "id": "dev-en",
+ "lang": "en",
+ "name": "Dev pack (English)",
+ "dev_only": true,
+ "reviewed": false,
+ "note": "Developer test sentences, not reviewed as learning content. Learner packs are separate.",
+ "source": "CMU ARCTIC prompts (Carnegie Mellon University, 2003), http://www.festvox.org/cmu_arctic/ ; prompt text unmodified, selection by this project",
+ "license": "CMU ARCTIC: free for any purpose with the notice kept; full notice in tests/fixtures/LICENSES.md",
+ "items": [
+  {
+   "id": "arctic_a0020",
+   "text": "Clubs and balls and cities grew to be only memories.",
+   "translation": null,
+   "tags": [
+    "ih_as_iy",
+    "iy_as_ih",
+    "l_as_r",
+    "r_as_l"
+   ]
+  },
+  {
+   "id": "arctic_a0031",
+   "text": "They were three hundred yards apart.",
+   "translation": null,
+   "tags": [
+    "dh_as_d",
+    "iy_as_ih",
+    "r_as_l",
+    "th_as_s"
+   ]
+  },
+  {
+   "id": "arctic_a0052",
+   "text": "It was a curious coincidence.",
+   "translation": null,
+   "tags": [
+    "ih_as_iy",
+    "iy_as_ih",
+    "r_as_l"
+   ]
+  },
+  {
+   "id": "arctic_a0054",
+   "text": "There was nothing on the rock.",
+   "translation": null,
+   "tags": [
+    "dh_as_d",
+    "ih_as_iy",
+    "r_as_l",
+    "th_as_s"
+   ]
+  },
+  {
+   "id": "arctic_a0079",
+   "text": "It was a large canoe.",
+   "translation": null,
+   "tags": [
+    "ih_as_iy",
+    "l_as_r",
+    "r_as_l"
+   ]
+  },
+  {
+   "id": "arctic_a0181",
+   "text": "So cheer up, and give us your paw.",
+   "translation": null,
+   "tags": [
+    "ih_as_iy",
+    "r_as_l",
+    "v_as_b"
+   ]
+  },
+  {
+   "id": "arctic_a0183",
+   "text": "And the air was growing chilly.",
+   "translation": null,
+   "tags": [
+    "dh_as_d",
+    "ih_as_iy",
+    "iy_as_ih",
+    "l_as_r",
+    "r_as_l"
+   ]
+  },
+  {
+   "id": "arctic_a0195",
+   "text": "But a strange thing happened.",
+   "translation": null,
+   "tags": [
+    "ih_as_iy",
+    "r_as_l",
+    "th_as_s"
+   ]
+  },
+  {
+   "id": "arctic_a0205",
+   "text": "From now on we're pals.",
+   "translation": null,
+   "tags": [
+    "f_as_p",
+    "iy_as_ih",
+    "l_as_r",
+    "r_as_l"
+   ]
+  },
+  {
+   "id": "arctic_a0230",
+   "text": "Do you know any good land around here.",
+   "translation": null,
+   "tags": [
+    "iy_as_ih",
+    "l_as_r",
+    "r_as_l"
+   ]
+  }
+ ]
+}

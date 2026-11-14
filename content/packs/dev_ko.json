@@ -1,0 +1,125 @@
+{
+ "id": "dev-ko",
+ "lang": "ko",
+ "name": "Dev pack (Korean)",
+ "dev_only": true,
+ "reviewed": false,
+ "note": "Developer test sentences, not reviewed as learning content. Native-written news-style text, longer than real packs will be. Learner packs are separate.",
+ "source": "Zeroth-Korean (Zeroth Project: Lucas Jo, Atlas Guide Inc.; Wonkyum Lee, Gridspace Inc.), via Hugging Face kresnik/zeroth_korean; transcript text unmodified, selection by this project",
+ "license": "CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)",
+ "items": [
+  {
+   "id": "126_003_2058",
+   "text": "강아지가 용변을 보도록 유도하는 말을 가르칠 수도 있다",
+   "translation": null,
+   "tags": [
+    "eo_vs_o",
+    "eu",
+    "p_stops",
+    "tap_r"
+   ]
+  },
+  {
+   "id": "137_003_0934",
+   "text": "이들 작품은 그의 인생을 바꿨고 오늘의 그를 있게 했다",
+   "translation": null,
+   "tags": [
+    "ae_vs_e",
+    "eo_vs_o",
+    "eu",
+    "p_stops",
+    "tap_r"
+   ]
+  },
+  {
+   "id": "149_003_2650",
+   "text": "그녀는 그 과정을 힘들어 하지 않고 재밌게 받아들인다",
+   "translation": null,
+   "tags": [
+    "ae_vs_e",
+    "eo_vs_o",
+    "eu",
+    "p_stops",
+    "tap_r"
+   ]
+  },
+  {
+   "id": "191_003_0210",
+   "text": "국내 대학에서 교수로 학생들을 가르쳤고 책도 냈습니다",
+   "translation": null,
+   "tags": [
+    "ae_vs_e",
+    "eo_vs_o",
+    "eu",
+    "tap_r"
+   ]
+  },
+  {
+   "id": "191_003_0634",
+   "text": "등급이 올라감에 따라 받은 금액과 혜택은 함께 증가했다",
+   "translation": null,
+   "tags": [
+    "ae_vs_e",
+    "eo_vs_o",
+    "eu",
+    "p_stops",
+    "tap_r"
+   ]
+  },
+  {
+   "id": "191_003_0810",
+   "text": "낯선 곳에 묵다 보니 누굴 만날 때 차림새가 엉망이었다",
+   "translation": null,
+   "tags": [
+    "ae_vs_e",
+    "eo_vs_o",
+    "p_stops",
+    "tap_r"
+   ]
+  },
+  {
+   "id": "201_003_1744",
+   "text": "키가 작아지는 현상의 원인은 골다공증일 가능성이 높다",
+   "translation": null,
+   "tags": [
+    "eo_vs_o",
+    "eu"
+   ]
+  },
+  {
+   "id": "201_003_1785",
+   "text": "꽃이 다양한 방법으로 곤충들에게 그 점을 알려 줍니다",
+   "translation": null,
+   "tags": [
+    "ae_vs_e",
+    "eo_vs_o",
+    "eu",
+    "p_stops",
+    "tap_r"
+   ]
+  },
+  {
+   "id": "214_003_1965",
+   "text": "돌고래는 주로 오징어 물고기 갑각류 등을 먹고 삽니다",
+   "translation": null,
+   "tags": [
+    "ae_vs_e",
+    "eo_vs_o",
+    "eu",
+    "tap_r"
+   ]
+  },
+  {
+   "id": "192_003_1155",
+   "text": "일을 쉬는 주말이면 몸이 아파 병원 신세를 져야 했다",
+   "translation": null,
+   "tags": [
+    "ae_vs_e",
+    "eo_vs_o",
+    "eu",
+    "p_stops",
+    "tap_r"
+   ]
+  }
+ ]
+}

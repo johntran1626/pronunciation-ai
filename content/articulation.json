@@ -1,0 +1,1401 @@
+{
+ "note": "Textbook TARGET articulations, not measurements of the user's mouth (the app estimates from audio). LLM-drafted (Claude) from the sources below; reviewed: false until checked by a human reviewer.",
+ "sources": [
+  "International Phonetic Association, IPA chart (2020 revision)",
+  "Ladefoged & Johnson, A Course in Phonetics (Cengage)",
+  "Lee, Hyun Bok (1993), 'Korean', Journal of the International Phonetic Association 23(1) (Illustrations of the IPA)",
+  "Shin, Kiaer & Cha (2013), The Sounds of Korean, Cambridge University Press",
+  "Silva (2006), 'Acoustic evidence for the emergence of tonal contrast in contemporary Korean', Phonology 23",
+  "This project's VOT and pitch measurements (spikes/b_vot.py)"
+ ],
+ "svg_axes": {
+  "tongue_x": "0 = back, 1 = front",
+  "tongue_y": "0 = low/open, 1 = high/close",
+  "lip_gap": "0 = closed, 1 = wide open",
+  "lip_round": "0 = spread/neutral, 1 = fully rounded"
+ },
+ "sounds": {
+  "en": {
+   "p": {
+    "kind": "consonant",
+    "place": "bilabial",
+    "manner": "stop",
+    "voicing": "voiceless",
+    "laryngeal": null,
+    "lips": "closed",
+    "description": "Both lips close, air builds up, lips pop open. A strong puff of air at the start of a stressed syllable (pin), almost none after s (spin).",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.45,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.0,
+     "lip_round": 0.0
+    }
+   },
+   "b": {
+    "kind": "consonant",
+    "place": "bilabial",
+    "manner": "stop",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "closed",
+    "description": "Both lips close and pop open, with the voice on (or starting right away). No puff of air.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.45,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.0,
+     "lip_round": 0.0
+    }
+   },
+   "t": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "stop",
+    "voicing": "voiceless",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "Tongue tip presses the ridge just behind the upper teeth, then releases. A puff of air at the start of a stressed syllable.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "d": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "stop",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "Tongue tip presses the ridge behind the upper teeth and releases, with the voice on. No puff.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "k": {
+    "kind": "consonant",
+    "place": "velar",
+    "manner": "stop",
+    "voicing": "voiceless",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "The back of the tongue presses the soft palate, then releases. A puff of air at the start of a stressed syllable.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.2,
+     "tongue_y": 0.85,
+     "tip": "down",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "ɡ": {
+    "kind": "consonant",
+    "place": "velar",
+    "manner": "stop",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "The back of the tongue presses the soft palate and releases, with the voice on. No puff.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.2,
+     "tongue_y": 0.85,
+     "tip": "down",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "f": {
+    "kind": "consonant",
+    "place": "labiodental",
+    "manner": "fricative",
+    "voicing": "voiceless",
+    "laryngeal": null,
+    "lips": "lip_to_teeth",
+    "description": "Upper teeth rest lightly on the lower lip; air hisses through the gap. The lips never close.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.45,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.1,
+     "lip_round": 0.0
+    }
+   },
+   "v": {
+    "kind": "consonant",
+    "place": "labiodental",
+    "manner": "fricative",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "lip_to_teeth",
+    "description": "Upper teeth on the lower lip, air flowing through, with the voice on (a buzz). The lips never close.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.45,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.1,
+     "lip_round": 0.0
+    }
+   },
+   "θ": {
+    "kind": "consonant",
+    "place": "dental",
+    "manner": "fricative",
+    "voicing": "voiceless",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "Tongue tip lightly between or just behind the upper front teeth; air hisses over it (think).",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.65,
+     "tongue_y": 0.5,
+     "tip": "dental",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "ð": {
+    "kind": "consonant",
+    "place": "dental",
+    "manner": "fricative",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "Tongue tip between or just behind the upper front teeth, voice on (this). The tip doesn't press, so it isn't a d.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.65,
+     "tongue_y": 0.5,
+     "tip": "dental",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "s": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "fricative",
+    "voicing": "voiceless",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "Tongue tip close to (not touching) the ridge behind the upper teeth; a narrow groove makes a sharp hiss.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "z": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "fricative",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "Like s, with the voice on: a buzzing hiss.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "ʃ": {
+    "kind": "consonant",
+    "place": "postalveolar",
+    "manner": "fricative",
+    "voicing": "voiceless",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "Tongue blade just behind the ridge, wider than for s; lips pushed slightly forward (she).",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.55,
+     "tongue_y": 0.6,
+     "tip": "postalveolar",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.5
+    }
+   },
+   "ʒ": {
+    "kind": "consonant",
+    "place": "postalveolar",
+    "manner": "fricative",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "Like sh with the voice on (measure).",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.55,
+     "tongue_y": 0.6,
+     "tip": "postalveolar",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.5
+    }
+   },
+   "h": {
+    "kind": "consonant",
+    "place": "glottal",
+    "manner": "fricative",
+    "voicing": "voiceless",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "Breath through an open throat; the mouth is already shaped for the next vowel.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.4,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "tʃ": {
+    "kind": "consonant",
+    "place": "postalveolar",
+    "manner": "affricate",
+    "voicing": "voiceless",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "Tongue blade presses just behind the ridge, then releases into a sh (church); lips slightly forward.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.55,
+     "tongue_y": 0.6,
+     "tip": "postalveolar",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.5
+    }
+   },
+   "dʒ": {
+    "kind": "consonant",
+    "place": "postalveolar",
+    "manner": "affricate",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "Like ch with the voice on (judge).",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.55,
+     "tongue_y": 0.6,
+     "tip": "postalveolar",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.5
+    }
+   },
+   "m": {
+    "kind": "consonant",
+    "place": "bilabial",
+    "manner": "nasal",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "closed",
+    "description": "Lips closed, voice on, air goes out through the nose.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.45,
+     "tip": "down",
+     "contact": false,
+     "velum": "lowered",
+     "lip_gap": 0.0,
+     "lip_round": 0.0
+    }
+   },
+   "n": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "nasal",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "Tongue tip on the ridge behind the upper teeth, voice on, air through the nose.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": true,
+     "velum": "lowered",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "ŋ": {
+    "kind": "consonant",
+    "place": "velar",
+    "manner": "nasal",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "Back of the tongue against the soft palate, air through the nose (sing). No g at the end.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.2,
+     "tongue_y": 0.85,
+     "tip": "down",
+     "contact": true,
+     "velum": "lowered",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "l": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "lateral",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "Tongue tip TOUCHES the ridge behind the upper teeth and stays there; air flows around the sides. At the end of a syllable (ball) the back of the tongue also rises (dark L).",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "ɹ": {
+    "kind": "consonant",
+    "place": "postalveolar",
+    "manner": "approximant",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "Tongue tip curls up and back, or the tongue bunches up, but it NEVER touches the roof of the mouth; lips slightly rounded.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.55,
+     "tongue_y": 0.6,
+     "tip": "raised",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.5
+    }
+   },
+   "w": {
+    "kind": "glide",
+    "place": "labial-velar",
+    "manner": "approximant",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "Lips rounded and pushed forward, back of the tongue raised, then glide into the vowel.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.2,
+     "tongue_y": 0.8,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.9
+    }
+   },
+   "j": {
+    "kind": "glide",
+    "place": "palatal",
+    "manner": "approximant",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "Front of the tongue raised close to the hard palate (like a quick ee), then glide into the vowel (yes).",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.8,
+     "tongue_y": 0.85,
+     "tip": "palatal",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "iː": {
+    "kind": "vowel",
+    "height": "close",
+    "frontness": "front",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "spread",
+    "description": "sheep: tongue high and forward, lips spread; held a bit longer and tenser than ship.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.9,
+     "tongue_y": 1.0,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.5,
+     "lip_round": 0.0
+    }
+   },
+   "ɪ": {
+    "kind": "vowel",
+    "height": "near-close",
+    "frontness": "near-front",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "spread",
+    "description": "ship: tongue a little lower and further back than in sheep, relaxed and short.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.75,
+     "tongue_y": 0.85,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.5,
+     "lip_round": 0.0
+    }
+   },
+   "ɛ": {
+    "kind": "vowel",
+    "height": "open-mid",
+    "frontness": "front",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "spread",
+    "description": "bed: tongue front, jaw half open.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.9,
+     "tongue_y": 0.4,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.5,
+     "lip_round": 0.0
+    }
+   },
+   "æ": {
+    "kind": "vowel",
+    "height": "near-open",
+    "frontness": "front",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "spread",
+    "description": "cat: jaw quite open, tongue low and forward.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.9,
+     "tongue_y": 0.2,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.5,
+     "lip_round": 0.0
+    }
+   },
+   "ɑː": {
+    "kind": "vowel",
+    "height": "open",
+    "frontness": "back",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "father: jaw open, tongue low and back, lips relaxed.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.15,
+     "tongue_y": 0.0,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "ɔː": {
+    "kind": "vowel",
+    "height": "open-mid",
+    "frontness": "back",
+    "rounded": true,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "thought: tongue low-mid and back, lips slightly rounded (many Americans say it like father).",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.15,
+     "tongue_y": 0.4,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.9
+    }
+   },
+   "ʊ": {
+    "kind": "vowel",
+    "height": "near-close",
+    "frontness": "near-back",
+    "rounded": true,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "book: tongue high-ish and back, lips loosely rounded, short.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.3,
+     "tongue_y": 0.85,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.9
+    }
+   },
+   "uː": {
+    "kind": "vowel",
+    "height": "close",
+    "frontness": "back",
+    "rounded": true,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "food: tongue high and back, lips rounded (often a bit fronted in American English).",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.15,
+     "tongue_y": 1.0,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.9
+    }
+   },
+   "ʌ": {
+    "kind": "vowel",
+    "height": "open-mid",
+    "frontness": "back",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "cut: tongue mid-low and fairly central, lips relaxed (not rounded).",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.15,
+     "tongue_y": 0.4,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "ə": {
+    "kind": "vowel",
+    "height": "mid",
+    "frontness": "central",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "the unstressed 'uh' (about): everything relaxed in the middle.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.55,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "ɚ": {
+    "kind": "vowel",
+    "height": "mid",
+    "frontness": "central",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "bird / butter: the r-colored vowel; tongue bunched or tip curled up as for r, without touching.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.55,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "eɪ": {
+    "kind": "diphthong",
+    "height": "close-mid",
+    "frontness": "front",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "spread",
+    "description": "day: starts at e and glides up toward the i of ship.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.9,
+     "tongue_y": 0.7,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.5,
+     "lip_round": 0.0
+    },
+    "to": "ɪ"
+   },
+   "oʊ": {
+    "kind": "diphthong",
+    "height": "close-mid",
+    "frontness": "back",
+    "rounded": true,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "go: starts at o with rounded lips and glides toward the u of book.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.15,
+     "tongue_y": 0.7,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.9
+    },
+    "to": "ʊ"
+   },
+   "aɪ": {
+    "kind": "diphthong",
+    "height": "open",
+    "frontness": "central",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "my: starts with an open jaw and glides up toward the i of ship.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.0,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    },
+    "to": "ɪ"
+   },
+   "aʊ": {
+    "kind": "diphthong",
+    "height": "open",
+    "frontness": "central",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "now: starts open and glides toward the u of book, rounding the lips at the end.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.0,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    },
+    "to": "ʊ"
+   },
+   "ɔɪ": {
+    "kind": "diphthong",
+    "height": "open-mid",
+    "frontness": "back",
+    "rounded": true,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "boy: starts rounded and back, glides forward to the i of ship.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.15,
+     "tongue_y": 0.4,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.9
+    },
+    "to": "ɪ"
+   }
+  },
+  "ko": {
+   "p": {
+    "kind": "consonant",
+    "place": "bilabial",
+    "manner": "stop",
+    "voicing": "voiceless",
+    "laryngeal": "plain",
+    "lips": "closed",
+    "description": "ㅂ: lips close and open with a light puff. Between voiced sounds it becomes voiced [b]. At a syllable end the lips stay closed (unreleased).",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.45,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.0,
+     "lip_round": 0.0
+    }
+   },
+   "p͈": {
+    "kind": "consonant",
+    "place": "bilabial",
+    "manner": "stop",
+    "voicing": "voiceless",
+    "laryngeal": "tense",
+    "lips": "closed",
+    "description": "ㅃ: lips close, throat tight, release with almost no puff; the next vowel starts high and sharp.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.45,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.0,
+     "lip_round": 0.0
+    }
+   },
+   "pʰ": {
+    "kind": "consonant",
+    "place": "bilabial",
+    "manner": "stop",
+    "voicing": "voiceless",
+    "laryngeal": "aspirated",
+    "lips": "closed",
+    "description": "ㅍ: lips close and release with a big puff of air; the next vowel starts high.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.45,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.0,
+     "lip_round": 0.0
+    }
+   },
+   "t": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "stop",
+    "voicing": "voiceless",
+    "laryngeal": "plain",
+    "lips": "neutral",
+    "description": "ㄷ: tongue tip and blade against the back of the upper teeth and the ridge (denti-alveolar), light puff. Voiced [d] between voiced sounds; unreleased at a syllable end.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "t͈": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "stop",
+    "voicing": "voiceless",
+    "laryngeal": "tense",
+    "lips": "neutral",
+    "description": "ㄸ: same place as ㄷ, throat tight, almost no puff, high sharp vowel after.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "tʰ": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "stop",
+    "voicing": "voiceless",
+    "laryngeal": "aspirated",
+    "lips": "neutral",
+    "description": "ㅌ: same place as ㄷ, big puff of air.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "k": {
+    "kind": "consonant",
+    "place": "velar",
+    "manner": "stop",
+    "voicing": "voiceless",
+    "laryngeal": "plain",
+    "lips": "neutral",
+    "description": "ㄱ: back of the tongue against the soft palate, light puff. Voiced [ɡ] between voiced sounds; unreleased at a syllable end.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.2,
+     "tongue_y": 0.85,
+     "tip": "down",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "k͈": {
+    "kind": "consonant",
+    "place": "velar",
+    "manner": "stop",
+    "voicing": "voiceless",
+    "laryngeal": "tense",
+    "lips": "neutral",
+    "description": "ㄲ: same place as ㄱ, throat tight, almost no puff.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.2,
+     "tongue_y": 0.85,
+     "tip": "down",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "kʰ": {
+    "kind": "consonant",
+    "place": "velar",
+    "manner": "stop",
+    "voicing": "voiceless",
+    "laryngeal": "aspirated",
+    "lips": "neutral",
+    "description": "ㅋ: same place as ㄱ, big puff of air.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.2,
+     "tongue_y": 0.85,
+     "tip": "down",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "tɕ": {
+    "kind": "consonant",
+    "place": "alveolo-palatal",
+    "manner": "affricate",
+    "voicing": "voiceless",
+    "laryngeal": "plain",
+    "lips": "neutral",
+    "description": "ㅈ: front of the tongue presses behind the ridge toward the hard palate, released into a soft hiss. Voiced between voiced sounds.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.75,
+     "tongue_y": 0.8,
+     "tip": "palatal",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "t͈ɕ": {
+    "kind": "consonant",
+    "place": "alveolo-palatal",
+    "manner": "affricate",
+    "voicing": "voiceless",
+    "laryngeal": "tense",
+    "lips": "neutral",
+    "description": "ㅉ: like ㅈ with a tight throat and no puff.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.75,
+     "tongue_y": 0.8,
+     "tip": "palatal",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "tɕʰ": {
+    "kind": "consonant",
+    "place": "alveolo-palatal",
+    "manner": "affricate",
+    "voicing": "voiceless",
+    "laryngeal": "aspirated",
+    "lips": "neutral",
+    "description": "ㅊ: like ㅈ with a big puff of air.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.75,
+     "tongue_y": 0.8,
+     "tip": "palatal",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "s": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "fricative",
+    "voicing": "voiceless",
+    "laryngeal": "plain",
+    "lips": "neutral",
+    "description": "ㅅ: a soft, breathy s. Before ㅣ or a y-sound it is pronounced like a soft sh [ɕ].",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "s͈": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "fricative",
+    "voicing": "voiceless",
+    "laryngeal": "tense",
+    "lips": "neutral",
+    "description": "ㅆ: a tense, sharp s with a tight throat, no breathiness.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "h": {
+    "kind": "consonant",
+    "place": "glottal",
+    "manner": "fricative",
+    "voicing": "voiceless",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "ㅎ: breath through the throat. Often weak or silent between voiced sounds.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.4,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "m": {
+    "kind": "consonant",
+    "place": "bilabial",
+    "manner": "nasal",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "closed",
+    "description": "ㅁ: lips closed, air through the nose. At a word start it may sound partly like b in Seoul speech [UNVERIFIED: anecdotal, find a source before showing users]; if true it is native, not an error.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.45,
+     "tip": "down",
+     "contact": false,
+     "velum": "lowered",
+     "lip_gap": 0.0,
+     "lip_round": 0.0
+    }
+   },
+   "n": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "nasal",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "ㄴ: tongue tip behind the upper teeth, air through the nose. May sound partly d-like at a word start in Seoul speech [UNVERIFIED, as for ㅁ].",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": true,
+     "velum": "lowered",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "ŋ": {
+    "kind": "consonant",
+    "place": "velar",
+    "manner": "nasal",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "ㅇ at a syllable end: back of the tongue against the soft palate, air through the nose (like English sing).",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.2,
+     "tongue_y": 0.85,
+     "tip": "down",
+     "contact": true,
+     "velum": "lowered",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "ɾ": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "tap",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "ㄹ between vowels: the tongue tip taps the ridge behind the upper teeth ONCE, very quickly. Not an English r (no curling), not a long l.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "l": {
+    "kind": "consonant",
+    "place": "alveolar",
+    "manner": "lateral",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "ㄹ at a syllable end (and ㄹㄹ): tongue tip stays on the ridge, air around the sides, like a light English l.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.6,
+     "tongue_y": 0.55,
+     "tip": "alveolar",
+     "contact": true,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "j": {
+    "kind": "glide",
+    "place": "palatal",
+    "manner": "approximant",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "The y-glide in ㅑ ㅕ ㅛ ㅠ ㅒ ㅖ: front of the tongue raised toward the hard palate.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.8,
+     "tongue_y": 0.85,
+     "tip": "palatal",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "w": {
+    "kind": "glide",
+    "place": "labial-velar",
+    "manner": "approximant",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "The w-glide in ㅘ ㅝ ㅙ ㅞ ㅟ: lips rounded, back of the tongue raised.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.2,
+     "tongue_y": 0.8,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.9
+    }
+   },
+   "ɰ": {
+    "kind": "glide",
+    "place": "velar",
+    "manner": "approximant",
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "The glide at the start of ㅢ: back of the tongue raised like ㅡ, lips NOT rounded.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.2,
+     "tongue_y": 0.85,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "i": {
+    "kind": "vowel",
+    "height": "close",
+    "frontness": "front",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "spread",
+    "description": "ㅣ: tongue high and forward, lips spread.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.9,
+     "tongue_y": 1.0,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.5,
+     "lip_round": 0.0
+    }
+   },
+   "e": {
+    "kind": "vowel",
+    "height": "mid",
+    "frontness": "front",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "spread",
+    "description": "ㅔ: tongue mid and forward. Many Seoul speakers say ㅔ and ㅐ the same.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.9,
+     "tongue_y": 0.55,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.5,
+     "lip_round": 0.0
+    }
+   },
+   "ɛ": {
+    "kind": "vowel",
+    "height": "open-mid",
+    "frontness": "front",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "spread",
+    "description": "ㅐ: like ㅔ but a little more open. Many Seoul speakers merge it with ㅔ.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.9,
+     "tongue_y": 0.4,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.5,
+     "lip_round": 0.0
+    }
+   },
+   "a": {
+    "kind": "vowel",
+    "height": "open",
+    "frontness": "central",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "ㅏ: jaw open, tongue low and central.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.5,
+     "tongue_y": 0.0,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "ʌ": {
+    "kind": "vowel",
+    "height": "open-mid",
+    "frontness": "back",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "neutral",
+    "description": "ㅓ: tongue mid-low and back, jaw fairly open, lips NOT pushed forward. (ㅗ has the same tongue area but rounded lips.)",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.15,
+     "tongue_y": 0.4,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.4,
+     "lip_round": 0.0
+    }
+   },
+   "o": {
+    "kind": "vowel",
+    "height": "close-mid",
+    "frontness": "back",
+    "rounded": true,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "ㅗ: tongue back, lips clearly rounded and pushed forward. Younger speakers raise it toward ㅜ.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.15,
+     "tongue_y": 0.7,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.9
+    }
+   },
+   "u": {
+    "kind": "vowel",
+    "height": "close",
+    "frontness": "back",
+    "rounded": true,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "rounded",
+    "description": "ㅜ: tongue high and back, lips tightly rounded.",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.15,
+     "tongue_y": 1.0,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.3,
+     "lip_round": 0.9
+    }
+   },
+   "ɯ": {
+    "kind": "vowel",
+    "height": "close",
+    "frontness": "back",
+    "rounded": false,
+    "voicing": "voiced",
+    "laryngeal": null,
+    "lips": "spread",
+    "description": "ㅡ: tongue high and back like ㅜ, but the lips are SPREAD, not rounded. Often a little central [ɨ].",
+    "reviewed": false,
+    "svg": {
+     "tongue_x": 0.15,
+     "tongue_y": 1.0,
+     "tip": "down",
+     "contact": false,
+     "velum": "raised",
+     "lip_gap": 0.5,
+     "lip_round": 0.0
+    }
+   }
+  }
+ }
+}

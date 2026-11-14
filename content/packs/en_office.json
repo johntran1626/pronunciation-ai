@@ -1,0 +1,139 @@
+{
+  "id": "en-office",
+  "lang": "en",
+  "name": "Office",
+  "dev_only": false,
+  "reviewed": true,
+  "source": "Written for this project with an LLM (Claude, Anthropic); English reviewed by the author. Korean translations (존댓말 + 반말) also LLM-written.",
+  "license": "This project's own content",
+  "items": [
+    {
+      "id": "en_office_01",
+      "text": "I have a meeting at three.",
+      "translation": "세 시에 회의가 있어요.",
+      "translation_informal": "세 시에 회의 있어.",
+      "tags": [
+        "ih_as_iy",
+        "iy_as_ih",
+        "r_as_l",
+        "th_as_s",
+        "v_as_b"
+      ]
+    },
+    {
+      "id": "en_office_02",
+      "text": "Could you send me the file?",
+      "translation": "그 파일 좀 보내 주시겠어요?",
+      "translation_informal": "그 파일 좀 보내 줄래?",
+      "tags": [
+        "dh_as_d",
+        "f_as_p",
+        "iy_as_ih",
+        "l_as_r"
+      ]
+    },
+    {
+      "id": "en_office_03",
+      "text": "I'll finish the report by Friday.",
+      "translation": "금요일까지 보고서 끝낼게요.",
+      "translation_informal": "금요일까지 보고서 끝낼게.",
+      "tags": [
+        "dh_as_d",
+        "f_as_p",
+        "ih_as_iy",
+        "iy_as_ih",
+        "l_as_r",
+        "r_as_l"
+      ]
+    },
+    {
+      "id": "en_office_04",
+      "text": "Let's have a video call later.",
+      "translation": "이따가 화상 통화해요.",
+      "translation_informal": "이따가 화상 통화하자.",
+      "tags": [
+        "ih_as_iy",
+        "iy_as_ih",
+        "l_as_r",
+        "v_as_b"
+      ]
+    },
+    {
+      "id": "en_office_05",
+      "text": "The printer is broken again.",
+      "translation": "프린터가 또 고장 났어요.",
+      "translation_informal": "프린터 또 고장 났어.",
+      "tags": [
+        "dh_as_d",
+        "ih_as_iy",
+        "r_as_l"
+      ]
+    },
+    {
+      "id": "en_office_06",
+      "text": "Please review this before lunch.",
+      "translation": "점심 전에 이거 검토해 주세요.",
+      "translation_informal": "점심 전에 이거 검토해 줘.",
+      "tags": [
+        "dh_as_d",
+        "f_as_p",
+        "ih_as_iy",
+        "iy_as_ih",
+        "l_as_r",
+        "r_as_l",
+        "v_as_b"
+      ]
+    },
+    {
+      "id": "en_office_07",
+      "text": "My boss is very busy today.",
+      "translation": "오늘 상사가 정말 바빠요.",
+      "translation_informal": "오늘 상사가 진짜 바빠.",
+      "tags": [
+        "ih_as_iy",
+        "iy_as_ih",
+        "r_as_l",
+        "v_as_b"
+      ]
+    },
+    {
+      "id": "en_office_08",
+      "text": "Can we move the deadline?",
+      "translation": "마감일을 미룰 수 있을까요?",
+      "translation_informal": "마감일 미룰 수 있을까?",
+      "tags": [
+        "dh_as_d",
+        "iy_as_ih",
+        "l_as_r",
+        "v_as_b"
+      ]
+    },
+    {
+      "id": "en_office_09",
+      "text": "I'm working from home this week.",
+      "translation": "이번 주는 재택근무해요.",
+      "translation_informal": "이번 주는 재택근무해.",
+      "tags": [
+        "dh_as_d",
+        "f_as_p",
+        "ih_as_iy",
+        "iy_as_ih",
+        "r_as_l"
+      ]
+    },
+    {
+      "id": "en_office_10",
+      "text": "Thanks for your help with the project.",
+      "translation": "프로젝트 도와주셔서 감사해요.",
+      "translation_informal": "프로젝트 도와줘서 고마워.",
+      "tags": [
+        "dh_as_d",
+        "f_as_p",
+        "ih_as_iy",
+        "l_as_r",
+        "r_as_l",
+        "th_as_s"
+      ]
+    }
+  ]
+}

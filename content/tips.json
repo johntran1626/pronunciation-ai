@@ -1,0 +1,472 @@
+{
+ "note": "Fixed tips per confusion pair (target -> produced), never generated at request time. LLM-drafted (Claude); reviewed: true once a human reviewer approved it (see REVIEWED). Facts come from content/articulation.json; the LLM is never used for these.",
+ "tips": {
+  "en": {
+   "r_as_l": {
+    "target": "ɹ",
+    "target_lang": "en",
+    "target_label": "English R",
+    "produced": "l",
+    "produced_lang": "en",
+    "produced_label": "L",
+    "what_happened": "In “{word}”, the R probably sounded like an L.",
+    "tip": "Pull your tongue back and don't let the tip touch the roof of your mouth. Round your lips slightly.",
+    "practice": [
+     "red",
+     "right",
+     "road"
+    ],
+    "facts": {
+     "target": {
+      "contact": false,
+      "lips": "rounded"
+     },
+     "produced": {
+      "contact": true
+     }
+    },
+    "reviewed": true
+   },
+   "l_as_r": {
+    "target": "l",
+    "target_lang": "en",
+    "target_label": "L",
+    "produced": "ɹ",
+    "produced_lang": "en",
+    "produced_label": "English R",
+    "what_happened": "In “{word}”, the L probably sounded like an R.",
+    "tip": "Touch the ridge just behind your upper teeth with your tongue tip and keep it there as the vowel starts. Don't curl the tongue back.",
+    "practice": [
+     "light",
+     "long",
+     "lake"
+    ],
+    "facts": {
+     "target": {
+      "contact": true,
+      "tip": "alveolar"
+     },
+     "produced": {
+      "contact": false
+     }
+    },
+    "reviewed": true
+   },
+   "f_as_p": {
+    "target": "f",
+    "target_lang": "en",
+    "target_label": "F",
+    "produced": "p",
+    "produced_lang": "en",
+    "produced_label": "P",
+    "what_happened": "In “{word}”, the F probably sounded like a P.",
+    "tip": "Rest your upper teeth lightly on your lower lip and blow a long “fff”. Your lips never close for F.",
+    "practice": [
+     "fan",
+     "fine",
+     "coffee"
+    ],
+    "facts": {
+     "target": {
+      "lips": "lip_to_teeth"
+     },
+     "produced": {
+      "lips": "closed"
+     }
+    },
+    "reviewed": true
+   },
+   "v_as_b": {
+    "target": "v",
+    "target_lang": "en",
+    "target_label": "V",
+    "produced": "b",
+    "produced_lang": "en",
+    "produced_label": "B",
+    "what_happened": "In “{word}”, the V probably sounded like a B.",
+    "tip": "Upper teeth on your lower lip like F, but turn your voice on so it buzzes: “vvv”. Don't press your lips together.",
+    "practice": [
+     "van",
+     "very",
+     "voice"
+    ],
+    "facts": {
+     "target": {
+      "lips": "lip_to_teeth",
+      "voicing": "voiced"
+     },
+     "produced": {
+      "lips": "closed"
+     }
+    },
+    "reviewed": true
+   },
+   "th_as_s": {
+    "target": "θ",
+    "target_lang": "en",
+    "target_label": "TH (as in think)",
+    "produced": "s",
+    "produced_lang": "en",
+    "produced_label": "S",
+    "what_happened": "In “{word}”, the TH probably sounded like an S or T.",
+    "tip": "Put your tongue tip lightly between your front teeth and blow. Don't press, and don't pull the tip back behind the teeth like for S.",
+    "practice": [
+     "think",
+     "three",
+     "bath"
+    ],
+    "facts": {
+     "target": {
+      "tip": "dental",
+      "manner": "fricative"
+     },
+     "produced": {
+      "tip": "alveolar"
+     }
+    },
+    "reviewed": true
+   },
+   "dh_as_d": {
+    "target": "ð",
+    "target_lang": "en",
+    "target_label": "TH (as in this)",
+    "produced": "d",
+    "produced_lang": "en",
+    "produced_label": "D",
+    "what_happened": "In “{word}”, the TH probably sounded like a D.",
+    "tip": "Tongue tip lightly between your front teeth, voice on, and let the air keep flowing so it buzzes. If the tip presses the ridge, it becomes D.",
+    "practice": [
+     "this",
+     "they",
+     "mother"
+    ],
+    "facts": {
+     "target": {
+      "tip": "dental",
+      "voicing": "voiced",
+      "contact": false
+     },
+     "produced": {
+      "contact": true
+     }
+    },
+    "reviewed": true
+   },
+   "ih_as_iy": {
+    "target": "ɪ",
+    "target_lang": "en",
+    "target_label": "the short i in “ship”",
+    "produced": "iː",
+    "produced_lang": "en",
+    "produced_label": "the long ee in “sheep”",
+    "what_happened": "In “{word}”, the short i probably sounded like a long ee.",
+    "tip": "Relax: let your tongue and jaw drop a little from the “ee” position, and keep the vowel short. Ship is shorter and looser than sheep.",
+    "practice": [
+     "ship",
+     "sit",
+     "fill"
+    ],
+    "facts": {
+     "target": {
+      "height": "near-close"
+     },
+     "produced": {
+      "height": "close"
+     }
+    },
+    "reviewed": true
+   },
+   "iy_as_ih": {
+    "target": "iː",
+    "target_lang": "en",
+    "target_label": "the long ee in “sheep”",
+    "produced": "ɪ",
+    "produced_lang": "en",
+    "produced_label": "the short i in “ship”",
+    "what_happened": "In “{word}”, the long ee probably sounded like a short i.",
+    "tip": "Spread your lips like a small smile, push your tongue high and forward, and hold the vowel a little longer: “sheeep”.",
+    "practice": [
+     "sheep",
+     "seat",
+     "feel"
+    ],
+    "facts": {
+     "target": {
+      "height": "close",
+      "lips": "spread"
+     },
+     "produced": {
+      "height": "near-close"
+     }
+    },
+    "reviewed": true
+   },
+   "extra_vowel": {
+    "target": null,
+    "target_lang": "en",
+    "target_label": "the last consonant",
+    "produced": "ɯ",
+    "produced_lang": "ko",
+    "produced_label": "an extra “eu” vowel (ㅡ)",
+    "what_happened": "“{word}” probably had an extra “eu” vowel after the last sound.",
+    "tip": "End the word on the consonant and stop your voice right there. Don't release it into a small “eu”.",
+    "practice": [
+     "bus",
+     "desk",
+     "milk"
+    ],
+    "facts": {},
+    "reviewed": true
+   },
+   "word_not_heard": {
+    "target": null,
+    "target_lang": "en",
+    "target_label": "this word",
+    "produced": null,
+    "produced_lang": "en",
+    "produced_label": null,
+    "what_happened": "We couldn't hear “{word}” in your recording.",
+    "tip": "Say every word, including short ones like “a”, “the” and “to”. Try again a little slower.",
+    "practice": [],
+    "facts": {},
+    "reviewed": true
+   }
+  },
+  "ko": {
+   "eo_as_o": {
+    "target": "ʌ",
+    "target_lang": "ko",
+    "target_label": "ㅓ",
+    "produced": "o",
+    "produced_lang": "ko",
+    "produced_label": "ㅗ",
+    "what_happened": "In “{word}”, ㅓ probably sounded like ㅗ.",
+    "tip": "Keep your lips relaxed and open, not rounded or pushed forward, and drop your jaw a bit more than for ㅗ. The tongue stays back for both.",
+    "practice": [
+     "거기",
+     "머리",
+     "버스"
+    ],
+    "facts": {
+     "target": {
+      "rounded": false
+     },
+     "produced": {
+      "rounded": true,
+      "lips": "rounded"
+     }
+    },
+    "reviewed": true,
+    "needs_native_review": false
+   },
+   "eu_as_u": {
+    "target": "ɯ",
+    "target_lang": "ko",
+    "target_label": "ㅡ",
+    "produced": "u",
+    "produced_lang": "ko",
+    "produced_label": "ㅜ",
+    "what_happened": "In “{word}”, ㅡ probably sounded like ㅜ.",
+    "tip": "Keep the tongue high and back as for ㅜ, but spread your lips flat like a slight smile. No rounding at all.",
+    "practice": [
+     "그림",
+     "크다",
+     "쓰다"
+    ],
+    "facts": {
+     "target": {
+      "rounded": false,
+      "lips": "spread",
+      "height": "close"
+     },
+     "produced": {
+      "rounded": true,
+      "height": "close"
+     }
+    },
+    "reviewed": true,
+    "needs_native_review": false
+   },
+   "ae_as_e": {
+    "target": "ɛ",
+    "target_lang": "ko",
+    "target_label": "ㅐ",
+    "produced": "e",
+    "produced_lang": "ko",
+    "produced_label": "ㅔ",
+    "what_happened": "In “{word}”, ㅐ may have sounded like ㅔ.",
+    "tip": "Open your jaw a little more than for ㅔ. Many Seoul speakers say ㅐ and ㅔ the same (they've merged), so this is a fine detail.",
+    "practice": [
+     "개",
+     "새",
+     "배"
+    ],
+    "facts": {
+     "target": {
+      "height": "open-mid"
+     },
+     "produced": {
+      "height": "mid"
+     }
+    },
+    "reviewed": true,
+    "needs_native_review": false
+   },
+   "tap_as_r": {
+    "target": "ɾ",
+    "target_lang": "ko",
+    "target_label": "ㄹ (a quick tap)",
+    "produced": "ɹ",
+    "produced_lang": "en",
+    "produced_label": "English R",
+    "what_happened": "In “{word}”, ㄹ probably sounded like an English R.",
+    "tip": "Don't curl your tongue back. Flick the tip once, quickly, against the ridge behind your upper teeth, like the tt in American “butter”.",
+    "practice": [
+     "나라",
+     "다리",
+     "우리"
+    ],
+    "facts": {
+     "target": {
+      "manner": "tap",
+      "contact": true
+     },
+     "produced": {
+      "contact": false
+     }
+    },
+    "reviewed": true,
+    "needs_native_review": false
+   },
+   "tap_as_l": {
+    "target": "ɾ",
+    "target_lang": "ko",
+    "target_label": "ㄹ (a quick tap)",
+    "produced": "l",
+    "produced_lang": "ko",
+    "produced_label": "a long L",
+    "what_happened": "In “{word}”, ㄹ probably sounded like a long English L.",
+    "tip": "Between vowels, touch the ridge for only an instant and let go right away. Don't hold the tongue there like an English L.",
+    "practice": [
+     "노래",
+     "사랑",
+     "거리"
+    ],
+    "facts": {
+     "target": {
+      "manner": "tap"
+     },
+     "produced": {
+      "manner": "lateral"
+     }
+    },
+    "reviewed": true,
+    "needs_native_review": false
+   },
+   "pp_as_p": {
+    "target": "p͈",
+    "target_lang": "ko",
+    "target_label": "ㅃ (tense)",
+    "produced": "p",
+    "produced_lang": "ko",
+    "produced_label": "ㅂ (plain)",
+    "what_happened": "In “{word}”, you probably said a plain ㅂ where the word needs a tense ㅃ.",
+    "tip": "Tighten your throat, press your lips firmly, and release with no puff of air. Start the vowel high and sharp.",
+    "practice": [
+     "빵",
+     "뿌리",
+     "뽀뽀"
+    ],
+    "facts": {
+     "target": {
+      "laryngeal": "tense"
+     },
+     "produced": {
+      "laryngeal": "plain"
+     }
+    },
+    "reviewed": false,
+    "position": "initial",
+    "needs_native_review": true
+   },
+   "pp_as_ph": {
+    "target": "p͈",
+    "target_lang": "ko",
+    "target_label": "ㅃ (tense)",
+    "produced": "pʰ",
+    "produced_lang": "ko",
+    "produced_label": "ㅍ (aspirated)",
+    "what_happened": "In “{word}”, you probably said an aspirated ㅍ (too much air) where the word needs a tense ㅃ.",
+    "tip": "Hold a hand in front of your mouth: for ㅃ you should feel almost no air. Tighten your throat and release the lips without a puff.",
+    "practice": [
+     "빵",
+     "뿌리",
+     "뽀뽀"
+    ],
+    "facts": {
+     "target": {
+      "laryngeal": "tense"
+     },
+     "produced": {
+      "laryngeal": "aspirated"
+     }
+    },
+    "reviewed": false,
+    "position": "initial",
+    "needs_native_review": true
+   },
+   "ph_as_p": {
+    "target": "pʰ",
+    "target_lang": "ko",
+    "target_label": "ㅍ (aspirated)",
+    "produced": "p",
+    "produced_lang": "ko",
+    "produced_label": "ㅂ (plain)",
+    "what_happened": "In “{word}”, you probably said a plain ㅂ where the word needs an aspirated ㅍ.",
+    "tip": "Release your lips with a big puff of air (you can feel it on your hand) and start the vowel at a high pitch.",
+    "practice": [
+     "포도",
+     "파도",
+     "피"
+    ],
+    "facts": {
+     "target": {
+      "laryngeal": "aspirated"
+     },
+     "produced": {
+      "laryngeal": "plain"
+     }
+    },
+    "reviewed": false,
+    "position": "initial",
+    "needs_native_review": true
+   },
+   "p_as_ph": {
+    "target": "p",
+    "target_lang": "ko",
+    "target_label": "ㅂ (plain)",
+    "produced": "pʰ",
+    "produced_lang": "ko",
+    "produced_label": "ㅍ (aspirated)",
+    "what_happened": "In “{word}”, you probably said an aspirated ㅍ where the word needs a plain ㅂ.",
+    "tip": "Use a lighter puff and start the vowel at a lower, relaxed pitch. In Seoul speech, the vowel's pitch is a big part of what separates ㅂ from ㅍ.",
+    "practice": [
+     "바다",
+     "비",
+     "불"
+    ],
+    "facts": {
+     "target": {
+      "laryngeal": "plain"
+     },
+     "produced": {
+      "laryngeal": "aspirated"
+     }
+    },
+    "reviewed": false,
+    "position": "initial",
+    "needs_native_review": true
+   }
+  }
+ }
+}

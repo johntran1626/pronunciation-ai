@@ -1,0 +1,143 @@
+{
+  "data": "Speech Accent Archive, all first languages (OSF osf.io/yh23d, CC BY-NC-SA 4.0), labels read from the narrow IPA transcriptions by eval/saa.py",
+  "speakers": {
+    "others": 246,
+    "korean": 26
+  },
+  "languages": 93,
+  "labels": {
+    "dh_as_d": {
+      "korean": {
+        "error": 116,
+        "other": 17,
+        "correct": 49
+      },
+      "others": {
+        "correct": 781,
+        "other": 325,
+        "error": 594,
+        "deleted": 22
+      }
+    },
+    "extra_vowel": {
+      "korean": {
+        "other": 267,
+        "correct": 702,
+        "error": 46,
+        "deleted": 129
+      },
+      "others": {
+        "other": 2406,
+        "correct": 7145,
+        "deleted": 1216,
+        "error": 57
+      }
+    },
+    "f_as_p": {
+      "korean": {
+        "correct": 150,
+        "error": 6
+      },
+      "others": {
+        "correct": 1462,
+        "other": 10,
+        "error": 2,
+        "deleted": 2
+      }
+    },
+    "ih_as_iy": {
+      "korean": {
+        "error": 65,
+        "correct": 215,
+        "deleted": 4,
+        "other": 2
+      },
+      "others": {
+        "correct": 2249,
+        "error": 410,
+        "deleted": 10,
+        "other": 37
+      }
+    },
+    "iy_as_ih": {
+      "korean": {
+        "correct": 286,
+        "other": 5,
+        "error": 43,
+        "deleted": 4
+      },
+      "others": {
+        "correct": 2737,
+        "error": 364,
+        "other": 79,
+        "deleted": 18
+      }
+    },
+    "l_as_r": {
+      "korean": {
+        "correct": 209,
+        "tap": 11,
+        "deleted": 6,
+        "error": 8
+      },
+      "others": {
+        "correct": 2127,
+        "deleted": 40,
+        "tap": 26,
+        "error": 10,
+        "other": 11
+      }
+    },
+    "r_as_l": {
+      "korean": {
+        "correct": 249,
+        "deleted": 26,
+        "error": 4,
+        "tap": 7
+      },
+      "others": {
+        "correct": 2312,
+        "deleted": 343,
+        "other": 14,
+        "tap": 30,
+        "error": 7
+      }
+    },
+    "th_as_s": {
+      "korean": {
+        "error": 35,
+        "correct": 68,
+        "other": 1
+      },
+      "others": {
+        "correct": 645,
+        "other": 44,
+        "error": 293,
+        "deleted": 2
+      }
+    },
+    "v_as_b": {
+      "korean": {
+        "correct": 44,
+        "other": 25,
+        "deleted": 8,
+        "error": 1
+      },
+      "others": {
+        "correct": 320,
+        "other": 362,
+        "deleted": 52,
+        "error": 4
+      }
+    }
+  },
+  "labelling sanity": {
+    "slots": 29376,
+    "correct": 21750,
+    "other": 3605,
+    "error": 2065,
+    "deleted": 1882,
+    "tap": 74
+  },
+  "pipeline seconds per recording (median)": 1.266
+}

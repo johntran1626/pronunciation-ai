@@ -1,0 +1,49 @@
+{
+ "source": "eval/korean_carryover.py : native English sounds as simulated Korean errors",
+ "warning": "SIMULATED errors (native English sounds), native Korean correct sounds: rule-out test only.",
+ "bar": 0.8,
+ "limit": null,
+ "checks": {
+  "ㄹ said as English R | model margin (R vs tap)": {
+   "errors": 56,
+   "korean_correct": 1133,
+   "controls": 208,
+   "auc_vs_korean": 0.9994,
+   "auc_vs_controls": 0.9997,
+   "survives": true
+  },
+  "ㄹ said as English R | F3 dip (lower = R-like)": {
+   "errors": 54,
+   "korean_correct": 1129,
+   "controls": 197,
+   "auc_vs_korean": 0.952,
+   "auc_vs_controls": 0.96,
+   "survives": true
+  },
+  "ㄹ said as English L | model margin (L vs tap)": {
+   "errors": 100,
+   "korean_correct": 1133,
+   "controls": 208,
+   "auc_vs_korean": 0.9995,
+   "auc_vs_controls": 1.0,
+   "survives": true
+  },
+  "ㅃㄸㄲ said with an English-p puff | VOT": {
+   "errors": 448,
+   "korean_correct": 798,
+   "controls": 132,
+   "auc_vs_korean": 0.9201,
+   "auc_vs_controls": 0.9472,
+   "survives": true
+  },
+  "ㅃㄸㄲ said like English b/d/g | VOT (lower)": {
+   "errors": 324,
+   "korean_correct": 798,
+   "controls": 0,
+   "auc_vs_korean": 0.5913,
+   "auc_vs_controls": null,
+   "survives": null,
+   "note": "reported only: no clean control"
+  }
+ }
+}
