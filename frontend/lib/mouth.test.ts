@@ -320,3 +320,31 @@ test("the gap between the lips is drawn as a dark opening: none for p/m, a slit 
   const xs = mouthOpening(a)!.map((q) => q.x);
   assert.ok(Math.min(...xs) <= a.upperLip.front + 1 && Math.max(...xs) >= TEETH_X + 10);
 });
+
+// ---------- the playing screen's air puff waves (soundWaves) ----------
+// Waves = a gust of air the sound makes (mouthViews side().puff), NOT "the mouth is open".
+test("air waves: one arc per step of puff, none when the sound makes no gust of air", async () => {
+  const { soundWaves } = await import("./mouth.ts");
+  const ah = geometry({ ...base, tongue_y: 0, lip_gap: 1 }, "vowel"); // wide open, but a vowel has no puff
+  assert.deepEqual(soundWaves(ah, 0), []);
+  assert.equal(soundWaves(g({}), 1).length, 1); // plain ㄱ / h: light puff
+  assert.equal(soundWaves(g({}), 2).length, 2); // English k
+  assert.equal(soundWaves(g({}), 3).length, 3); // aspirated ㅋ: big puff
+  const big = soundWaves(g({}), 3);
+  assert.ok(big[2].h > big[0].h && big[2].x < big[0].x); // each next arc further out and taller
+});
+
+test("air waves sit in front of the lips, at the middle of the gap, even when the lips are shut", async () => {
+  const { soundWaves, POP_VIEW } = await import("./mouth.ts");
+  const shapes = [g({ lip_gap: 0 }), g({ lip_round: 1, lip_gap: 0.3 }), geometry({ ...base, lip_gap: 0.1 }, "consonant", "lip_to_teeth")];
+  for (const m of shapes) {
+    const front = Math.min(m.upperLip.front, m.lowerLip.front);
+    const mid = (m.upperLip.bottom + m.lowerLip.top) / 2;
+    const waves = soundWaves(m, 3); // ㅍ: lips shut until the release, then the puff
+    assert.equal(waves.length, 3);
+    for (const w of waves) {
+      assert.ok(w.x < front && w.y === mid && w.h >= 4);
+      assert.ok(w.x - w.h * 0.55 > POP_VIEW.x); // the arc's bulge stays inside the drawing
+    }
+  }
+});

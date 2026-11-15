@@ -178,12 +178,13 @@ body {
   100% { transform: translateY(-8px) scale(1.2); opacity: 0; }
 }
 
-/* The playing screen: the mini Blueberry beside the sound tip nods. */
-.nod { transform-origin: 50% 100%; animation: nod 1.6s infinite ease-in-out; }
+/* The playing screen: the mini Blueberry beside the sound tip sways gently (small and slow, so it never
+   draws the eye away from the mouth). */
+.nod { transform-origin: 50% 100%; animation: nod 3.2s infinite ease-in-out; }
 @keyframes nod {
   0%, 100% { transform: rotate(0); }
-  30% { transform: rotate(-6deg); }
-  60% { transform: rotate(4deg); }
+  30% { transform: rotate(-1.5deg); }
+  60% { transform: rotate(1deg); }
 }
 
 /* The scrubber (components/NativeMouth.tsx): a range input with a see-through track (the bar under it draws the

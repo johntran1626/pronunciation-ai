@@ -27,6 +27,7 @@ import {
   DEFAULT_SPEED, EASE, frameIndexAt, frameMark, framesFor, poseAt, soundsFromTimings, wordFrames, type Frame, type Sound,
 } from "@/lib/animate";
 import { loadCardData, type TextLang } from "@/lib/api";
+import { side } from "@/lib/mouthViews";
 import { loadNativeClip } from "@/lib/native";
 import { SPEEDS, changeSpeed, scrubFill, speedLabel } from "@/lib/player";
 import { playSlice, stopPlayback } from "@/lib/replay";
@@ -180,6 +181,8 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
   const word = clip.words.findIndex((w) => t >= w.start && t <= w.end);
   const pose = poseAt(frames, t, EASE * speed);
   const mark = showKey ? frameMark(shown, pose, say(ui)) : null;
+  // blue air waves only for a sound that pushes out a gust of air (ㅋ, English p); a merged frame takes its biggest
+  const puff = Math.max(0, ...shown.map((s) => (s.entry ? side(s.entry).puff : 0)));
 
   // what Blueberry says for a set of sounds: the IPA in blue, then the plain-words description
   const tip = (s: Sound[]) => s[0]?.entry ? (
@@ -194,7 +197,7 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
     <div data-testid="native-mouth"
       className="grid grid-cols-1 gap-3.5 [grid-template-areas:'mouth'_'side'_'timeline'_'actions'] lg:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)] lg:gap-x-7 lg:gap-y-[18px] lg:[grid-template-areas:'mouth_side'_'mouth_actions'_'timeline_timeline']">
       {/* the picture, in its card, with the sound button in the corner */}
-      <div className="relative flex items-center justify-center rounded-[20px] border-[2.5px] border-ink bg-tray px-[58px] py-3 shadow-pop [grid-area:mouth] lg:min-h-[420px] lg:rounded-3xl lg:px-20 lg:py-6 lg:shadow-pop-lg">
+      <div className="relative flex items-center justify-center rounded-[20px] border-[2.5px] border-ink bg-tray px-4 py-3 shadow-pop [grid-area:mouth] lg:min-h-[420px] lg:rounded-3xl lg:px-20 lg:py-6 lg:shadow-pop-lg">
         <button type="button" onClick={() => onMuted?.(!muted)} aria-pressed={muted} aria-label={tr(muted ? "soundOn" : "soundOff")}
           title={tr(muted ? "soundOn" : "soundOff")} data-testid="sound"
           className={`absolute right-3 top-3 grid size-11 place-items-center rounded-xl bg-white text-ink lg:right-3.5 lg:top-3.5 lg:size-12 lg:rounded-[14px] ${POP}`}>
@@ -203,8 +206,8 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
             {muted ? <path d="m16 9 5 6m0-6-5 6" /> : <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />}
           </svg>
         </button>
-        <div className="w-full max-w-[420px] overflow-hidden rounded-2xl border-[2.5px] border-ink" data-testid="mouth">
-          <CutAway g={pose} mark={mark} />
+        <div className="w-full max-w-[460px]" data-testid="mouth">
+          <CutAway g={pose} mark={mark} look="pop" puff={puff} />
         </div>
       </div>
 

@@ -296,6 +296,22 @@ export function mouthOpening(g: Geometry): Pt[] | null {
   return [P(OPENING_BACK_X, top), P(front, top), ...quad(P(front, top), P(front + inset * 2, (top + bottom) / 2), P(front, bottom)), P(OPENING_BACK_X, bottom)];
 }
 
+// ---------- the playing screen's sound waves ("pop" look of components/MouthDiagram.tsx CutAway) ----------
+/** The pop look's window: VIEW with 10 more units on the left, room for the waves in front of the lips. */
+export const POP_VIEW = { x: VIEW.x - 10, y: VIEW.y, w: VIEW.w + 10, h: VIEW.h };
+
+/** Blue waves in front of the lips for a GUST OF AIR the sound makes, not for an open mouth (a vowel has none).
+ * puff = lib/mouthViews.ts side().puff: 0 none (vowels, tense ㅃ ㄸ ㄲ, b d g, nasals, f s and other fricatives),
+ * 1 light (plain ㅂ ㄷ ㄱ ㅈ, h), 2 English p t k, 3 big (aspirated ㅋ ㅌ ㅍ ㅊ). One arc per step, each further out
+ * and taller, at the middle of the lip gap (at the lips' meeting line when they are shut: the puff comes on the
+ * release). h = half the arc's height; the arc bulges h * 0.55 to the left of x. */
+export function soundWaves(g: Geometry, puff: number): { x: number; y: number; h: number }[] {
+  const n = Math.max(0, Math.min(3, Math.round(puff)));
+  const front = Math.min(g.upperLip.front, g.lowerLip.front);
+  const y = (g.upperLip.bottom + g.lowerLip.top) / 2;
+  return Array.from({ length: n }, (_, i) => ({ x: front - 3.5 - i * 4.5, y, h: 4 + i * 2.4 }));
+}
+
 // ---------- one plain-words label for "where it happens", with a line to the spot ----------
 export type Callout = { text: string; at: Pt; textAt: Pt };
 type Entry = { svg: Svg; kind: string; lips?: string | null };

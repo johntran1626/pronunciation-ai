@@ -1,8 +1,8 @@
-import { useId } from "react";
+import { useId, useLayoutEffect, useRef, useState } from "react";
 import { useUi } from "@/components/UiLang";
 import { say } from "@/lib/i18n";
 import type { ArticulationEntry } from "@/lib/api";
-import { facePaths, floorPath, geometry, mouthOpening, textWidth, type Callout, OPENING_BACK_X, palateY, PHARYNX_X, tonguePath, VELUM_CTRL, VELUM_START, VIEW, type Geometry, type Pt } from "@/lib/mouth";
+import { facePaths, floorPath, geometry, mouthOpening, textWidth, type Callout, OPENING_BACK_X, palateY, PHARYNX_X, POP_VIEW, soundWaves, tonguePath, VELUM_CTRL, VELUM_START, VIEW, type Geometry, type Pt } from "@/lib/mouth";
 import { caption, front, LOWER_TOOTH_SHOWS, side, UPPER_TOOTH_SHOWS, views, type View } from "@/lib/mouthViews";
 
 // Line-art mouth pictures in a line-art style (thin brown lines on a cream background, the key part
@@ -163,10 +163,22 @@ function InsideView({ e }: { e: ArticulationEntry }) {
   return <CutAway g={geometry(e.svg, e.kind, e.lips)} e={e} />;
 }
 
+// Two looks for the same drawing. "line" = the cream line art of the detail card (with its other views);
+// "pop" = the site's style for the playing screen: black outlines, pink tongue, no background of its own (it
+// sits on the card's tray colour), no dark mouth opening, and blue waves in front of the lips for a puff of air.
+type Look = "line" | "pop";
+const LOOK = {
+  line: { bg: BG, ink: INK, tongue: `${TONGUE} ${ACCENT}`, teeth: TEETH, accent: "text-[#c2410c] dark:text-[#fb923c]", dot: `${ACCENT_FILL} stroke-white`, w: 1 },
+  pop: { bg: "fill-tray", ink: "stroke-ink", tongue: "fill-[#FFB3D1] stroke-ink", teeth: "fill-white", accent: "text-blue", dot: "fill-blue stroke-ink", w: 1.3 },
+} as const;
 // The cut-away drawing from a Geometry alone, so the native animation (lib/animate.ts) can draw any
 // in-between frame. With `e` (one sound's entry) it also draws that sound's contact dot / "gap" marks.
-export function CutAway({ g, e, mark }: { g: Geometry; e?: ArticulationEntry; mark?: Callout | null }) {
+// `puff` (pop look only): how much air the sound pushes out (mouthViews side().puff, 0-3) -> that many blue waves.
+export function CutAway({ g, e, mark, look = "line", puff = 0 }: { g: Geometry; e?: ArticulationEntry; mark?: Callout | null; look?: Look; puff?: number }) {
   const { ui } = useUi();
+  const L = LOOK[look];
+  const pop = look === "pop";
+  const sw = (n: number) => n * L.w;
   const { body: b, tip: t, velumTip: v, teeth } = g;
   const lt = teeth.lowerTop;
   const tongue = tonguePath(g);
@@ -175,13 +187,43 @@ export function CutAway({ g, e, mark }: { g: Geometry; e?: ArticulationEntry; ma
   const { upper: face, lower: lowerFace } = facePaths(g); // Lib/mouth.ts faceOutline (tested)
   const upperTooth = `M 47 ${teeth.upperRoot} L 56 ${teeth.upperRoot} Q 55 84 51.5 ${teeth.upperTip + 0.5} Q 49 ${teeth.upperTip + 1} 48 ${teeth.upperTip - 1} Q 45.5 84 47 ${teeth.upperRoot} Z`;
   const lowerTooth = `M 49 ${lt + 1} Q 51 ${lt - 1.5} 53 ${lt + 0.5} Q 57 ${lt + 8} 57 ${teeth.lowerRoot} L 48 ${teeth.lowerRoot} Q 47.5 ${lt + 8} 49 ${lt + 1} Z`;
-  const opening = mouthOpening(g); // null when the lips are shut (p, b, m)
-  const fade = `mouth-${useId().replace(/:/g, "")}`;
+  const opening = pop ? null : mouthOpening(g); // null when the lips are shut (p, b, m)
+  const id = useId().replace(/:/g, "");
+  const fade = `mouth-${id}`;
   const touch = !e ? null : e.svg.contact ? (e.svg.tip === "down" || e.svg.tip === "palatal" ? b : t) : null;
+  const vb = pop ? POP_VIEW : VIEW;
+  // the label's box fits the text as the browser drew it (the estimate in lib/mouth.ts runs wide for the site font)
+  const label = useRef<SVGTextElement>(null);
+  const [drawn, setDrawn] = useState<{ text: string; w: number } | null>(null);
+  useLayoutEffect(() => {
+    if (pop && mark && label.current) setDrawn({ text: mark.text, w: label.current.getComputedTextLength() });
+  }, [pop, mark?.text]); // eslint-disable-line react-hooks/exhaustive-deps
+  const labelW = mark ? (pop && drawn?.text === mark.text ? drawn.w : textWidth(mark.text)) : 0;
   return (
-    <svg viewBox={`${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`} className="w-full" aria-hidden>
-      <rect x={0} y={0} width={220} height={200} className={BG} />
-      {/* the open mouth: dark between the lips, fading towards the back (tongue, teeth and face draw on top) */}
+    <svg viewBox={`${vb.x} ${vb.y} ${vb.w} ${vb.h}`} className="w-full" aria-hidden>
+      {pop && (
+        // the lines that leave the picture (forehead, neck, throat) fade out instead of stopping at a hard edge
+        <defs>
+          <linearGradient id={`edge-${id}`} gradientUnits="userSpaceOnUse" x1={0} y1={vb.y} x2={0} y2={vb.y + vb.h}>
+            <stop offset="0" stopColor="white" stopOpacity={0} />
+            <stop offset="0.1" stopColor="white" />
+            <stop offset="0.9" stopColor="white" />
+            <stop offset="1" stopColor="white" stopOpacity={0} />
+          </linearGradient>
+          <mask id={`edges-${id}`} maskUnits="userSpaceOnUse" x={vb.x} y={vb.y} width={vb.w} height={vb.h}>
+            <rect x={vb.x} y={vb.y} width={vb.w} height={vb.h} fill={`url(#edge-${id})`} />
+          </mask>
+          <clipPath id={`tongue-${id}`}>
+            <path d={tongue} />
+          </clipPath>
+          <clipPath id={`shine-${id}`}>
+            <rect x={t.x + 8} y={0} width={Math.max(0, b.x + 14 - (t.x + 8))} height={200} />
+          </clipPath>
+        </defs>
+      )}
+      <g mask={pop ? `url(#edges-${id})` : undefined}>
+      {!pop && <rect x={0} y={0} width={220} height={200} className={L.bg} />}
+      {/* line look: the open mouth dark between the lips, fading towards the back (tongue, teeth, face on top) */}
       {opening && (
         <>
           <defs>
@@ -193,35 +235,58 @@ export function CutAway({ g, e, mark }: { g: Geometry; e?: ArticulationEntry; ma
           <path d={`M ${opening.map(p).join(" L ")} Z`} fill={`url(#${fade})`} />
         </>
       )}
-      <path d={face} className={INK} strokeWidth={1.6} {...line} />
-      <path d={lowerFace} className={INK} strokeWidth={1.6} {...line} />
+      <path d={face} className={L.ink} strokeWidth={sw(1.6)} {...line} />
+      <path d={lowerFace} className={L.ink} strokeWidth={sw(1.6)} {...line} />
       {/* roof of the mouth: hard palate, then the soft palate hanging at the back */}
-      <path d={roof} className={INK} strokeWidth={2} {...line} />
-      <path d={`M ${VELUM_START.x} ${VELUM_START.y} Q ${VELUM_CTRL.x} ${VELUM_CTRL.y} ${p(v)}`} className={INK} strokeWidth={3.5} {...line} />
-      <path d={`M ${PHARYNX_X + 2} 62 Q ${PHARYNX_X + 6} 130 ${PHARYNX_X} 200`} className={INK} strokeWidth={1.4} {...line} />
-      <path d={tongue} className={`${TONGUE} ${ACCENT}`} strokeWidth={1.8} strokeLinejoin="round" />
+      <path d={roof} className={L.ink} strokeWidth={sw(pop ? 1.7 : 2)} {...line} />
+      <path d={`M ${VELUM_START.x} ${VELUM_START.y} Q ${VELUM_CTRL.x} ${VELUM_CTRL.y} ${p(v)}`} className={L.ink} strokeWidth={pop ? 3.6 : 3.5} {...line} />
+      <path d={`M ${PHARYNX_X + 2} 62 Q ${PHARYNX_X + 6} 130 ${PHARYNX_X} 200`} className={L.ink} strokeWidth={sw(1.4)} {...line} />
+      <path d={tongue} className={L.tongue} strokeWidth={sw(pop ? 1.6 : 1.8)} strokeLinejoin="round" />
+      {pop && (
+        // a soft shine along the top of the tongue: its own outline, nudged down and in, kept inside the tongue
+        // and only over the middle of the body (not the tip, not the root)
+        <g clipPath={`url(#tongue-${id})`}>
+          <g clipPath={`url(#shine-${id})`}>
+            <path d={tongue} transform="translate(1.5 3.2)" stroke="#FFD6E6" strokeWidth={2.4} {...line} />
+          </g>
+        </g>
+      )}
       {/* floor of the mouth covers the tongue's lower part, so it sits in the jaw */}
-      <path d={`${floorTop} L 157 200 L 58 200 Z`} className={BG} />
-      <path d={floorTop} className={INK} strokeWidth={1.4} {...line} />
-      <path d={upperTooth} className={`${TEETH} ${INK}`} strokeWidth={1.2} />
-      <path d={lowerTooth} className={`${TEETH} ${INK}`} strokeWidth={1.2} />
+      <path d={`${floorTop} L 157 200 L 58 200 Z`} className={L.bg} />
+      <path d={floorTop} className={L.ink} strokeWidth={sw(1.4)} {...line} />
+      <path d={upperTooth} className={`${L.teeth} ${L.ink}`} strokeWidth={sw(1.2)} strokeLinejoin="round" />
+      <path d={lowerTooth} className={`${L.teeth} ${L.ink}`} strokeWidth={sw(1.2)} strokeLinejoin="round" />
+      {/* pop look: the gust of air some sounds make (ㅋ, English p), as blue waves */}
+      {pop && (
+        <g className="text-blue" data-testid="waves">
+          {soundWaves(g, puff).map((w, i) => (
+            <path key={i} d={`M ${w.x + w.h * 0.45} ${w.y - w.h} Q ${w.x - w.h * 0.55} ${w.y} ${w.x + w.h * 0.45} ${w.y + w.h}`}
+              fill="none" stroke="currentColor" strokeWidth={2.1} strokeLinecap="round" />
+          ))}
+        </g>
+      )}
+      </g>
       {/* tip up but NOT touching (English r, s, z, sh): mark the gap so the picture matches "not touching" */}
       {e && !e.svg.contact && ["raised", "alveolar", "postalveolar"].includes(e.svg.tip) && (
-        <g className="text-[#c2410c] dark:text-[#fb923c]">
+        <g className={L.accent}>
           <line x1={t.x} y1={t.y - 1.5} x2={t.x} y2={palateY(t.x) + 1.5} stroke="currentColor" strokeWidth={1.3} />
           <path d={`M ${t.x - 2} ${palateY(t.x) + 3} L ${t.x} ${palateY(t.x) + 1} L ${t.x + 2} ${palateY(t.x) + 3} M ${t.x - 2} ${t.y - 3} L ${t.x} ${t.y - 1} L ${t.x + 2} ${t.y - 3}`} fill="none" stroke="currentColor" strokeWidth={1} />
           <text x={t.x + 4} y={(t.y + palateY(t.x)) / 2 + 2.5} fill="currentColor" fontSize={7} fontWeight={600}>{say(ui)("gap")}</text>
         </g>
       )}
-      {touch && <circle cx={touch.x} cy={touch.y} r={3.4} className={`${ACCENT_FILL} stroke-white`} strokeWidth={1.2} />}
+      {touch && <circle cx={touch.x} cy={touch.y} r={3.4} className={L.dot} strokeWidth={1.2} />}
       {/* "show what matters": a ring on the defining contact or shape, a thin line up to its plain-words label */}
       {mark && (
-        <g className="text-[#c2410c] dark:text-[#fb923c]" data-testid="mark">
-          <line x1={mark.textAt.x + Math.min(textWidth(mark.text) / 2, Math.max(4, mark.at.x - mark.textAt.x))} y1={mark.textAt.y + 2}
+        <g className={L.accent} data-testid="mark">
+          <line x1={mark.textAt.x + Math.min(labelW / 2, Math.max(4, mark.at.x - mark.textAt.x))} y1={mark.textAt.y + 2}
             x2={mark.at.x} y2={mark.at.y - 6} stroke="currentColor" strokeWidth={0.8} strokeDasharray="2 1.5" />
-          <circle cx={mark.at.x} cy={mark.at.y} r={6} fill="currentColor" fillOpacity={0.18} stroke="currentColor" strokeWidth={1.4} />
-          <rect x={mark.textAt.x - 2} y={mark.textAt.y - 7} width={textWidth(mark.text) + 4} height={9.5} rx={2} className={BG} fillOpacity={0.9} />
-          <text x={mark.textAt.x} y={mark.textAt.y} fill="currentColor" fontSize={7} fontWeight={600}>{mark.text}</text>
+          <circle cx={mark.at.x} cy={mark.at.y} r={6} fill="currentColor" fillOpacity={0.18} stroke="currentColor" strokeWidth={pop ? 1.8 : 1.4} />
+          {pop ? (
+            <rect x={mark.textAt.x - 2.5} y={mark.textAt.y - 7.5} width={labelW + 5} height={10.5} rx={3} className="fill-white stroke-ink" strokeWidth={1} />
+          ) : (
+            <rect x={mark.textAt.x - 2} y={mark.textAt.y - 7} width={textWidth(mark.text) + 4} height={9.5} rx={2} className={L.bg} fillOpacity={0.9} />
+          )}
+          <text ref={label} x={mark.textAt.x} y={mark.textAt.y} fill="currentColor" fontSize={7} fontWeight={600}>{mark.text}</text>
         </g>
       )}
     </svg>
