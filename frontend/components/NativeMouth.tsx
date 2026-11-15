@@ -13,6 +13,7 @@
 // The timeline: the bar, the sounds right under it (one equal cell per frame), then the words over their sounds.
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import InfoTip from "@/components/InfoTip";
 import { CutAway } from "@/components/MouthDiagram";
 import { useUi } from "@/components/UiLang";
 import { descText, say } from "@/lib/i18n";
@@ -176,10 +177,13 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
             {s}×
           </button>
         ))}
-        <label className="ml-auto flex cursor-pointer items-center gap-1.5 text-sm">
-          <input type="checkbox" checked={showKey} onChange={(e) => setShowKey(e.target.checked)} data-testid="show-key" />
-          {tr("placementTips")}
-        </label>
+        <span className="ml-auto flex items-center gap-2">
+          <label className="flex cursor-pointer items-center gap-1.5 text-sm">
+            <input type="checkbox" checked={showKey} onChange={(e) => setShowKey(e.target.checked)} data-testid="show-key" />
+            {tr("placementTips")}
+          </label>
+          <InfoTip text={tr("placementInfo")} label={tr("infoAbout", { name: tr("placementTips") })} />
+        </span>
       </div>
       {/* timeline: the bar (one step per frame), the sounds right under it (one equal cell each), then the words,
           each as wide as its sounds, so every column lines up */}

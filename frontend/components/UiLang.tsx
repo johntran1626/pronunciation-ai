@@ -35,10 +35,10 @@ export function useUi() {
 export function UiToggle() {
   const { ui, setUi, t } = useUi();
   return (
-    <div role="group" aria-label={t("switchLabel")} className="flex rounded-full border border-neutral-300 p-0.5 text-xs dark:border-neutral-700" data-testid="ui-toggle">
+    <div role="group" aria-label={t("switchLabel")} className="flex overflow-hidden rounded-xl border-[2.5px] border-ink shadow-pop-xs" data-testid="ui-toggle">
       {(["en", "ko"] as Ui[]).map((u) => (
         <button key={u} type="button" aria-pressed={ui === u} onClick={() => setUi(u)}
-          className={`rounded-full px-2.5 py-0.5 ${ui === u ? "bg-neutral-800 text-white dark:bg-neutral-200 dark:text-neutral-900" : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"}`}>
+          className={`px-2.5 py-1.5 font-display text-sm lg:px-3.5 lg:py-[7px] lg:text-base ${ui === u ? "bg-ink text-white" : "bg-white text-ink hover:bg-sky"}`}>
           {u === "en" ? "ENG" : "한"}
         </button>
       ))}

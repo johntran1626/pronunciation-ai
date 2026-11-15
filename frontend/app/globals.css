@@ -1,26 +1,87 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* The design is light only: `dark:` classes never switch on (they would only apply under a .dark class). */
+@custom-variant dark (&:where(.dark, .dark *));
 
+/* The approved palette and fonts (Jua for display, Outfit for text; both loaded in app/layout.tsx). */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-ink: #111111;
+  --color-sky: #DCE8FF;
+  --color-blue: #2F6BFF;
+  --color-pink: #FF85B8;
+  --color-blush: #FF9CC2;
+  --color-grid: #FFD3E5;
+  --color-tray: #F4F8FF;
+  --color-mouth: #3A0F24;
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jua), var(--font-outfit), ui-sans-serif, sans-serif;
+  /* the solid offset shadows of the look */
+  --shadow-pop-xs: 2px 2px 0 #111111;
+  --shadow-pop-sm: 3px 3px 0 #111111;
+  --shadow-pop: 5px 5px 0 #111111;
+  --shadow-pop-lg: 6px 6px 0 #111111;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: #111111;
+}
+
+/* 원고지 (Korean manuscript paper): a pink grid whose squares match the box's line height */
+.wongoji {
+  background-image: linear-gradient(#FFD3E5 1px, transparent 1px), linear-gradient(90deg, #FFD3E5 1px, transparent 1px);
+  background-size: 34px 34px;
+  background-position: -1px -1px;
+}
+@media (min-width: 1024px) {
+  .wongoji { background-size: 40px 40px; }
+}
+
+/* Blueberry's loops: bob up and down, blink, talk; the bubble's caret; the shadow on the ground under the big mascot */
+.bob { animation: bob 2.4s infinite ease-in-out; }
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-6px) rotate(3deg); }
+}
+.blink { transform-box: fill-box; transform-origin: center; animation: blink 3.2s infinite; }
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+.talk { transform-box: fill-box; transform-origin: 50% 0; animation: talk 0.26s infinite alternate ease-in-out; }
+@keyframes talk {
+  from { transform: scaleY(0.3); }
+  to { transform: scaleY(1); }
+}
+.caret { animation: caret 1s steps(1) infinite; }
+@keyframes caret {
+  50% { opacity: 0; }
+}
+.ground { animation: ground 2.4s infinite ease-in-out; }
+@keyframes ground {
+  0%, 100% { transform: scaleX(1); opacity: 0.2; }
+  50% { transform: scaleX(0.92); opacity: 0.15; }
+}
+
+/* At the typewriter: Blueberry's body bobs gently (the typewriter stays put), the typewriter squashes a little
+   with each key, and motion lines flicker beside it while a line is being typed */
+.bob-body { animation: bob-body 1.2s infinite ease-in-out; }
+@keyframes bob-body {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.tap { transform-box: fill-box; transform-origin: 50% 100%; animation: tap 0.12s infinite alternate ease-in-out; }
+@keyframes tap {
+  from { transform: scale(1.02, 0.97); }
+  to { transform: scale(0.995, 1.01); }
+}
+.keys { animation: keys 0.3s infinite steps(2); }
+@keyframes keys {
+  50% { opacity: 0; }
+}
+
+/* Visitors who ask for less motion: no loops at all (the bubble shows one finished line, see TypedBubble.tsx) */
+@media (prefers-reduced-motion: reduce) {
+  .bob, .blink, .talk, .caret, .ground, .bob-body, .tap, .keys { animation: none; }
+  .ground { opacity: 0.2; }
 }

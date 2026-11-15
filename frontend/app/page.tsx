@@ -11,6 +11,10 @@ import AutoplaySwitch from "@/components/AutoplaySwitch";
 import NativeMouth from "@/components/NativeMouth";
 import Recorder from "@/components/Recorder";
 import Translation from "@/components/Translation";
+import InfoTip from "@/components/InfoTip";
+import SocialLinks from "@/components/SocialLinks";
+import TypedBubble, { useTypedLines } from "@/components/TypedBubble";
+import TypewriterBlueberry from "@/components/TypewriterBlueberry";
 import { UiLangProvider, UiToggle, useUi } from "@/components/UiLang";
 import { checkHealth, fetchCustom, type TextLang } from "@/lib/api";
 import { MAX_CUSTOM_CHARS, checkLine } from "@/lib/custom";
@@ -43,9 +47,12 @@ function Coach() {
   const [autoplay, setAutoplayState] = useState(AUTOPLAY_DEFAULT);
   const runs = useRef(0);
   const result = useRef<HTMLElement | null>(null);
+  const typedLines = useTypedLines(); // Blueberry's bubble (the same lines on phone and desktop)
 
   const lang = detectLang(typed);
   const tooLong = typed.trim().length > MAX_CUSTOM_CHARS;
+  // the typewriter's sounds: only while the visitor isn't typing and no animation is showing
+  const typingSound = !typed && !shown && !busy;
 
   // wake the backend as the page opens (a sleeping server starts while the visitor types); nothing is shown
   useEffect(() => { checkHealth().catch(() => {}); }, []);
@@ -87,65 +94,98 @@ function Coach() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-8 sm:py-12">
-      <header className="flex items-center justify-between">
-        <span className="text-sm font-semibold tracking-wide text-neutral-500">{t("brand")}</span>
+    <main className="flex min-h-dvh w-full flex-col px-[22px] pt-5 pb-7 lg:px-10 lg:pt-7 lg:pb-12">
+      <header className="mx-auto flex w-full max-w-[1160px] items-center justify-between">
+        <SocialLinks />
         <UiToggle />
       </header>
 
-      <div className="flex min-w-0 flex-col gap-6">
+      {/* home: phone = one column (title, then Blueberry sitting on the box); desktop = two columns */}
+      <div className="mx-auto flex w-full max-w-[1160px] flex-1 flex-col justify-center lg:flex-row lg:flex-wrap lg:items-center lg:gap-16">
+        <div className="flex min-w-0 flex-col items-center gap-[22px] lg:flex-[1_1_380px]">
+          <h1 className="m-0 text-center font-display text-[30px] leading-[1.15] font-normal lg:text-[52px] lg:leading-[1.05]">
+            {t("brand")}
+            <span className="mt-1 block text-lg text-blue lg:mt-2 lg:text-[26px]">{t("byline")}</span>
+          </h1>
+          {/* desktop: the bubble above Blueberry at the typewriter, with a shadow on the ground */}
+          <TypedBubble typed={typedLines} tail="down" className="relative mt-[18px] hidden w-full max-w-[400px] lg:block" />
+          <div className="hidden flex-col items-center lg:flex">
+            <TypewriterBlueberry typed={typedLines} typingSound={typingSound} width={240} />
+            <span aria-hidden="true" className="ground -mt-1 block h-3 w-[200px] rounded-[50%] bg-ink" />
+          </div>
+        </div>
+
         {/* the box: usable the moment the page opens */}
         <form
-          className="flex flex-col gap-2"
+          className="flex min-w-0 flex-col gap-[22px] lg:flex-[1.35_1_480px] lg:gap-6"
           onSubmit={(e) => {
             e.preventDefault(); // stay on the page
             void submit();
           }}
         >
-          <div className="rounded-2xl border-2 border-neutral-300 bg-white shadow-sm transition focus-within:border-green-600 focus-within:shadow-[0_0_0_6px_rgba(22,163,74,0.15)] dark:border-neutral-700 dark:bg-neutral-900">
-            <textarea
-              autoFocus
-              rows={3}
-              value={typed}
-              onChange={(e) => { setTyped(e.target.value); setError(null); }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { // isComposing: Korean IME
-                  e.preventDefault();
-                  void submit();
-                }
-              }}
-              lang={htmlLang(lang)}
-              aria-label={t("boxLabel")}
-              placeholder={t("placeholder")}
-              className="block w-full resize-none bg-transparent break-keep px-5 pt-5 pb-2 text-2xl leading-snug outline-none placeholder:text-neutral-400 placeholder:uppercase placeholder:tracking-wide sm:text-3xl max-sm:text-xl"
-              data-testid="box"
-            />
-            <div className="flex flex-wrap items-center gap-3 px-5 pb-4">
-              <span className="text-sm text-neutral-500" data-testid="detected">
-                {t(lang ? LANG_NAME[lang] : "langEither")}
-              </span>
-              <span className={`text-xs ${tooLong ? "text-red-600" : "text-neutral-400"}`}>
-                {typed.trim().length}/{MAX_CUSTOM_CHARS}
-              </span>
-              <AutoplaySwitch on={autoplay} onChange={setAutoplay} />
-              <div className="ml-auto">
-                <button
-                  type="submit"
-                  disabled={busy || !typed.trim()}
-                  className="rounded-full bg-green-700 px-5 py-2 font-medium text-white transition hover:bg-green-800 disabled:opacity-40"
-                  data-testid="go"
-                >
-                  {busy ? t("loading") : t("animate")}
-                </button>
+          <div className="relative mt-[150px] lg:mt-0">
+            {/* phone: the bubble to the left, Blueberry's typewriter standing on the box's top-right corner */}
+            <TypedBubble typed={typedLines} tail="right" className="absolute right-[136px] bottom-[calc(100%+34px)] left-0 lg:hidden" />
+            <div className="absolute right-0 bottom-[calc(100%-3px)] lg:hidden">
+              <TypewriterBlueberry typed={typedLines} typingSound={typingSound} width={128} />
+            </div>
+            {/* no overflow-hidden here, so the Autoplay note can pop out of the box; the parts round their own corners */}
+            <div className="relative rounded-[20px] border-[2.5px] border-ink bg-white shadow-pop lg:rounded-3xl lg:shadow-pop-lg">
+              <div className="wongoji rounded-t-[17.5px] px-4 pt-4 pb-2.5 lg:rounded-t-[21.5px] lg:px-[22px] lg:pt-5 lg:pb-3">
+                <span className="inline-block bg-white px-1 text-[13px] font-medium text-neutral-700 lg:text-[15px]" data-testid="detected">
+                  {t(lang ? LANG_NAME[lang] : "langEither")}
+                </span>
+                <textarea
+                  autoFocus
+                  rows={3}
+                  value={typed}
+                  onChange={(e) => { setTyped(e.target.value); setError(null); }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { // isComposing: Korean IME
+                      e.preventDefault();
+                      void submit();
+                    }
+                  }}
+                  lang={htmlLang(lang)}
+                  aria-label={t("boxLabel")}
+                  placeholder={t("placeholder")}
+                  className="mt-1.5 block h-[102px] w-full resize-none bg-transparent p-0 text-2xl leading-[34px] font-medium break-keep text-ink outline-none placeholder:text-[#767676] lg:mt-2 lg:h-[200px] lg:text-[30px] lg:leading-[40px]"
+                  data-testid="box"
+                />
+              </div>
+              <div className="flex items-center gap-2.5 rounded-b-[17.5px] border-t-[2.5px] border-ink bg-tray px-3.5 py-2.5 lg:gap-3 lg:rounded-b-[21.5px] lg:px-[18px] lg:py-3">
+                <span className={`text-xs font-medium lg:text-sm ${tooLong ? "text-red-600" : "text-neutral-700"}`}>
+                  {typed.trim().length}/{MAX_CUSTOM_CHARS}
+                </span>
+                <div className="ml-auto flex items-center gap-2">
+                  <AutoplaySwitch on={autoplay} onChange={setAutoplay} />
+                  <InfoTip text={t("autoplayInfo")} label={t("infoAbout", { name: t("autoplay") })} />
+                </div>
               </div>
             </div>
           </div>
-          {error && <p className="rounded-lg bg-red-50 p-3 text-red-700 dark:bg-red-950 dark:text-red-300">{error}</p>}
+          <button
+            type="submit"
+            disabled={busy}
+            className="flex h-[62px] items-center justify-center gap-2.5 rounded-[18px] border-[2.5px] border-ink bg-blue font-display text-[26px] text-white shadow-pop transition-[transform,box-shadow] hover:-translate-y-px active:translate-x-[3px] active:translate-y-[3px] active:shadow-pop-xs disabled:opacity-60 lg:h-[74px] lg:gap-3 lg:rounded-[20px] lg:text-[32px] lg:shadow-pop-lg"
+            data-testid="go"
+          >
+            {busy ? t("loading") : t("animate")}
+            {!busy && (
+              <svg className="size-[22px] lg:size-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
+                strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M5 12h14" /><path d="m13 6 6 6-6 6" />
+              </svg>
+            )}
+          </button>
+          {error && <p className="m-0 rounded-2xl border-[2.5px] border-ink bg-[#FFE4EF] px-4 py-3 font-medium text-ink shadow-pop-xs" role="alert">{error}</p>}
         </form>
+      </div>
 
+      <div className="mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-6">
         {/* the sentence, its animation, and practice */}
         {shown && (
-          <section ref={result} className="flex scroll-mt-4 flex-col gap-3" data-testid="result">
+          <section ref={result} className="mt-10 flex scroll-mt-4 flex-col gap-3" data-testid="result">
             <p lang={htmlLang(shown.lang)} className="text-2xl leading-relaxed">{shown.text}</p>
             {shown.note && (
               <p className="text-sm text-neutral-500">
