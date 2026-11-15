@@ -19,7 +19,7 @@
 // What this is NOT: a measurement of any speaker. It is the TARGET articulation from phonetics tables, timed to a
 // native recording. Diphthongs show one pose (their "to" glide is not animated yet).
 import { geometry, type Geometry, type Svg } from "./mouth.ts";
-import type { ArticulationEntry } from "./api.ts";
+import type { ArticulationEntry, NativeTimings } from "./api.ts";
 
 export type Sound = { ipa: string; start: number; end: number; entry: ArticulationEntry | null };
 export type Role = "critical" | "involved" | "free";
@@ -211,4 +211,17 @@ export function wordFrames(
     const idx = frames.map((f, i) => [0.5 * (f.start + f.end), i]).filter(([m]) => m >= w.start && m < w.end).map(([, i]) => i);
     return idx.length ? { first: idx[0], last: idx[idx.length - 1] } : null;
   });
+}
+
+/** The backend's timings for a native clip (/tts/timings) -> the timed sounds the animation plays, each with its
+ * articulation table entry (null when the table has no entry: that sound gets no frame), plus the words' times. */
+export function soundsFromTimings(
+  timings: NativeTimings,
+  table: Record<string, ArticulationEntry>,
+): { words: { word: string; start: number; end: number }[]; sounds: Sound[] } {
+  const words = timings.words.map(({ word, start, end }) => ({ word, start, end }));
+  const sounds = timings.words.flatMap((w) =>
+    w.phonemes.map(({ ipa, start, end }) => ({ ipa, start, end, entry: table[ipa] ?? null })),
+  );
+  return { words, sounds };
 }

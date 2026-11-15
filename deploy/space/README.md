@@ -1,6 +1,5 @@
 ---
 title: Pronunciation Coach API
-emoji: 🗣️
 colorFrom: blue
 colorTo: green
 sdk: docker

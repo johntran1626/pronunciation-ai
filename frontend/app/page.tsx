@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import BackendStatus from "@/components/BackendStatus";
 import NativeAudio from "@/components/NativeAudio";
+import NativeMouth from "@/components/NativeMouth";
 import Recorder from "@/components/Recorder";
 import FormalityLine from "@/components/FormalityLine";
 import FormalitySwitch from "@/components/FormalitySwitch";
@@ -267,6 +268,8 @@ export default function Home() {
           )}
           {/* Hear it first, then record */}
           <NativeAudio text={item.text} lang={pack.lang} />
+          {/* key: a new sentence starts closed (the old animation and its clip are dropped) */}
+          <NativeMouth key={`mouth:${item.id}`} text={item.text} lang={pack.lang} />
           {/* key: a new sentence gets a fresh recorder (old result and any live recording are dropped) */}
           <Recorder key={item.id} text={item.text} lang={pack.lang} />
         </section>
@@ -286,6 +289,7 @@ export default function Home() {
             </p>
           )}
           <NativeAudio text={line.text} lang={lang} />
+          <NativeMouth key={`mouth:custom:${line.text}`} text={line.text} lang={lang} />
           {/* key: a new checked sentence gets a fresh recorder */}
           <Recorder key={`custom:${line.text}`} text={line.text} lang={lang} />
         </section>

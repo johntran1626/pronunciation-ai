@@ -220,3 +220,39 @@ test("a vowel's own frame shows its own mouth opening, even between lip sounds (
   const own = geometry(A.svg, A.kind, A.lips);
   assert.ok(Math.abs(gap(f) - gap(own)) < 0.01, `${gap(f)} vs ${gap(own)}`);
 });
+
+// ---------- the app's player: the backend's /tts/timings -> timed sounds with their table entries ----------
+import { soundsFromTimings } from "./animate.ts";
+import type { NativeTimings } from "./api.ts";
+
+const TIMINGS: NativeTimings = {
+  version: 1, lang: "en", duration_s: 0.9,
+  words: [
+    { word: "map", start: 0.1, end: 0.4, phonemes: [
+      { ipa: "m", start: 0.1, end: 0.2 }, { ipa: "æ", start: 0.2, end: 0.3 }, { ipa: "p", start: 0.3, end: 0.4 },
+    ] },
+    { word: "ski", start: 0.5, end: 0.8, phonemes: [
+      { ipa: "s", start: 0.5, end: 0.6 }, { ipa: "k", start: 0.6, end: 0.7 }, { ipa: "i", start: 0.7, end: 0.8 },
+    ] },
+  ],
+};
+const TABLE: Record<string, ArticulationEntry> = { m: M, æ: A, p: P, s: S, k: K, i: I };
+
+test("every word's sounds come out in time order, each with its own table entry", () => {
+  const { sounds } = soundsFromTimings(TIMINGS, TABLE);
+  assert.deepEqual(sounds.map((s) => s.ipa), ["m", "æ", "p", "s", "k", "i"]);
+  assert.deepEqual(sounds.map((s) => [s.start, s.end]), [[0.1, 0.2], [0.2, 0.3], [0.3, 0.4], [0.5, 0.6], [0.6, 0.7], [0.7, 0.8]]);
+  assert.equal(sounds[2].entry, P);
+  assert.equal(sounds[5].entry, I);
+});
+
+test("the words keep their own times (for the words under the slider)", () => {
+  const { words } = soundsFromTimings(TIMINGS, TABLE);
+  assert.deepEqual(words, [{ word: "map", start: 0.1, end: 0.4 }, { word: "ski", start: 0.5, end: 0.8 }]);
+});
+
+test("a sound missing from the table gets no entry, so it gets no frame (never a wrong pose)", () => {
+  const { sounds } = soundsFromTimings(TIMINGS, { ...TABLE, k: undefined as unknown as ArticulationEntry });
+  assert.equal(sounds[4].entry, null);
+  assert.equal(framesFor(sounds, 0).length, 5);
+});
