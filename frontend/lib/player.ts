@@ -1,7 +1,13 @@
 // The native mouth player's rules (no React here, so node --test can check them).
 import type { TextLang } from "./api.ts";
 
-export const SPEEDS = [1, 0.5, 0.25];
+export const SPEEDS = [1, 0.5];
+
+/** The speed buttons' labels: 1× and .5× (the short form fits the phone row). */
+export const speedLabel = (s: number) => `${String(s).replace(/^0\./, ".")}×`;
+
+/** How far the scrubber's fill reaches, in % of the timeline: the middle of frame k's cell (n equal cells). */
+export const scrubFill = (k: number, n: number) => (n > 0 ? (100 * (k + 0.5)) / n : 0);
 
 /** The bits of an <audio> element the speed change touches. */
 export type Media = {

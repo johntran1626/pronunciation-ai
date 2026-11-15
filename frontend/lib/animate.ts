@@ -136,7 +136,7 @@ export function soundAt(sounds: Sound[], t: number): Sound | null {
 export type Frame = { start: number; end: number; sounds: number[]; pose: Geometry };
 export const MERGE = 2.5; // drawing units: two poses closer than this look the same (~5 px on a phone)
 export const EASE = 0.1; // seconds on screen per change
-export const DEFAULT_SPEED = 1; // the player starts at normal speed; 0.5x and 0.25x are one tap away
+export const DEFAULT_SPEED = 1; // the player starts at normal speed; 0.5x is one tap away
 
 /** "Show what matters": the one defining contact or shape for a frame (F: lower lip on the upper teeth, t: tip on
  * the ridge, k: back of the tongue on the soft palate, vowels: highest point of the tongue), placed on the pose

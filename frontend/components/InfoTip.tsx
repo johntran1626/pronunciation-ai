@@ -1,10 +1,11 @@
 "use client";
 // A small (i) beside a switch. Hover, keyboard focus or a tap shows a short note on what the switch does
 // (phones can't hover, so a tap opens it and a tap anywhere else closes it). Escape closes it too.
+// `opens`: which way the note reaches from the (i): "left" (default) or "right" (for an (i) near the left edge).
 
 import { useId, useState } from "react";
 
-export default function InfoTip({ text, label }: { text: string; label: string }) {
+export default function InfoTip({ text, label, opens = "left" }: { text: string; label: string; opens?: "left" | "right" }) {
   const [open, setOpen] = useState(false);
   const id = useId();
   return (
@@ -25,7 +26,7 @@ export default function InfoTip({ text, label }: { text: string; label: string }
       </button>
       {open && (
         <span role="tooltip" id={id}
-          className="absolute right-[-6px] bottom-[calc(100%+10px)] z-30 w-60 rounded-xl border-[2.5px] border-ink bg-white px-3 py-2 text-left text-[13px] leading-snug font-medium text-ink shadow-pop-sm">
+          className={`absolute ${opens === "left" ? "right-[-6px]" : "left-[-6px]"} bottom-[calc(100%+10px)] z-30 w-60 rounded-xl border-[2.5px] border-ink bg-white px-3 py-2 text-left text-[13px] leading-snug font-medium text-ink shadow-pop-sm`}>
           {text}
         </span>
       )}

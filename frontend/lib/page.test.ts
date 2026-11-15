@@ -38,13 +38,6 @@ test("'Show what matters' is now 'Placement tips', in English and Korean", () =>
   assert.match(mouth, /tr\("placementTips"\)/);
 });
 
-test("timeline: the bar, then the sounds right under it, then the words", () => {
-  const bar = mouth.indexOf('type="range"');
-  const sounds = mouth.indexOf('data-testid="frames"');
-  const words = mouth.indexOf('data-testid="words"');
-  assert.ok(bar > 0 && sounds > bar && words > sounds, "bar, sounds, words");
-});
-
 test("no sample sentences beside the box", () => {
   assert.ok(!page.includes('data-testid="samples"') && !page.includes("fetchPack"));
   for (const gone of ["SAMPLE_PACKS", "sampleLines", "sampleGroups", "findSample", "storedTranslation"])
@@ -77,7 +70,7 @@ test("a mixed sentence hides Practice and says why, in both site languages", () 
 
 test("the player looks each sound up in its own language's table", () => {
   assert.match(mouth, /soundsFromTimings\(native\.timings, articulation\.sounds\)/);
-  assert.match(mouth, /descText\(ui, shown\[0\]\.lang,/);
+  assert.match(mouth, /descText\(ui, s\[0\]\.lang,/); // s = the sounds on screen
 });
 
 test("Korean Practice warns up front that nothing will be marked green or red yet", () => {
@@ -107,5 +100,5 @@ test("no 존댓말 / 반말 switch left (only English -> Korean translations had
 });
 
 test("a typed Korean sentence still shows its English meaning", () => {
-  assert.match(page, /<Translation text=\{shown\.text\} \/>/);
+  assert.match(page, /<Translation text=\{shown\.text\}/);
 });

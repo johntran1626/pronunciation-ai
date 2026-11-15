@@ -44,6 +44,7 @@ export const UI = {
   numbersNote: s("Numbers and short forms are written out the way they're said.", "숫자와 줄임말은 읽는 대로 풀어 썼어요."),
   youTyped: s("You typed:", "입력한 문장:"),
   practice: s("Practice it yourself", "직접 연습하기"),
+  animateAnother: s("Animate another", "다른 문장 보기"),
   practiceHint: s("Record yourself and see which sounds need work.", "녹음하면 어떤 소리를 더 연습해야 하는지 보여 드려요."),
   practiceHintUngraded: s(
     "Korean grading isn't ready yet: you can record yourself and replay each syllable, but nothing will be marked green or red.",
@@ -59,6 +60,8 @@ export const UI = {
   play: s("Play", "재생"),
   pause: s("Pause", "일시정지"),
   replay: s("Replay", "다시 보기"),
+  speed: s("Speed", "속도"),
+  frame: s("Position in the timeline", "타임라인 위치"),
   noSounds: s("(no sounds)", "(소리 없음)"),
   placementTips: s("Placement tips", "발음 위치 팁"),
   soundOn: s("Sound on", "소리 켜기"),

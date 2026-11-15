@@ -5,8 +5,8 @@ import { existsSync, readFileSync } from "node:fs";
 import { UI, tr } from "./i18n.ts";
 import { typeSteps } from "./home.ts";
 import {
-  CAP_MAX, CAP_MIN, FILL_MS, FINISH_MS, HOLD_TICKS, LOADING_LINES, POSES,
-  advanceLine, barFills, fakePct, finishPct, lineView, nextPose, pickCap, startLines,
+  FINISH_MS, FIRST_MAX, FIRST_MIN, HOLD_TICKS, LOADING_LINES, POSES, QUICK_MS, SECOND_MAX, SECOND_MIN,
+  advanceLine, barFills, fakePct, finishPct, lineView, nextPose, pickStops, startLines,
 } from "./loading.ts";
 
 const src = (p: string) => readFileSync(new URL(p, import.meta.url), "utf8");
@@ -20,36 +20,45 @@ function seeded(seed: number) {
 }
 
 // ---------- the fake bar ----------
-test("the fake fill stops at a random whole number from 88 to 98, and every value in that range can come up", () => {
-  assert.equal(CAP_MIN, 88);
-  assert.equal(CAP_MAX, 98);
-  assert.equal(pickCap(() => 0), 88);
-  assert.equal(pickCap(() => 0.999999), 98);
-  const seen = new Set<number>();
+test("two random stops: a quick one from 70 to 76, then a slow one from 85 to 91; every value can come up", () => {
+  assert.deepEqual([FIRST_MIN, FIRST_MAX, SECOND_MIN, SECOND_MAX], [70, 76, 85, 91]);
+  assert.deepEqual(pickStops(() => 0), { first: 70, second: 85 });
+  assert.deepEqual(pickStops(() => 0.999999), { first: 76, second: 91 });
+  const firsts = new Set<number>(), seconds = new Set<number>();
   const rand = seeded(7);
   for (let i = 0; i < 2000; i++) {
-    const c = pickCap(rand);
-    assert.ok(Number.isInteger(c) && c >= 88 && c <= 98, String(c));
-    seen.add(c);
+    const { first, second } = pickStops(rand);
+    assert.ok(Number.isInteger(first) && first >= 70 && first <= 76, String(first));
+    assert.ok(Number.isInteger(second) && second >= 85 && second <= 91, String(second));
+    firsts.add(first);
+    seconds.add(second);
   }
-  assert.equal(seen.size, 11);
+  assert.equal(firsts.size, 7);
+  assert.equal(seconds.size, 7);
 });
 
-test("the fake fill rises fast at first, reaches its cap at FILL_MS, then waits there (never past it)", () => {
-  assert.equal(fakePct(0, 93), 0);
-  assert.ok(fakePct(FILL_MS * 0.25, 93) > 93 * 0.5, "more than half way in the first quarter (ease-out)");
+test("the fake fill: fast to the first stop, then a slow, steady climb toward the second (never reaching or passing it)", () => {
+  const stops = { first: 73, second: 88 };
+  assert.equal(fakePct(0, stops), 0);
+  assert.equal(fakePct(-50, stops), 0);
+  assert.ok(fakePct(QUICK_MS * 0.25, stops) > 73 * 0.4, "quick at first (ease-out)");
+  assert.equal(fakePct(QUICK_MS, stops), 73);
+  // the slow part: still moving at 5 s and at 15 s, but only a little at a time
+  assert.ok(fakePct(5000, stops) > 73 && fakePct(5000, stops) < 85, String(fakePct(5000, stops)));
+  assert.ok(fakePct(15_000, stops) > 86, "most of the way by 15 s (a typical new sentence)");
+  assert.ok(fakePct(15_000, stops) < 88);
   let last = 0;
-  for (let ms = 0; ms <= FILL_MS; ms += 20) {
-    const p = fakePct(ms, 93);
-    assert.ok(p >= last && p <= 93, `${ms}: ${p}`);
+  for (let ms = 0; ms <= 120_000; ms += 50) {
+    const p = fakePct(ms, stops);
+    assert.ok(p >= last && p < 88, `${ms}: ${p}`); // never jumps back, never reaches the second stop
     last = p;
   }
-  assert.equal(fakePct(FILL_MS, 93), 93);
-  assert.equal(fakePct(60_000, 93), 93); // a slow answer: the bar waits at the cap
-  assert.equal(fakePct(-50, 93), 0);
+  // no shooting up: one screen frame (~16 ms) never moves the bar more than 1.5%
+  for (let ms = 0; ms <= 30_000; ms += 16) assert.ok(fakePct(ms + 16, stops) - fakePct(ms, stops) <= 1.5, String(ms));
 });
 
 test("once the real answer arrives, the bar fills smoothly from where it was to 100", () => {
+  assert.ok(FINISH_MS >= 700, "a gentle finish, not a jump");
   assert.equal(finishPct(91, 0), 91);
   let last = 91;
   for (let ms = 0; ms <= FINISH_MS; ms += 10) {
@@ -158,7 +167,7 @@ test("the page: Animate shows the loading screen (home hidden, kept) until the s
   assert.match(page, /<LoadingScreen/);
   assert.match(page, /loadNativeClip\(/);
   assert.match(page, /loadCardData\(/);
-  assert.match(page, /hidden=\{busy\}|hidden=\{loading !== null\}/); // the box keeps its text and isn't refocused
+  assert.match(page, /hidden=\{busy( \|\| shown !== null)?\}|hidden=\{loading !== null\}/); // the box keeps its text and isn't refocused
   assert.match(page, /onFinished=/); // the result appears only after the bar reaches 100
 });
 

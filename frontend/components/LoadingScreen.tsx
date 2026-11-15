@@ -2,8 +2,9 @@
 // The loading screen between Animate and the animation: Blueberry in a random pose (a new one with every line),
 // the bar, and short Korean lines about sounds typed jamo by jamo, each with its English gloss.
 //
-// The bar (lib/loading.ts) eases fast up to a random stop between 88% and 98% and waits there. When the page says the
-// real answer is in (`done`), it fills smoothly to 100%, holds a moment, then calls onFinished so the animation shows.
+// The bar (lib/loading.ts) eases quickly to a random 70-76%, then climbs slowly toward a random 85-91%. When the page
+// says the real answer is in (`done`), it fills smoothly to 100%, holds a moment, then calls onFinished so the
+// animation shows.
 // Visitors who ask for less motion get one finished line and a still Blueberry (the bar still moves: it is the news).
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -11,7 +12,7 @@ import LoadingBar from "@/components/LoadingBar";
 import { useUi } from "@/components/UiLang";
 import type { Key } from "@/lib/i18n";
 import {
-  DONE_HOLD_MS, FINISH_MS, TICK_MS, advanceLine, fakePct, finishPct, lineView, pickCap, startLines, type Pose,
+  DONE_HOLD_MS, FINISH_MS, TICK_MS, advanceLine, fakePct, finishPct, lineView, pickStops, startLines, type Pose,
 } from "@/lib/loading";
 
 const INK = "#111111";
@@ -256,7 +257,7 @@ export default function LoadingScreen({ done, onFinished }: { done: boolean; onF
 
   // the bar: one clock from the moment the screen appears; the real answer only switches it to "finish"
   useEffect(() => {
-    const cap = pickCap();
+    const stops = pickStops();
     const start = performance.now();
     let doneAt: number | null = null;
     let from = 0;
@@ -267,7 +268,7 @@ export default function LoadingScreen({ done, onFinished }: { done: boolean; onF
         doneAt = now;
         from = last;
       }
-      last = doneAt === null ? fakePct(now - start, cap) : finishPct(from, now - doneAt);
+      last = doneAt === null ? fakePct(now - start, stops) : finishPct(from, now - doneAt);
       setPct(last);
       if (doneAt !== null && now - doneAt >= FINISH_MS + DONE_HOLD_MS) return finish.current();
       id = requestAnimationFrame(tick);

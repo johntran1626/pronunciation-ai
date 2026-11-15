@@ -178,10 +178,34 @@ body {
   100% { transform: translateY(-8px) scale(1.2); opacity: 0; }
 }
 
+/* The playing screen: the mini Blueberry beside the sound tip nods. */
+.nod { transform-origin: 50% 100%; animation: nod 1.6s infinite ease-in-out; }
+@keyframes nod {
+  0%, 100% { transform: rotate(0); }
+  30% { transform: rotate(-6deg); }
+  60% { transform: rotate(4deg); }
+}
+
+/* The scrubber (components/NativeMouth.tsx): a range input with a see-through track (the bar under it draws the
+   outline and the pink fill) and a round white thumb. --thumb (its size) is set on the input. */
+.scrub { -webkit-appearance: none; appearance: none; background: transparent; height: var(--thumb); margin: 0; padding: 0; cursor: pointer; }
+.scrub::-webkit-slider-runnable-track { height: var(--thumb); background: transparent; }
+.scrub::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: var(--thumb); height: var(--thumb); box-sizing: border-box;
+  border-radius: 50%; border: 2.5px solid #111111; background: #FFFFFF;
+}
+.scrub::-moz-range-track { background: transparent; }
+.scrub::-moz-range-thumb {
+  width: var(--thumb); height: var(--thumb); box-sizing: border-box; border-radius: 50%; border: 2.5px solid #111111; background: #FFFFFF;
+}
+.scrub:focus-visible { outline: none; }
+.scrub:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px #2F6BFF; }
+.scrub:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px #2F6BFF; }
+
 /* Visitors who ask for less motion: no loops at all (the bubble shows one finished line, see TypedBubble.tsx).
    The loading poses then show their finished picture: ㅎㅇ written, 한들 painted, pencil and brush at rest. */
 @media (prefers-reduced-motion: reduce) {
-  .bob, .blink, .talk, .caret, .ground, .bob-body, .tap, .keys { animation: none; }
+  .bob, .blink, .talk, .caret, .ground, .bob-body, .tap, .keys, .nod { animation: none; }
   .ground { opacity: 0.2; }
   .ld-bob, .ld-shadow, .ld-tap, .ld-search, .ld-pen, .ld-h1, .ld-h2, .ld-h3, .ld-o1, .ld-brush, .ld-reveal, .ld-float,
   .ld-read, .ld-flip, .ld-sway, .ld-swing, .ld-dust { animation: none; }

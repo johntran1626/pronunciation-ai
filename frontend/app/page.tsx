@@ -5,6 +5,8 @@
 // scoring (one-language sentences only).
 // One button, Animate, for English, Korean and mixed text alike.
 // The Autoplay switch in the box (on by default) decides whether a new animation plays by itself.
+// Three screens in turn: home (the box), loading, playing (the sentence + player). "Animate another" goes back
+// to the home with an empty box, ready to type.
 
 import { useEffect, useRef, useState } from "react";
 import AutoplaySwitch from "@/components/AutoplaySwitch";
@@ -49,7 +51,8 @@ function Coach() {
   const [muted, setMuted] = useState(false); // the sound button on the animation; kept for the visit
   const [autoplay, setAutoplayState] = useState(AUTOPLAY_DEFAULT);
   const runs = useRef(0);
-  const result = useRef<HTMLElement | null>(null);
+  const box = useRef<HTMLTextAreaElement | null>(null);
+  const recorder = useRef<HTMLElement | null>(null);
   const typedLines = useTypedLines(); // Blueberry's bubble (the same lines on phone and desktop)
 
   const lang = detectLang(typed);
@@ -75,8 +78,23 @@ function Coach() {
     setShown({ ...s, run: ++runs.current });
     setPractice(false);
     setError(null);
-    // bring the animation into view on small screens (the box stays above it)
-    requestAnimationFrame(() => result.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }));
+    window.scrollTo({ top: 0 });
+  }
+
+  // back to the home: the animation stops, the box is empty and ready to type
+  function another() {
+    setShown(null);
+    setPractice(false);
+    setTyped("");
+    setError(null);
+    window.scrollTo({ top: 0 });
+    requestAnimationFrame(() => box.current?.focus()); // after the home is shown again
+  }
+
+  // open the recorder (under the player, full width) and bring it into view
+  function openPractice() {
+    setPractice(true);
+    requestAnimationFrame(() => recorder.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
 
   async function submit() {
@@ -117,7 +135,7 @@ function Coach() {
       {busy && <LoadingScreen done={ready !== null} onFinished={loaded} />}
 
       {/* home: phone = one column (title, then Blueberry sitting on the box); desktop = two columns */}
-      <div hidden={busy} className="mx-auto flex w-full max-w-[1160px] flex-1 flex-col justify-center lg:flex-row lg:flex-wrap lg:items-center lg:gap-16">
+      <div hidden={busy || shown !== null} className="mx-auto flex w-full max-w-[1160px] flex-1 flex-col justify-center lg:flex-row lg:flex-wrap lg:items-center lg:gap-16">
         <div className="flex min-w-0 flex-col items-center gap-[22px] lg:flex-[1_1_380px]">
           <h1 className="m-0 text-center font-display text-[30px] leading-[1.15] font-normal lg:text-[52px] lg:leading-[1.05]">
             {t("brand")}
@@ -152,6 +170,7 @@ function Coach() {
                   {t(lang ? LANG_NAME[lang] : "langEither")}
                 </span>
                 <textarea
+                  ref={box}
                   autoFocus
                   rows={3}
                   value={typed}
@@ -198,36 +217,56 @@ function Coach() {
         </form>
       </div>
 
-      <div className="mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-6">
-        {/* the sentence, its animation, and practice */}
-        {shown && (
-          <section ref={result} className="mt-10 flex scroll-mt-4 flex-col gap-3" data-testid="result">
-            <p lang={htmlLang(shown.lang)} className="text-2xl leading-relaxed">{shown.text}</p>
-            {shown.note && (
-              <p className="text-sm text-neutral-500">
-                {t("numbersNote")} {t("youTyped")} <span lang={htmlLang(shown.lang)}>{shown.typed}</span>
-              </p>
-            )}
+      {/* playing: the sentence on top, then the player (its layout places Animate another + Practice), then the
+          recorder once Practice is pressed */}
+      {shown && (
+        <section className="mx-auto mt-4 flex w-full max-w-[1160px] min-w-0 flex-col lg:mt-6" data-testid="result">
+          <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1 lg:gap-x-4">
+            <p lang={htmlLang(shown.lang)} className="m-0 font-display text-[34px] leading-[1.1] break-keep [overflow-wrap:anywhere] lg:text-[46px]">
+              {shown.text}
+            </p>
             {/* a Korean sentence: its English meaning */}
-            {shown.lang === "ko" && <Translation text={shown.text} />}
+            {shown.lang === "ko" && <Translation text={shown.text} className="m-0 text-[15px] font-medium text-[#444444] lg:text-xl" />}
+          </div>
+          {shown.note && (
+            <p className="mt-1.5 mb-0 text-sm text-neutral-600">
+              {t("numbersNote")} {t("youTyped")} <span lang={htmlLang(shown.lang)}>{shown.typed}</span>
+            </p>
+          )}
+          <div className="mt-3 lg:mt-5">
             {/* key: every new animation gets a fresh player (1x; it loads, and plays on its own if Autoplay is on) */}
-            <NativeMouth key={playerKey(shown)} text={shown.text} lang={shown.lang} autoplay={autoplay} muted={muted} onMuted={setMuted} />
-            {!practiceOffered(shown.lang) ? (
-              <p className="text-sm text-neutral-500" data-testid="practice-mixed">{t("practiceMixed")}</p>
-            ) : practice ? (
+            <NativeMouth key={playerKey(shown)} text={shown.text} lang={shown.lang} autoplay={autoplay} muted={muted} onMuted={setMuted}
+              actions={
+                <>
+                  <button type="button" onClick={another} data-testid="another"
+                    className="flex h-[50px] items-center justify-center gap-2 rounded-2xl border-[2.5px] border-ink bg-white font-display text-xl text-ink shadow-[4px_4px_0_#111111] transition-[transform,box-shadow] active:translate-x-[3px] active:translate-y-[3px] active:shadow-pop-xs lg:h-[54px] lg:text-[21px]">
+                    <svg className="size-[18px] lg:size-[19px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8"
+                      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                    </svg>
+                    {t("animateAnother")}
+                  </button>
+                  {!practiceOffered(shown.lang) ? (
+                    <p className="m-0 text-sm font-medium text-neutral-600" data-testid="practice-mixed">{t("practiceMixed")}</p>
+                  ) : (
+                    <div className="flex flex-col gap-1.5">
+                      <button type="button" onClick={openPractice} aria-expanded={practice} data-testid="practice"
+                        className="h-14 rounded-2xl border-[2.5px] border-ink bg-pink font-display text-[22px] text-ink shadow-pop transition-[transform,box-shadow] active:translate-x-[3px] active:translate-y-[3px] active:shadow-pop-xs lg:h-[62px] lg:text-2xl">
+                        {t("practice")}
+                      </button>
+                      <p className="m-0 text-xs font-medium text-neutral-600 lg:text-sm">{t(gradingLive(shown.lang) ? "practiceHint" : "practiceHintUngraded")}</p>
+                    </div>
+                  )}
+                </>
+              } />
+          </div>
+          {practice && practiceOffered(shown.lang) && (
+            <section ref={recorder} className="mt-8 scroll-mt-4" data-testid="practice-panel">
               <Recorder key={`rec:${shown.lang}:${shown.text}`} text={shown.text} lang={shown.lang} />
-            ) : (
-              <div>
-                <button onClick={() => setPractice(true)} data-testid="practice"
-                  className="rounded-full border-2 border-blue-600 px-5 py-2 font-medium text-blue-700 hover:bg-blue-50 dark:text-blue-300 dark:hover:bg-blue-950">
-                  {t("practice")}
-                </button>
-                <p className="mt-1 text-xs text-neutral-500">{t(gradingLive(shown.lang) ? "practiceHint" : "practiceHintUngraded")}</p>
-              </div>
-            )}
-          </section>
-        )}
-      </div>
+            </section>
+          )}
+        </section>
+      )}
     </main>
   );
 }

@@ -16,14 +16,14 @@ function fakeAudio(at = 1.2): Media & { log: string[] } {
   };
 }
 
-test("the speeds are 1x, 0.5x and 0.25x, and every player starts at 1x", () => {
-  assert.deepEqual(SPEEDS, [1, 0.5, 0.25]);
+test("the speeds are 1x and 0.5x, and every player starts at 1x", () => {
+  assert.deepEqual(SPEEDS, [1, 0.5]);
   assert.equal(DEFAULT_SPEED, 1);
 });
 
 test("changing speed mid-audio keeps playing from the same spot at the new speed, however often it's changed", async () => {
   const a = fakeAudio(1.2);
-  for (const s of [0.5, 0.25, 1, 0.25, 0.5]) {
+  for (const s of [0.5, 1, 0.5, 1, 0.5]) {
     await changeSpeed(a, s);
     assert.equal(a.paused, false, `still playing after ${s}x`);
     assert.equal(a.playbackRate, s);
@@ -36,9 +36,9 @@ test("changing speed mid-audio keeps playing from the same spot at the new speed
 test("changing speed while paused or after the end only sets the speed for the next play", async () => {
   const a = fakeAudio(0.4);
   a.paused = true;
-  await changeSpeed(a, 0.25);
+  await changeSpeed(a, 0.5);
   assert.equal(a.paused, true);
-  assert.equal(a.playbackRate, 0.25);
+  assert.equal(a.playbackRate, 0.5);
   assert.deepEqual(a.log, []);
 });
 

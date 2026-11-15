@@ -1,36 +1,46 @@
 // The loading screen between Animate and the animation. Pure (no React), tested in loading.test.ts;
 // components/LoadingScreen.tsx runs the clocks.
 //
-// The bar is a "fake determinate" bar: the backend can't report how far along it is, so the bar eases quickly up
-// to a random stop between 88% and 98%, waits there, and fills smoothly to 100% once the real answer is in.
-// It never claims to be finished before it is.
+// The bar is a "fake determinate" bar: the backend can't report how far along it is. A new sentence takes
+// ~10-15 s (text, speech, timings), so the bar eases quickly to a random first stop (70-76%), then climbs slowly
+// toward a random second stop (85-91%), always moving a little but never reaching it, and fills smoothly to 100%
+// once the real answer is in. It never claims to be finished before it is.
 
 import { shuffleOrder, typeSteps } from "./home.ts";
 
 // ---------- the bar ----------
-export const CAP_MIN = 88;
-export const CAP_MAX = 98;
-export const FILL_MS = 1600; // 0 -> the cap
-export const FINISH_MS = 450; // where it was -> 100, once the answer is in
+export const FIRST_MIN = 70;
+export const FIRST_MAX = 76;
+export const SECOND_MIN = 85;
+export const SECOND_MAX = 91;
+export const QUICK_MS = 1800; // 0 -> the first stop
+export const CLIMB_MS = 5000; // the slow climb: each CLIMB_MS covers ~63% of what's left to the second stop
+export const FINISH_MS = 700; // where it was -> 100, once the answer is in
 export const DONE_HOLD_MS = 250; // 100% stays on screen this long before the animation shows
 
-/** Where the fake fill stops: a whole number from 88 to 98, each equally likely. */
-export function pickCap(rand: () => number = Math.random): number {
-  return CAP_MIN + Math.min(CAP_MAX - CAP_MIN, Math.floor(rand() * (CAP_MAX - CAP_MIN + 1)));
+export type Stops = { first: number; second: number };
+
+const whole = (lo: number, hi: number, r: number) => lo + Math.min(hi - lo, Math.floor(r * (hi - lo + 1)));
+
+/** The two stops: whole numbers, 70-76 and 85-91, each value equally likely. */
+export function pickStops(rand: () => number = Math.random): Stops {
+  return { first: whole(FIRST_MIN, FIRST_MAX, rand()), second: whole(SECOND_MIN, SECOND_MAX, rand()) };
 }
 
-const easeOut = (x: number) => 1 - Math.pow(1 - x, 3); // fast start, gentle stop
+const easeOut = (x: number) => 1 - Math.pow(1 - x, 2); // quick start, gentle stop (no jump)
+const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
 
-/** The bar `ms` after Animate, while the answer is still on its way: eases up to `cap`, then waits there. */
-export function fakePct(ms: number, cap: number): number {
-  const x = Math.min(1, Math.max(0, ms / FILL_MS));
-  return x >= 1 ? cap : cap * easeOut(x);
+/** The bar `ms` after Animate, while the answer is still on its way. */
+export function fakePct(ms: number, { first, second }: Stops): number {
+  if (ms <= 0) return 0;
+  if (ms < QUICK_MS) return first * easeOut(ms / QUICK_MS);
+  return first + (second - first) * (1 - Math.exp(-(ms - QUICK_MS) / CLIMB_MS));
 }
 
 /** The bar `ms` after the answer arrived, starting from wherever it was (`from`): smoothly up to 100. */
 export function finishPct(from: number, ms: number): number {
   const x = Math.min(1, Math.max(0, ms / FINISH_MS));
-  return x >= 1 ? 100 : from + (100 - from) * easeOut(x);
+  return x >= 1 ? 100 : from + (100 - from) * easeOutCubic(x);
 }
 
 /** How full each of the 10 blocks is (0..1): block i covers i*10% .. (i+1)*10%. */
