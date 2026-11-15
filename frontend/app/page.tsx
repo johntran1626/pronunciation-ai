@@ -22,7 +22,7 @@ import { UiLangProvider, UiToggle, useUi } from "@/components/UiLang";
 import { checkHealth, fetchCustom, loadCardData, type TextLang } from "@/lib/api";
 import { MAX_CUSTOM_CHARS, checkLine } from "@/lib/custom";
 import { problemText, type Key } from "@/lib/i18n";
-import { detectLang, gradingLive, htmlLang, practiceOffered } from "@/lib/landing";
+import { detectLang, htmlLang, practiceHintKey, practiceOffered } from "@/lib/landing";
 import { loadNativeClip } from "@/lib/native";
 import { AUTOPLAY_DEFAULT, playerKey, readAutoplay, saveAutoplay } from "@/lib/player";
 
@@ -254,7 +254,7 @@ function Coach() {
                         className="h-14 rounded-2xl border-[2.5px] border-ink bg-pink font-display text-[22px] text-ink shadow-pop transition-[transform,box-shadow] active:translate-x-[3px] active:translate-y-[3px] active:shadow-pop-xs lg:h-[62px] lg:text-2xl">
                         {t("practice")}
                       </button>
-                      <p className="m-0 text-xs font-medium text-neutral-600 lg:text-sm">{t(gradingLive(shown.lang) ? "practiceHint" : "practiceHintUngraded")}</p>
+                      <p className="m-0 text-xs font-medium text-neutral-600 lg:text-sm">{t(practiceHintKey(shown.lang))}</p>
                     </div>
                   )}
                 </>

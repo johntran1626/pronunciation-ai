@@ -46,9 +46,9 @@ export const UI = {
   practice: s("Practice it yourself", "직접 연습하기"),
   animateAnother: s("Animate another", "다른 문장 보기"),
   practiceHint: s("Record yourself and see which sounds need work.", "녹음하면 어떤 소리를 더 연습해야 하는지 보여 드려요."),
-  practiceHintUngraded: s(
-    "Korean grading isn't ready yet: you can record yourself and replay each syllable, but nothing will be marked green or red.",
-    "한국어 채점은 아직 준비 중이에요. 녹음하고 음절마다 다시 들을 수는 있지만, 초록색이나 빨간색 표시는 없어요.",
+  practiceHintKo: s(
+    "Record yourself. Korean grading is new: so far it checks ㅜ and plain ㅂ ㄷ ㄱ; other sounds stay plain text.",
+    "녹음해 보세요. 한국어 채점은 이제 시작이라 지금은 ㅜ와 예사소리 ㅂ ㄷ ㄱ만 확인하고, 다른 소리는 색 없이 보여 드려요.",
   ),
   practiceMixed: s("Practice works for one language at a time. Type the sentence all in English or all in Korean to record it.",
     "연습은 한 번에 한 언어만 돼요. 녹음하려면 문장을 영어로만, 또는 한국어로만 입력해 주세요."),

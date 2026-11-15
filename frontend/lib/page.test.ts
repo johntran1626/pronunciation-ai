@@ -73,13 +73,15 @@ test("the player looks each sound up in its own language's table", () => {
   assert.match(mouth, /descText\(ui, s\[0\]\.lang,/); // s = the sounds on screen
 });
 
-test("Korean Practice warns up front that nothing will be marked green or red yet", () => {
-  assert.match(page, /gradingLive\(shown\.lang\) \? "practiceHint" : "practiceHintUngraded"/);
-  for (const key of ["practiceHintUngraded", "nothingGraded"] as const) {
+test("Korean Practice says up front which Korean sounds are graded so far", () => {
+  assert.match(page, /t\(practiceHintKey\(shown\.lang\)\)/);
+  assert.ok(!("practiceHintUngraded" in UI), "the old 'Korean grading isn't ready' hint is gone");
+  for (const key of ["practiceHintKo", "nothingGraded"] as const) {
     assert.ok(UI[key], `${key} exists`);
     assert.match(tr("ko", key), HANGUL, `${key} has Korean`);
   }
-  assert.match(tr("en", "practiceHintUngraded"), /Korean grading isn't ready yet/);
+  assert.match(tr("en", "practiceHintKo"), /ㅜ/);
+  assert.match(tr("en", "practiceHintKo"), /ㅂ ㄷ ㄱ/);
   assert.match(tr("en", "nothingGraded"), /green or red/);
 });
 

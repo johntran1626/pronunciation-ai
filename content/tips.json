@@ -466,6 +466,132 @@
     "reviewed": false,
     "position": "initial",
     "needs_native_review": true
+   },
+   "u_as_eu": {
+    "target": "u",
+    "target_lang": "ko",
+    "target_label": "ㅜ",
+    "produced": "ɯ",
+    "produced_lang": "ko",
+    "produced_label": "ㅡ",
+    "what_happened": "In “{word}”, ㅜ probably sounded like ㅡ.",
+    "tip": "Round your lips and push them forward a little, like English “oo”. The tongue stays high and back, as for ㅡ; only the lips change.",
+    "practice": [
+     "구두",
+     "수박",
+     "두부"
+    ],
+    "facts": {
+     "target": {
+      "rounded": true,
+      "lips": "rounded",
+      "height": "close"
+     },
+     "produced": {
+      "rounded": false,
+      "lips": "spread",
+      "height": "close"
+     }
+    },
+    "reviewed": false,
+    "sources": [
+     "Lee, Hyun Bok (1993), 'Korean', Journal of the International Phonetic Association 23(1) (Illustrations of the IPA)",
+     "Shin, Kiaer & Cha (2013), The Sounds of Korean, Cambridge University Press"
+    ],
+    "needs_native_review": true
+   },
+   "p_as_pp": {
+    "target": "p",
+    "target_lang": "ko",
+    "target_label": "ㅂ (plain)",
+    "produced": "p͈",
+    "produced_lang": "ko",
+    "produced_label": "ㅃ (tense)",
+    "what_happened": "In “{word}”, you probably said a tense ㅃ where the word needs a plain ㅂ.",
+    "tip": "Relax your throat and close your lips lightly. At the start of a word, let a little air out and start the vowel low; between vowels, ㅂ is soft, close to English b.",
+    "practice": [
+     "바다",
+     "비",
+     "불"
+    ],
+    "facts": {
+     "target": {
+      "laryngeal": "plain"
+     },
+     "produced": {
+      "laryngeal": "tense"
+     }
+    },
+    "reviewed": false,
+    "sources": [
+     "Cho, Jun & Ladefoged (2002), 'Acoustic and aerodynamic correlates of Korean stops and fricatives', Journal of Phonetics 30",
+     "Silva (2006), 'Acoustic evidence for the emergence of tonal contrast in contemporary Korean', Phonology 23",
+     "Shin, Kiaer & Cha (2013), The Sounds of Korean, Cambridge University Press"
+    ],
+    "position": "initial",
+    "needs_native_review": true
+   },
+   "t_as_tt": {
+    "target": "t",
+    "target_lang": "ko",
+    "target_label": "ㄷ (plain)",
+    "produced": "t͈",
+    "produced_lang": "ko",
+    "produced_label": "ㄸ (tense)",
+    "what_happened": "In “{word}”, you probably said a tense ㄸ where the word needs a plain ㄷ.",
+    "tip": "Relax your throat and touch the tongue tip lightly behind your teeth. At a word's start, let a little air out and start the vowel low; between vowels, ㄷ is soft, close to English d.",
+    "practice": [
+     "다리",
+     "도시",
+     "두부"
+    ],
+    "facts": {
+     "target": {
+      "laryngeal": "plain"
+     },
+     "produced": {
+      "laryngeal": "tense"
+     }
+    },
+    "reviewed": false,
+    "sources": [
+     "Cho, Jun & Ladefoged (2002), 'Acoustic and aerodynamic correlates of Korean stops and fricatives', Journal of Phonetics 30",
+     "Silva (2006), 'Acoustic evidence for the emergence of tonal contrast in contemporary Korean', Phonology 23",
+     "Shin, Kiaer & Cha (2013), The Sounds of Korean, Cambridge University Press"
+    ],
+    "position": "initial",
+    "needs_native_review": true
+   },
+   "k_as_kk": {
+    "target": "k",
+    "target_lang": "ko",
+    "target_label": "ㄱ (plain)",
+    "produced": "k͈",
+    "produced_lang": "ko",
+    "produced_label": "ㄲ (tense)",
+    "what_happened": "In “{word}”, you probably said a tense ㄲ where the word needs a plain ㄱ.",
+    "tip": "Relax your throat and touch the back of the tongue lightly. At a word's start, let a little air out and start the vowel low; between vowels, ㄱ is soft, close to English g.",
+    "practice": [
+     "가방",
+     "고기",
+     "구름"
+    ],
+    "facts": {
+     "target": {
+      "laryngeal": "plain"
+     },
+     "produced": {
+      "laryngeal": "tense"
+     }
+    },
+    "reviewed": false,
+    "sources": [
+     "Cho, Jun & Ladefoged (2002), 'Acoustic and aerodynamic correlates of Korean stops and fricatives', Journal of Phonetics 30",
+     "Silva (2006), 'Acoustic evidence for the emergence of tonal contrast in contemporary Korean', Phonology 23",
+     "Shin, Kiaer & Cha (2013), The Sounds of Korean, Cambridge University Press"
+    ],
+    "position": "initial",
+    "needs_native_review": true
    }
   }
  }

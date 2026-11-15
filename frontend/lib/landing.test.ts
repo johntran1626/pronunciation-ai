@@ -1,7 +1,7 @@
 // The type-first landing page: which language a typed sentence is in, and what English input can do.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { detectLang, gradingLive, practiceOffered } from "./landing.ts";
+import { detectLang, practiceHintKey, practiceOffered } from "./landing.ts";
 
 test("Hangul means Korean, Latin letters mean English, whatever the site language is", () => {
   assert.equal(detectLang("안녕하세요"), "ko");
@@ -27,7 +27,7 @@ test("Practice is offered for one-language sentences only (scoring was never mea
   assert.equal(practiceOffered("mix"), false);
 });
 
-test("grading is live for English only; Korean says so BEFORE recording (not a surprise after)", () => {
-  assert.equal(gradingLive("en"), true);
-  assert.equal(gradingLive("ko"), false);
+test("Korean grading is live but partial, and the Practice hint says which sounds BEFORE recording", () => {
+  assert.equal(practiceHintKey("en"), "practiceHint");
+  assert.equal(practiceHintKey("ko"), "practiceHintKo");
 });

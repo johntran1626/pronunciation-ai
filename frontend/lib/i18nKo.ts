@@ -46,6 +46,14 @@ export const TIP_KO: Record<"en" | "ko", Record<string, TipKo>> = {
       tip: "바람을 세게 내보내며 입술을 떼고(손에 바람이 느껴져요), 모음은 높은 음으로 시작하세요." },
     p_as_ph: { target_label: "ㅂ (예사소리)", produced_label: "ㅍ (거센소리)", what_happened: "“{word}”에서 예사소리 ㅂ 자리에 거센소리 ㅍ을 낸 것 같아요.",
       tip: "바람을 더 약하게 하고, 모음은 더 낮고 편한 음으로 시작하세요. 서울말에서는 모음의 높낮이가 ㅂ과 ㅍ을 가르는 큰 부분이에요." },
+    u_as_eu: { target_label: "ㅜ", produced_label: "ㅡ", what_happened: "“{word}”에서 ㅜ가 ㅡ처럼 들린 것 같아요.",
+      tip: "영어 “oo”처럼 입술을 둥글게 모아 살짝 앞으로 내미세요. 혀는 ㅡ처럼 높고 뒤쪽에 그대로 두고, 입술만 바뀌어요." },
+    p_as_pp: { target_label: "ㅂ (예사소리)", produced_label: "ㅃ (된소리)", what_happened: "“{word}”에서 예사소리 ㅂ 자리에 된소리 ㅃ을 낸 것 같아요.",
+      tip: "목에 힘을 빼고 입술을 가볍게 붙이세요. 단어 첫소리에서는 바람을 조금 내보내며 모음을 낮게 시작하고, 모음 사이에서는 영어 b처럼 부드럽게 내요." },
+    t_as_tt: { target_label: "ㄷ (예사소리)", produced_label: "ㄸ (된소리)", what_happened: "“{word}”에서 예사소리 ㄷ 자리에 된소리 ㄸ을 낸 것 같아요.",
+      tip: "목에 힘을 빼고 혀끝을 윗니 뒤에 가볍게 대세요. 단어 첫소리에서는 바람을 조금 내보내며 모음을 낮게 시작하고, 모음 사이에서는 영어 d처럼 부드럽게 내요." },
+    k_as_kk: { target_label: "ㄱ (예사소리)", produced_label: "ㄲ (된소리)", what_happened: "“{word}”에서 예사소리 ㄱ 자리에 된소리 ㄲ을 낸 것 같아요.",
+      tip: "목에 힘을 빼고 혀 뒤쪽을 가볍게 대세요. 단어 첫소리에서는 바람을 조금 내보내며 모음을 낮게 시작하고, 모음 사이에서는 영어 g처럼 부드럽게 내요." },
   },
 };
 
@@ -188,5 +196,7 @@ export const CHECK_KO: Record<string, string> = {
   dh_as_d: "TH (D처럼 발음)",
   ih_as_iy: "짧은 i (ship과 sheep)",
   iy_as_ih: "긴 ee (sheep과 ship)",
+  u_as_eu: "한국어 ㅜ (ㅡ처럼 발음)",
+  lenis_as_tense: "한국어 예사소리 ㅂ ㄷ ㄱ (된소리로 발음)",
   extra_vowel: "끝 자음 뒤에 덧붙는 모음",
 };

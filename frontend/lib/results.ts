@@ -33,6 +33,8 @@ const CHECK_WORDS: Record<string, string> = {
   ih_as_iy: "short i (ship vs sheep)",
   iy_as_ih: "long ee (sheep vs ship)",
   extra_vowel: "extra vowels after final consonants",
+  u_as_eu: "Korean ㅜ (said like ㅡ)",
+  lenis_as_tense: "Korean plain ㅂ ㄷ ㄱ (said tense)",
 };
 
 export function describeChecks(checks: string[]): string {

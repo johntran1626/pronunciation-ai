@@ -15,15 +15,19 @@ English pairs mirror backend/scoring.PAIRS; Korean pairs follow the MVP list (�
 import json
 from pathlib import Path
 
+from backend.g2p import TENSE
+
 OUT = Path(__file__).resolve().parent / "tips.json"
 
 
 def tip(target, produced, target_label, produced_label, what_happened, text, practice, facts=None,
-        target_lang=None, produced_lang=None, position=None, lang="en"):
+        target_lang=None, produced_lang=None, position=None, lang="en", sources=None):
     e = {"target": target, "target_lang": target_lang or lang, "target_label": target_label,
          "produced": produced, "produced_lang": produced_lang or lang, "produced_label": produced_label,
          "what_happened": what_happened, "tip": text, "practice": practice, "facts": facts or {},
          "reviewed": False}
+    if sources:
+        e["sources"] = sources    # the phonetics references the tip was checked against (Korean: no native reviewer)
     if position:
         e["position"] = position  # practice words must START with the target (Korean stops change mid-word)
     if lang == "ko":
@@ -84,6 +88,14 @@ EN = {
 }
 
 # ---------- learning Korean (English speakers). ALL need native review before users see them. ----------
+# References for the Korean tips (also listed in content/articulation.json "sources")
+SRC_LEE = "Lee, Hyun Bok (1993), 'Korean', Journal of the International Phonetic Association 23(1) (Illustrations of the IPA)"
+SRC_SHIN = "Shin, Kiaer & Cha (2013), The Sounds of Korean, Cambridge University Press"
+SRC_CJL = ("Cho, Jun & Ladefoged (2002), 'Acoustic and aerodynamic correlates of Korean stops and fricatives', "
+           "Journal of Phonetics 30")
+SRC_SILVA = "Silva (2006), 'Acoustic evidence for the emergence of tonal contrast in contemporary Korean', Phonology 23"
+STOP_SOURCES = [SRC_CJL, SRC_SILVA, SRC_SHIN]
+
 KO = {
     "eo_as_o": tip("ʌ", "o", "ㅓ", "ㅗ",
                    "In “{word}”, ㅓ probably sounded like ㅗ.",
@@ -132,6 +144,32 @@ KO = {
                    "Use a lighter puff and start the vowel at a lower, relaxed pitch. In Seoul speech, the vowel's pitch is a big part of what separates ㅂ from ㅍ.",
                    ["바다", "비", "불"],
                    {"target": {"laryngeal": "plain"}, "produced": {"laryngeal": "aspirated"}}, position="initial", lang="ko"),
+    # The two live Korean checks (backend/korean_scoring.py): ㅜ said like ㅡ, and a plain stop said tense.
+    "u_as_eu": tip("u", "ɯ", "ㅜ", "ㅡ",
+                   "In “{word}”, ㅜ probably sounded like ㅡ.",
+                   "Round your lips and push them forward a little, like English “oo”. The tongue stays high and back, as for ㅡ; only the lips change.",
+                   ["구두", "수박", "두부"],
+                   {"target": {"rounded": True, "lips": "rounded", "height": "close"},
+                    "produced": {"rounded": False, "lips": "spread", "height": "close"}},
+                   lang="ko", sources=[SRC_LEE, SRC_SHIN]),
+    "p_as_pp": tip("p", "p" + TENSE, "ㅂ (plain)", "ㅃ (tense)",
+                   "In “{word}”, you probably said a tense ㅃ where the word needs a plain ㅂ.",
+                   "Relax your throat and close your lips lightly. At the start of a word, let a little air out and start the vowel low; between vowels, ㅂ is soft, close to English b.",
+                   ["바다", "비", "불"],
+                   {"target": {"laryngeal": "plain"}, "produced": {"laryngeal": "tense"}},
+                   position="initial", lang="ko", sources=STOP_SOURCES),
+    "t_as_tt": tip("t", "t" + TENSE, "ㄷ (plain)", "ㄸ (tense)",
+                   "In “{word}”, you probably said a tense ㄸ where the word needs a plain ㄷ.",
+                   "Relax your throat and touch the tongue tip lightly behind your teeth. At a word's start, let a little air out and start the vowel low; between vowels, ㄷ is soft, close to English d.",
+                   ["다리", "도시", "두부"],
+                   {"target": {"laryngeal": "plain"}, "produced": {"laryngeal": "tense"}},
+                   position="initial", lang="ko", sources=STOP_SOURCES),
+    "k_as_kk": tip("k", "k" + TENSE, "ㄱ (plain)", "ㄲ (tense)",
+                   "In “{word}”, you probably said a tense ㄲ where the word needs a plain ㄱ.",
+                   "Relax your throat and touch the back of the tongue lightly. At a word's start, let a little air out and start the vowel low; between vowels, ㄱ is soft, close to English g.",
+                   ["가방", "고기", "구름"],
+                   {"target": {"laryngeal": "plain"}, "produced": {"laryngeal": "tense"}},
+                   position="initial", lang="ko", sources=STOP_SOURCES),
 }
 
 

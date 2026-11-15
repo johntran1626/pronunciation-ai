@@ -19,6 +19,7 @@ from backend.compare import attach_heard
 from backend.custom import custom_text
 from backend import native, translate, tts
 from backend.g2p import expected_phonemes
+from backend.korean_scoring import check_names, load_korean_thresholds, score_korean
 from backend.limits import TTSLimiter
 from backend.match import active_checks, finalize, load_match_thresholds, mark_unchecked, sentence_check
 from backend.recognize import recognize
@@ -281,12 +282,16 @@ def _run_pipeline(samples, sr, text, lang):
     heard = recognize(em)                     # 3. ...and what was actually heard
     words, extra_at_start = attach_heard(words, heard, lang)  # 4. line them up: what was heard in each place
     sound_t, match_t = load_thresholds(em.model), load_match_thresholds(em.model)  # tuned for THAT listener
+    korean_t = load_korean_thresholds()       #    tuned for the Korean-trained listener
     rules = match_t.get(lang, {}).get("sentence", {"enabled": False})
     matched, reason = sentence_check(words, len(heard), rules)  # 5. did they say THIS sentence?
     if matched:
         words = score_words(em, words, lang, thresholds=sound_t, audio=samples, sr=sr)  # 6. sound checks
         words = finalize(words, lang, sound_t, match_t)  # 7. word heard? + honest green / unchecked
+        if lang == "ko":                      #    Korean: the Korean-trained listener's live checks
+            words = score_korean(samples, sr, expected, words, korean_t)
     else:
         words = mark_unchecked(words)         #    no verdict on a recording that isn't this sentence
     words = attach_display(words, lang)       # 8. which letters / syllable blocks to paint
-    return words, heard, extra_at_start, matched, reason, active_checks(lang, sound_t, match_t)
+    checks = active_checks(lang, sound_t, match_t) + (check_names(korean_t) if lang == "ko" else [])
+    return words, heard, extra_at_start, matched, reason, checks

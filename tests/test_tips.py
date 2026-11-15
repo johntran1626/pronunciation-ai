@@ -13,7 +13,8 @@ TIPS = ROOT / "content" / "tips.json"
 ARTIC = ROOT / "content" / "articulation.json"
 
 # MVP confusion pairs, learning Korean
-KO_PAIRS = {"eo_as_o", "eu_as_u", "ae_as_e", "tap_as_r", "tap_as_l", "pp_as_p", "pp_as_ph", "ph_as_p", "p_as_ph"}
+KO_PAIRS = {"eo_as_o", "eu_as_u", "ae_as_e", "tap_as_r", "tap_as_l", "pp_as_p", "pp_as_ph", "ph_as_p", "p_as_ph",
+            "u_as_eu", "p_as_pp", "t_as_tt", "k_as_kk"}   # the last 4 = the live Korean checks (korean_scoring.py)
 EN_PAIRS = set(PAIRS) | {EXTRA_VOWEL, "word_not_heard"}
 MAX_TIP_CHARS = 220  # about two short sentences: the card is read on a phone
 
@@ -96,14 +97,16 @@ def test_korean_practice_words_are_hangul(tips):
 
 # Review status: every English tip is approved; a native speaker approved the Korean
 # vowel and ㄹ tips. The ㅂ/ㅃ/ㅍ tips were reworded after review, so they stay unreviewed until checked again.
-KO_STOPS = {"pp_as_p", "pp_as_ph", "ph_as_p", "p_as_ph"}
+KO_STOPS = {"pp_as_p", "pp_as_ph", "ph_as_p", "p_as_ph", "p_as_pp", "t_as_tt", "k_as_kk"}
+# Drafted from cited references for the live Korean checks; reviewed once checked against those references.
+KO_CITED_DRAFTS = {"u_as_eu", "p_as_pp", "t_as_tt", "k_as_kk"}
 
 
 def test_review_status_matches_the_reviews(tips):
     for name, e in tips["tips"]["en"].items():
         assert e["reviewed"] is True, name
     for name, e in tips["tips"]["ko"].items():
-        approved = name not in KO_STOPS
+        approved = name not in KO_STOPS | KO_CITED_DRAFTS
         assert e["reviewed"] is approved, name
         assert e["needs_native_review"] is (not approved), name
 

@@ -33,6 +33,9 @@ ENV HOME=/home/user \
 RUN python -c "import nltk; [nltk.download(p, download_dir='/home/user/nltk_data', quiet=True) for p in ('cmudict', 'averaged_perceptron_tagger', 'averaged_perceptron_tagger_eng')]"
 RUN python -c "from huggingface_hub import hf_hub_download; from transformers import Wav2Vec2FeatureExtractor, Wav2Vec2ForCTC; m = 'facebook/wav2vec2-xlsr-53-espeak-cv-ft'; Wav2Vec2ForCTC.from_pretrained(m); Wav2Vec2FeatureExtractor.from_pretrained(m); hf_hub_download(m, 'vocab.json')"
 
+# The Korean-trained listener (backend/korean_listener.py), pinned to the revision the Korean cut-offs were measured on
+RUN python -c "from huggingface_hub import hf_hub_download; from transformers import Wav2Vec2FeatureExtractor, Wav2Vec2ForCTC; m, r = 'slplab/wav2vec2-xls-r-300m_phone-mfa_korean', 'e26ff9dfb62169acf445d0060ef56863c018b20e'; Wav2Vec2ForCTC.from_pretrained(m, revision=r); Wav2Vec2FeatureExtractor.from_pretrained(m, revision=r); hf_hub_download(m, 'vocab.json', revision=r)"
+
 COPY --chown=user backend/ backend/
 COPY --chown=user content/ content/
 

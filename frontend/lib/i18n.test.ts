@@ -87,3 +87,9 @@ test("typing problems in both languages", () => {
 test("the Korean honesty line has a Korean name for every check, incl. speech_heard", () => {
   assert.doesNotMatch(describeChecksIn("ko", ["speech_heard"]), /speech_heard/);
 });
+
+test("the Korean honesty line names the live Korean checks in Korean", () => {
+  const line = describeChecksIn("ko", ["lenis_as_tense", "u_as_eu"]);
+  assert.doesNotMatch(line, /lenis_as_tense|u_as_eu/);
+  assert.match(line, /예사소리/);
+});

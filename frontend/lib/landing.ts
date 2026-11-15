@@ -17,8 +17,8 @@ export function detectLang(text: string): TextLang | null {
 
 /** "Practice it yourself" (record + green/red) only for one-language sentences: scoring was never measured on
  * mixed ones, and a wrong red is the worst thing this app can show. */
-// Which languages have a live sound check (green/red). Korean joins when its checks pass their bars.
-export const gradingLive = (lang: Lang): boolean => lang === "en";
+// The hint under Practice. Korean grading is partial (only the checks that passed their bars), so it says which sounds.
+export const practiceHintKey = (lang: Lang) => (lang === "ko" ? "practiceHintKo" : "practiceHint");
 export const practiceOffered = (lang: TextLang): lang is Lang => lang !== "mix";
 
 /** The HTML lang attribute (Korean fonts, screen readers): a mixed sentence has no single one. */

@@ -80,3 +80,10 @@ test("describeChecks with nothing live says nothing was graded", () => {
 test("a sentence check that only rejects silence is described as such, not as reading the sentence", () => {
   assert.equal(describeChecks(["speech_heard"]), "This version checks that speech was heard. Plain text = not checked yet.");
 });
+
+test("the live Korean checks have plain names in the honesty line, not their ids", () => {
+  const line = describeChecks(["speech_heard", "lenis_as_tense", "u_as_eu"]);
+  assert.doesNotMatch(line, /lenis_as_tense|u_as_eu/);
+  assert.match(line, /ㅜ/);
+  assert.match(line, /ㅂ ㄷ ㄱ/);
+});
