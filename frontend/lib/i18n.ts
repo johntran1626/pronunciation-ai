@@ -35,6 +35,8 @@ export const UI = {
   tabKo: s("한국어", "한국어"),
   pack_Basics: s("Basics", "기초"),
   pack_Casual: s("Casual", "일상"),
+  samplePick: s("Pick a sentence…", "문장 고르기…"),
+  autoplay: s("Autoplay", "자동 재생"),
   switchLabel: s("Site language", "사이트 언어"),
   casualLabel: s("Show 반말 (casual) instead of 존댓말 (polite)", "존댓말 대신 반말 보기"),
   // the native mouth player

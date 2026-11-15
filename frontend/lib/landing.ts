@@ -25,6 +25,22 @@ export function sampleLines<T extends Leveled>(pack: { id: string; items: T[] })
   return bySpeech(pack.items, pack.id.endsWith("-casual"));
 }
 
+type SamplePack<T> = { id: string; name: string; lang: Lang; items: T[] };
+
+/** The sample dropdown for one language: one group per pack, holding that pack's sample lines. */
+export function sampleGroups<T extends Leveled>(packs: SamplePack<T>[], lang: Lang) {
+  return packs.filter((p) => p.lang === lang).map((p) => ({ id: p.id, name: p.name, items: sampleLines(p) }));
+}
+
+/** The line picked in the dropdown (by item id), with its language; null if it isn't there. */
+export function findSample<T extends Leveled & { id: string }>(packs: SamplePack<T>[], id: string) {
+  for (const p of packs) {
+    const item = p.items.find((i) => i.id === id);
+    if (item) return { item, lang: p.lang };
+  }
+  return null;
+}
+
 // ---------- English input -> Korean ----------
 /** "Translate to KR" and "Translate to KR and Animate" are offered for English input only. */
 export const translateOffered = (lang: Lang | null) => lang === "en";

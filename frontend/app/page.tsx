@@ -2,9 +2,11 @@
 
 // Type-first: one big box. The language comes from what is typed (Hangul = Korean), the native mouth animation
 // loads and plays for the sentence with no extra tap, and "Practice it yourself" opens the recorder + scoring.
-// Sample sentences (Basics and Casual, both languages) sit lightly to the side for visitors with nothing to type.
+// Sample sentences (Basics and Casual, both languages) sit in a small dropdown to the side for visitors with
+// nothing to type. The Autoplay switch in the box (on by default) decides whether a new animation plays by itself.
 
 import { useEffect, useRef, useState } from "react";
+import AutoplaySwitch from "@/components/AutoplaySwitch";
 import BackendStatus from "@/components/BackendStatus";
 import FormalityLine from "@/components/FormalityLine";
 import NativeMouth from "@/components/NativeMouth";
@@ -14,7 +16,8 @@ import { UiLangProvider, UiToggle, useUi } from "@/components/UiLang";
 import { fetchCustom, fetchPack, fetchTranslation, type Lang, type Pack, type PackItem } from "@/lib/api";
 import { MAX_CUSTOM_CHARS, checkLine } from "@/lib/custom";
 import { problemText, type Key } from "@/lib/i18n";
-import { SAMPLE_PACKS, detectLang, koreanToAnimate, sampleLines, storedTranslation, translateOffered } from "@/lib/landing";
+import { SAMPLE_PACKS, detectLang, findSample, koreanToAnimate, sampleGroups, storedTranslation, translateOffered } from "@/lib/landing";
+import { AUTOPLAY_DEFAULT, playerKey, readAutoplay, saveAutoplay } from "@/lib/player";
 import type { Translated } from "@/lib/translations";
 
 const LANG_NAME: Record<Lang, Key> = { en: "langEn", ko: "langKo" };
@@ -22,7 +25,8 @@ const LANG_NAME: Record<Lang, Key> = { en: "langEn", ko: "langKo" };
 // The sentence being animated: a sample (with its pack line: translation, source), what was typed, or the Korean
 // translation of typed English (`from`: the English and both Korean forms, so the 존댓말 / 반말 switch can re-animate).
 type FromEnglish = { en: string; t: Translated };
-type Shown = { text: string; lang: Lang; item: PackItem | null; note: string | null; typed: string | null; from?: FromEnglish };
+// `run` counts animations, so showing the same sentence again still gets a fresh player (1x, plays again).
+type Shown = { run: number; text: string; lang: Lang; item: PackItem | null; note: string | null; typed: string | null; from?: FromEnglish };
 type Busy = null | "animate" | "kr" | "kr-animate";
 
 export default function Home() {
@@ -45,6 +49,8 @@ function Coach() {
   const [casual, setCasual] = useState(false); // 존댓말 by default; one setting for the page
   const [samples, setSamples] = useState<Pack[]>([]);
   const [sampleLang, setSampleLang] = useState<Lang>("en");
+  const [autoplay, setAutoplayState] = useState(AUTOPLAY_DEFAULT);
+  const runs = useRef(0);
   const result = useRef<HTMLElement | null>(null);
 
   const lang = detectLang(typed);
@@ -60,8 +66,19 @@ function Coach() {
     return () => { live = false; };
   }, []);
 
-  function show(s: Shown) {
-    setShown(s);
+  // the saved Autoplay choice, read once after mount (no storage during server render)
+  useEffect(() => {
+    let store: Storage | null = null;
+    try { store = localStorage; } catch {}
+    setAutoplayState(readAutoplay(store)); // eslint-disable-line react-hooks/set-state-in-effect -- read once after mount
+  }, []);
+  function setAutoplay(on: boolean) {
+    setAutoplayState(on);
+    try { saveAutoplay(localStorage, on); } catch {}
+  }
+
+  function show(s: Omit<Shown, "run">) {
+    setShown({ ...s, run: ++runs.current });
     setPractice(false);
     setError(null);
     // bring the animation into view on small screens (the box stays above it)
@@ -173,6 +190,7 @@ function Coach() {
                 <span className={`text-xs ${tooLong ? "text-red-600" : "text-neutral-400"}`}>
                   {typed.trim().length}/{MAX_CUSTOM_CHARS}
                 </span>
+                <AutoplaySwitch on={autoplay} onChange={setAutoplay} />
                 <div className="ml-auto flex flex-wrap justify-end gap-2">
                   {translateOffered(lang) && (
                     <>
@@ -237,8 +255,8 @@ function Coach() {
                   , {shown.item.license}.
                 </p>
               )}
-              {/* key: a new sentence gets a fresh player (it loads and plays on its own) */}
-              <NativeMouth key={`mouth:${shown.lang}:${shown.text}`} text={shown.text} lang={shown.lang} />
+              {/* key: every new animation gets a fresh player (1x; it loads, and plays on its own if Autoplay is on) */}
+              <NativeMouth key={playerKey(shown)} text={shown.text} lang={shown.lang} autoplay={autoplay} />
               {practice ? (
                 <Recorder key={`rec:${shown.lang}:${shown.text}`} text={shown.text} lang={shown.lang} />
               ) : (
@@ -254,11 +272,9 @@ function Coach() {
           )}
         </div>
 
-        {/* samples: light, to the side (below the box on phones) */}
-        <aside className="flex flex-col gap-3 text-sm lg:pt-2" data-testid="samples">
-          <div className="flex items-center gap-2">
-            <span className="text-neutral-500">{t("samplesTitle")}</span>
-          </div>
+        {/* samples: a small dropdown to the side (below the box on phones) */}
+        <aside className="flex flex-col gap-2 text-sm lg:pt-2" data-testid="samples">
+          <span className="text-neutral-500">{t("samplesTitle")}</span>
           <div className="flex gap-1" role="tablist">
             {(["en", "ko"] as Lang[]).map((l) => (
               <button key={l} role="tab" aria-selected={sampleLang === l} onClick={() => setSampleLang(l)}
@@ -267,21 +283,21 @@ function Coach() {
               </button>
             ))}
           </div>
-          {samples.filter((p) => p.lang === sampleLang).map((p) => (
-            <div key={p.id} className="flex flex-col gap-1">
-              <span className="text-xs font-medium uppercase tracking-wide text-neutral-400">{p.name === "Basics" || p.name === "Casual" ? t(`pack_${p.name}`) : p.name}</span>
-              <ul className="flex flex-col">
-                {sampleLines(p).map((it) => (
-                  <li key={it.id}>
-                    <button onClick={() => pickSample(it, p.lang)} lang={p.lang}
-                      className={`w-full rounded px-1.5 py-0.5 text-left text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 ${shown?.item?.id === it.id ? "bg-neutral-100 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100" : ""}`}>
-                      {it.text}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <select
+            value={shown?.item && shown.lang === sampleLang ? shown.item.id : ""}
+            onChange={(e) => { const f = findSample(samples, e.target.value); if (f) pickSample(f.item, f.lang); }}
+            lang={sampleLang}
+            aria-label={t("samplesTitle")}
+            className="w-full rounded-lg border border-neutral-300 bg-white px-2 py-1.5 text-neutral-700 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200"
+            data-testid="sample-pick"
+          >
+            <option value="" disabled>{t("samplePick")}</option>
+            {sampleGroups(samples, sampleLang).map((g) => (
+              <optgroup key={g.id} label={g.name === "Basics" || g.name === "Casual" ? t(`pack_${g.name}`) : g.name}>
+                {g.items.map((it) => <option key={it.id} value={it.id}>{it.text}</option>)}
+              </optgroup>
+            ))}
+          </select>
         </aside>
       </div>
 

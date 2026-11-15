@@ -4,8 +4,9 @@
 // timed by the aligner), never the learner's own mouth.
 //
 // Loads as soon as it appears: the clip + its timings (lib/native.ts, the same copy the detail card's "Native"
-// button uses) and the articulation table (shared with the cards), then plays once at 1x. If the browser blocks
-// sound before any tap, it waits on Play instead. At the end, Replay. One still frame per sound (lib/animate.ts);
+// button uses) and the articulation table (shared with the cards), then plays once at 1x (unless autoplay is
+// off). If the browser blocks sound before any tap, it waits on Play instead. At the end, the Play button becomes
+// Replay (beside the speed buttons; nothing covers the picture). The speed can change at any moment. One still frame per sound (lib/animate.ts);
 // the slider moves frame by frame with the words under it, and landing on a frame plays just that sound.
 // "Show what matters" (off by default) rings each sound's defining contact or shape, with a plain-words label.
 
@@ -18,6 +19,7 @@ import {
 } from "@/lib/animate";
 import { loadCardData, type Lang } from "@/lib/api";
 import { loadNativeClip } from "@/lib/native";
+import { SPEEDS, changeSpeed } from "@/lib/player";
 import { playSlice, stopPlayback } from "@/lib/replay";
 import { encodeWav16 } from "@/lib/wav";
 
@@ -30,11 +32,10 @@ type Clip = {
   sounds: Sound[];
 };
 
-const SPEEDS = [1, 0.5, 0.25];
 const SLICE_PAD = 0.02; // seconds of audio either side of one sound
 const holdTime = (f: Frame) => f.start + 0.5 * (f.end - f.start); // the middle of a frame: always a still
 
-export default function NativeMouth({ text, lang }: { text: string; lang: Lang }) {
+export default function NativeMouth({ text, lang, autoplay = true }: { text: string; lang: Lang; autoplay?: boolean }) {
   const { ui, t: tr } = useUi();
   const [clip, setClip] = useState<Clip | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -85,6 +86,7 @@ export default function NativeMouth({ text, lang }: { text: string; lang: Lang }
     if (!a || !clip) return;
     stopPlayback();
     if (ended || a.currentTime >= clip.duration - 0.01) a.currentTime = 0;
+    a.defaultPlaybackRate = speed;
     a.playbackRate = speed;
     setEnded(false);
     a.play().then(
@@ -134,14 +136,8 @@ export default function NativeMouth({ text, lang }: { text: string; lang: Lang }
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-neutral-200 p-3 dark:border-neutral-800" data-testid="native-mouth">
       <figure className="flex flex-col gap-1">
-        <div className="relative mx-auto w-full max-w-sm overflow-hidden rounded-lg border-2 border-green-600" data-testid="mouth">
+        <div className="mx-auto w-full max-w-sm overflow-hidden rounded-lg border-2 border-green-600" data-testid="mouth">
           <CutAway g={pose} mark={mark} />
-          {ended && (
-            <button onClick={start} data-testid="replay-overlay"
-              className="absolute inset-0 flex items-center justify-center bg-white/45 dark:bg-black/40">
-              <span className="rounded-full bg-green-700 px-5 py-2 text-base font-medium text-white shadow-lg">↻ {tr("replay")}</span>
-            </button>
-          )}
         </div>
         <figcaption className="text-xs text-neutral-500">
           {tr("mouthCaption")}
@@ -154,10 +150,10 @@ export default function NativeMouth({ text, lang }: { text: string; lang: Lang }
       </p>
       <div className="flex flex-wrap items-center gap-2">
         <button onClick={playing ? pause : start} data-testid="play" className="min-w-20 rounded-md bg-green-700 px-4 py-1.5 font-medium text-white">
-          {tr(playing ? "pause" : ended ? "replay" : "play")}
+          {playing ? tr("pause") : ended ? `↻ ${tr("replay")}` : tr("play")}
         </button>
         {SPEEDS.map((s) => (
-          <button key={s} onClick={() => { setSpeed(s); if (audio.current) audio.current.playbackRate = s; }}
+          <button key={s} onClick={() => { setSpeed(s); if (audio.current) void changeSpeed(audio.current, s); }} aria-pressed={s === speed}
             className={`rounded border px-2 py-1 text-sm ${s === speed ? "border-green-600" : "border-neutral-300 dark:border-neutral-700"}`}>
             {s}×
           </button>
@@ -193,8 +189,8 @@ export default function NativeMouth({ text, lang }: { text: string; lang: Lang }
         ))}
       </div>
       <audio ref={audio} src={clip.url} preload="auto"
-        // plays once on its own as soon as the clip can play
-        onCanPlay={() => { if (!autoplayed.current) { autoplayed.current = true; start(); } }}
+        // plays once on its own as soon as the clip can play (autoplay on)
+        onCanPlay={() => { if (!autoplayed.current) { autoplayed.current = true; if (autoplay) start(); } }}
         onEnded={() => { setPlaying(false); setEnded(true); if (audio.current) setT(audio.current.duration); }} />
     </div>
   );
