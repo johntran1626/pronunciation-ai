@@ -77,9 +77,10 @@ def model_symbol(ipa, lang):
     return KO_MODEL_SYMBOL.get(ipa, ipa) if lang == "ko" else ipa
 
 
-def emissions(audio, sr, lang=None):
+def emissions(audio, sr, lang=None, model=None):
     """Raw samples (any rate, mono or stereo) -> Emissions. This is the slow part (~1 s per sentence on CPU).
-    lang given (the live app): that language's live_listener(). No lang (eval scripts): listener(), as before."""
+    lang given (the live app): that language's live_listener(). No lang (eval scripts): listener(), as before.
+    model given: exactly that listener (mixed sentences ask for the original multilingual MODEL)."""
     audio = np.asarray(audio, dtype=np.float32)
     if audio.ndim == 2:
         audio = audio.mean(axis=1)  # stereo -> mono
@@ -89,7 +90,7 @@ def emissions(audio, sr, lang=None):
     duration = len(wav) / SR
     if duration < MIN_SECONDS:
         raise ValueError(f"recording is {duration:.2f} s; too short to analyze")
-    name = live_listener(lang) if lang else listener()
+    name = model or (live_listener(lang) if lang else listener())
     extractor, model = _model(name)
     inputs = extractor(wav.numpy(), sampling_rate=SR, return_tensors="pt")  # normalizes volume
     with torch.inference_mode():
@@ -98,9 +99,10 @@ def emissions(audio, sr, lang=None):
 
 
 def align(em, words, lang):
-    """Force the expected phonemes (from g2p.expected_phonemes) onto the audio. Returns new dicts with times."""
+    """Force the expected phonemes (from g2p.expected_phonemes) onto the audio. Returns new dicts with times.
+    A word tagged with its own "lang" (mixed sentences) uses that language's symbols and keeps the tag."""
     flat = [(wi, p) for wi, w in enumerate(words) for p in w["phonemes"]]
-    ids = [vocab()[model_symbol(p, lang)] for _, p in flat]
+    ids = [vocab()[model_symbol(p, words[wi].get("lang", lang))] for wi, p in flat]
 
     # CTC needs one frame per phoneme, plus a blank frame between two identical phonemes in a row.
     needed = len(ids) + sum(a == b for a, b in zip(ids, ids[1:]))
@@ -116,7 +118,8 @@ def align(em, words, lang):
     spike_ends = [s.end * em.sec_per_frame for s in spans]
     ends = [min(nxt, se + MAX_EXTEND) for nxt, se in zip(starts[1:], spike_ends)] + [spike_ends[-1]]
 
-    out = [{"word": w["word"], "pron": w["pron"], "phonemes": []} for w in words]
+    out = [{"word": w["word"], "pron": w["pron"], **({"lang": w["lang"]} if "lang" in w else {}), "phonemes": []}
+           for w in words]
     for (wi, ipa), st, en, span in zip(flat, starts, ends, spans):
         out[wi]["phonemes"].append({"ipa": ipa, "start": round(st, 3), "end": round(en, 3),
                                     "conf": round(float(span.score), 3)})

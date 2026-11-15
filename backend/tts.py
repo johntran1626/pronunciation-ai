@@ -3,6 +3,7 @@
     from backend.tts import synthesize
     path = synthesize("같이 가요.", "ko")             # woman's voice, normal speed -> data/tts_cache/<hash>.wav
     path = synthesize("Very light.", "en", rate=-30) # 30% slower, a separate cached file
+    path = synthesize("I want 떡볶이.", "mix")        # English + Korean: one multilingual voice, <lang> per run
 
 Azure is called over plain HTTPS with Python's built-in urllib (no new dependency). The key and region come
 from environment variables, read from the git-ignored .env file if they aren't set already. The key is sent
@@ -18,14 +19,19 @@ import urllib.request
 from pathlib import Path
 from xml.sax.saxutils import escape, quoteattr
 
+from backend.mixed_text import LANG_TAGS, edges, split_runs
+
 ROOT = Path(__file__).resolve().parent.parent
 CACHE_DIR = ROOT / "data" / "tts_cache"          # git-ignored (data/)
 ENV_FILE = ROOT / ".env"
 
 # The woman's voice by default, the man's kept as an option.
+# "mix" (English + Korean in one sentence): a multilingual voice that can say both, told which language each part
+# is in by an SSML <lang> tag. Only the woman's voice so far (the one picked after listening to sample clips).
 VOICES = {
     "ko": {"female": "ko-KR-SunHiNeural", "male": "ko-KR-InJoonNeural"},
     "en": {"female": "en-US-AvaNeural", "male": "en-US-AndrewNeural"},
+    "mix": {"female": "en-US-AvaMultilingualNeural"},
 }
 OUTPUT_FORMAT = "riff-24khz-16bit-mono-pcm"      # a plain WAV; our aligner resamples to 16 kHz itself
 MAX_CHARS = 200                                   # Custom mode length limit (keeps clips short and costs tiny)
@@ -51,12 +57,21 @@ def normalize_text(text):
     return re.sub(r"\s+", " ", unicodedata.normalize("NFC", text)).strip()
 
 
-def build_ssml(text, voice, rate):
+def build_ssml(text, voice, rate, lang=None):
     """SSML = the small markup Azure reads: which voice, which language, how fast.
-    escape() turns & < > into &amp; &lt; &gt; so typed text can't break the markup."""
-    lang = "-".join(voice.split("-")[:2])                       # 'ko-KR-SunHiNeural' -> 'ko-KR'
-    return (f'<speak version="1.0" xml:lang="{lang}"><voice name={quoteattr(voice)}>'
-            f'<prosody rate="{rate}%">{escape(text)}</prosody></voice></speak>')
+    escape() turns & < > into &amp; &lt; &gt; so typed text can't break the markup.
+    lang="mix": every language run gets its own <lang xml:lang="..."> tag (with the speed inside it), and the
+    spaces between runs stay exactly as typed ("Ben이" must not become "Ben 이")."""
+    voice_lang = "-".join(voice.split("-")[:2])                 # 'ko-KR-SunHiNeural' -> 'ko-KR'
+    if lang == "mix":
+        body = ""
+        for run_lang, run in split_runs(text):
+            lead, core, tail = edges(run)
+            body += (f'{lead}<lang xml:lang="{LANG_TAGS[run_lang]}"><prosody rate="{rate}%">{escape(core)}'
+                     f'</prosody></lang>{tail}')
+    else:
+        body = f'<prosody rate="{rate}%">{escape(text)}</prosody>'
+    return f'<speak version="1.0" xml:lang="{voice_lang}"><voice name={quoteattr(voice)}>{body}</voice></speak>'
 
 
 def cache_key(text, voice, rate):
@@ -133,7 +148,7 @@ def synthesize(text, lang, voice="female", rate=0, cache_dir=None, fetch=None):
     cache_dir = path.parent
     clean, name = normalize_text(text), voice_name(lang, voice)
 
-    audio = (fetch or azure_fetch)(build_ssml(clean, name, rate))
+    audio = (fetch or azure_fetch)(build_ssml(clean, name, rate, lang))
     if not audio.startswith(b"RIFF"):                           # an error page or empty reply is not audio
         raise TTSError("Azure TTS reply was not a WAV file")
 

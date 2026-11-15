@@ -5,6 +5,8 @@
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 
 export type Lang = "ko" | "en"; // the language being LEARNED (and spoken in the recording)
+// A typed sentence can also mix both ("I want 떡볶이"): animated with a multilingual voice, never scored.
+export type TextLang = Lang | "mix";
 
 export type Health = { ok: boolean };
 
@@ -135,7 +137,7 @@ export function loadCardData() {
 export type Voice = "female" | "male";
 export const SLOW_RATE = -30; // "slower" = 30% slower (backend allows 0 down to -50)
 
-export function ttsUrl(text: string, lang: Lang, opts: { slow?: boolean; voice?: Voice } = {}): string {
+export function ttsUrl(text: string, lang: TextLang, opts: { slow?: boolean; voice?: Voice } = {}): string {
   // URLSearchParams encodes & ? # and Korean, so the whole sentence arrives intact.
   const q = new URLSearchParams({
     text,
@@ -147,17 +149,18 @@ export function ttsUrl(text: string, lang: Lang, opts: { slow?: boolean; voice?:
 }
 
 // Fetch the clip as a Blob (instead of <audio src>) so a 429/503 shows the backend's own message.
-export async function fetchTts(text: string, lang: Lang, opts: { slow?: boolean; voice?: Voice } = {}): Promise<Blob> {
+export async function fetchTts(text: string, lang: TextLang, opts: { slow?: boolean; voice?: Voice } = {}): Promise<Blob> {
   return (await fetchNative(ttsUrl(text, lang, opts))).blob(); // fetchNative: below, shared with the timings
 }
 
 // ---------- /tts/timings: when each word / sound happens in the native clip ----------
 export type NativePhoneme = { ipa: string; start: number; end: number; conf?: number };
-export type NativeWord = { word: string; start: number; end: number; phonemes: NativePhoneme[] };
-export type NativeTimings = { version: number; lang: Lang; duration_s: number; words: NativeWord[] };
+// lang on a word: only in a mixed sentence's timings (each word's own language)
+export type NativeWord = { word: string; lang?: Lang; start: number; end: number; phonemes: NativePhoneme[] };
+export type NativeTimings = { version: number; lang: TextLang; duration_s: number; words: NativeWord[] };
 
 // Same query as ttsUrl, so the backend times exactly the clip that ttsUrl plays.
-export function ttsTimingsUrl(text: string, lang: Lang, opts: { slow?: boolean; voice?: Voice } = {}): string {
+export function ttsTimingsUrl(text: string, lang: TextLang, opts: { slow?: boolean; voice?: Voice } = {}): string {
   return ttsUrl(text, lang, opts).replace("/tts?", "/tts/timings?");
 }
 
@@ -177,7 +180,7 @@ async function fetchNative(url: string): Promise<Response> {
   return res;
 }
 
-export async function fetchNativeTimings(text: string, lang: Lang, opts: { slow?: boolean; voice?: Voice } = {}) {
+export async function fetchNativeTimings(text: string, lang: TextLang, opts: { slow?: boolean; voice?: Voice } = {}) {
   return (await (await fetchNative(ttsTimingsUrl(text, lang, opts))).json()) as NativeTimings;
 }
 
@@ -186,7 +189,7 @@ export async function fetchNativeTimings(text: string, lang: Lang, opts: { slow?
 // show, play (TTS) and score (/analyze), so all three agree.
 export type CustomText = { text: string; typed: string; changed: boolean };
 
-export function customUrl(text: string, lang: Lang): string {
+export function customUrl(text: string, lang: TextLang): string {
   return `${API_BASE}/custom?${new URLSearchParams({ text, lang })}`;
 }
 
@@ -213,7 +216,7 @@ export async function fetchTranslation(text: string, lang: Lang): Promise<Transl
   }
 }
 
-export async function fetchCustom(text: string, lang: Lang): Promise<CustomText> {
+export async function fetchCustom(text: string, lang: TextLang): Promise<CustomText> {
   let res: Response;
   try {
     res = await fetch(customUrl(text, lang), { cache: "no-store" });

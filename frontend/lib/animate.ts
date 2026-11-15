@@ -19,9 +19,10 @@
 // What this is NOT: a measurement of any speaker. It is the TARGET articulation from phonetics tables, timed to a
 // native recording. Diphthongs show one pose (their "to" glide is not animated yet).
 import { callout, geometry, type Callout, type Geometry, type Svg } from "./mouth.ts";
-import type { ArticulationEntry, NativeTimings } from "./api.ts";
+import type { ArticulationEntry, Lang, NativeTimings } from "./api.ts";
 
-export type Sound = { ipa: string; start: number; end: number; entry: ArticulationEntry | null };
+// lang: which language's table the entry came from (a mixed sentence has both)
+export type Sound = { ipa: string; lang: Lang; start: number; end: number; entry: ArticulationEntry | null };
 export type Role = "critical" | "involved" | "free";
 export type Part = "lips" | "jaw" | "tip" | "body" | "velum";
 export const PARTS: Part[] = ["lips", "jaw", "tip", "body", "velum"];
@@ -230,11 +231,13 @@ export function wordFrames(
  * articulation table entry (null when the table has no entry: that sound gets no frame), plus the words' times. */
 export function soundsFromTimings(
   timings: NativeTimings,
-  table: Record<string, ArticulationEntry>,
+  tables: Record<Lang, Record<string, ArticulationEntry>>,
 ): { words: { word: string; start: number; end: number }[]; sounds: Sound[] } {
   const words = timings.words.map(({ word, start, end }) => ({ word, start, end }));
-  const sounds = timings.words.flatMap((w) =>
-    w.phonemes.map(({ ipa, start, end }) => ({ ipa, start, end, entry: table[ipa] ?? null })),
-  );
+  const sentenceLang: Lang = timings.lang === "mix" ? "en" : timings.lang; // a mixed word always carries its own
+  const sounds = timings.words.flatMap((w) => {
+    const lang = w.lang ?? sentenceLang;
+    return w.phonemes.map(({ ipa, start, end }) => ({ ipa, lang, start, end, entry: tables[lang][ipa] ?? null }));
+  });
   return { words, sounds };
 }

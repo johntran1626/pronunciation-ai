@@ -1,5 +1,5 @@
 // The native mouth player's rules (no React here, so node --test can check them).
-import type { Lang } from "./api.ts";
+import type { TextLang } from "./api.ts";
 
 export const SPEEDS = [1, 0.5, 0.25];
 
@@ -34,7 +34,7 @@ export async function changeSpeed(a: Media, s: number): Promise<void> {
 
 /** React key for the player. `run` goes up with every new animation, so animating the same sentence again still
  * makes a fresh player: back to 1x, and it plays again. */
-export const playerKey = (s: { run: number; lang: Lang; text: string }) => `mouth:${s.run}:${s.lang}:${s.text}`;
+export const playerKey = (s: { run: number; lang: TextLang; text: string }) => `mouth:${s.run}:${s.lang}:${s.text}`;
 
 // ---------- autoplay (on by default; remembered in this browser only) ----------
 export const AUTOPLAY_DEFAULT = true;

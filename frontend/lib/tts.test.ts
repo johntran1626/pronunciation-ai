@@ -26,3 +26,7 @@ test("slow version asks for 30% slower; the man's voice can be chosen", () => {
 test("no API key or Azure address ever appears in the URL", () => {
   assert.doesNotMatch(ttsUrl("Hi.", "en"), /azure|microsoft|key=/i);
 });
+
+test("a mixed sentence asks for lang=mix (the backend picks the multilingual voice)", () => {
+  assert.equal(new URL(ttsUrl("I want 떡볶이.", "mix")).searchParams.get("lang"), "mix");
+});

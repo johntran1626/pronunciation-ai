@@ -66,3 +66,17 @@ test("no backend status line on the page (it was a developer aid); the backend i
   for (const k of ["backendChecking", "backendConnected", "backendDown", "checkAgain"]) assert.ok(!(k in UI), k);
   assert.match(page, /checkHealth\(\)/);
 });
+
+// ---------- mixed English + Korean ----------
+test("a mixed sentence hides Practice and says why, in both site languages", () => {
+  assert.match(page, /practiceOffered\(shown\.lang\)/);
+  assert.match(page, /t\("practiceMixed"\)/);
+  assert.ok(HANGUL.test(UI.practiceMixed.ko));
+  assert.ok(HANGUL.test(UI.langMix.ko));
+  assert.equal(tr("en", "langMix"), "English + Korean");
+});
+
+test("the player looks each sound up in its own language's table", () => {
+  assert.match(mouth, /soundsFromTimings\(native\.timings, articulation\.sounds\)/);
+  assert.match(mouth, /descText\(ui, shown\[0\]\.lang,/);
+});

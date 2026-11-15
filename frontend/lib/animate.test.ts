@@ -23,7 +23,7 @@ const S = e({ place: "alveolar", manner: "fricative", lips: "spread", svg: svg({
 const K = e({ place: "velar", manner: "stop", svg: svg({ tongue_x: 0.1, tongue_y: 1, contact: true }) });
 const H = e({ place: "glottal", manner: "fricative", svg: svg({ tongue_x: 0.5, tongue_y: 0.4, lip_gap: 0.5 }) });
 
-const seq = (...es: E[]): Sound[] => es.map((entry, i) => ({ ipa: String(i), start: i * 0.1, end: i * 0.1 + 0.1, entry }));
+const seq = (...es: E[]): Sound[] => es.map((entry, i) => ({ ipa: String(i), lang: "en", start: i * 0.1, end: i * 0.1 + 0.1, entry }));
 const mid = (i: number) => i * 0.1 + 0.05;
 const gap = (g: ReturnType<typeof geometry>) => g.lowerLip.top - g.upperLip.bottom;
 
@@ -134,7 +134,7 @@ test("neighbours whose poses barely differ become ONE frame (no tiny twitches)",
   const A2 = e({ ...A, svg: svg({ ...A.svg, tongue_x: A.svg.tongue_x + 0.01 }) }); // almost the same vowel
   // 400 ms sounds: with 100 ms ones the middle of A2 is already closing its lips for P (coarticulation), which is a
   // real difference, not the near-duplicate this test is about (first version of this test failed on exactly that)
-  const s: Sound[] = [A, A2, P].map((entry, i) => ({ ipa: String(i), start: i * 0.4, end: i * 0.4 + 0.4, entry }));
+  const s: Sound[] = [A, A2, P].map((entry, i) => ({ ipa: String(i), lang: "en", start: i * 0.4, end: i * 0.4 + 0.4, entry }));
   const fr = framesFor(s);
   assert.equal(fr.length, 2);
   assert.deepEqual(fr[0].sounds, [0, 1]);
@@ -163,7 +163,7 @@ test("between changes the picture holds perfectly still (that is what removes th
 });
 
 test("a change is eased, lasts at most EASE, and is centred on the boundary between two sounds", () => {
-  const long = (...es: E[]): Sound[] => es.map((entry, i) => ({ ipa: String(i), start: i * 0.4, end: i * 0.4 + 0.4, entry }));
+  const long = (...es: E[]): Sound[] => es.map((entry, i) => ({ ipa: String(i), lang: "en", start: i * 0.4, end: i * 0.4 + 0.4, entry }));
   const fr = framesFor(long(A, I));
   const b = fr[1].start, a = fr[0].pose.body.x, z = fr[1].pose.body.x;
   assert.ok(same(poseAt(fr, b - EASE / 2 - 1e-6), fr[0].pose));
@@ -179,8 +179,8 @@ test("a change is eased, lasts at most EASE, and is centred on the boundary betw
 
 test("in a pause the last frame holds; before the first sound the first frame shows", () => {
   const s: Sound[] = [
-    { ipa: "a", start: 0.2, end: 0.4, entry: A },
-    { ipa: "i", start: 0.9, end: 1.1, entry: I },
+    { ipa: "a", lang: "en", start: 0.2, end: 0.4, entry: A },
+    { ipa: "i", lang: "en", start: 0.9, end: 1.1, entry: I },
   ];
   const fr = framesFor(s);
   assert.ok(same(poseAt(fr, 0), fr[0].pose));
@@ -239,7 +239,7 @@ const TIMINGS: NativeTimings = {
 const TABLE: Record<string, ArticulationEntry> = { m: M, æ: A, p: P, s: S, k: K, i: I };
 
 test("every word's sounds come out in time order, each with its own table entry", () => {
-  const { sounds } = soundsFromTimings(TIMINGS, TABLE);
+  const { sounds } = soundsFromTimings(TIMINGS, { en: TABLE, ko: {} });
   assert.deepEqual(sounds.map((s) => s.ipa), ["m", "æ", "p", "s", "k", "i"]);
   assert.deepEqual(sounds.map((s) => [s.start, s.end]), [[0.1, 0.2], [0.2, 0.3], [0.3, 0.4], [0.5, 0.6], [0.6, 0.7], [0.7, 0.8]]);
   assert.equal(sounds[2].entry, P);
@@ -247,21 +247,41 @@ test("every word's sounds come out in time order, each with its own table entry"
 });
 
 test("the words keep their own times (for the words under the slider)", () => {
-  const { words } = soundsFromTimings(TIMINGS, TABLE);
+  const { words } = soundsFromTimings(TIMINGS, { en: TABLE, ko: {} });
   assert.deepEqual(words, [{ word: "map", start: 0.1, end: 0.4 }, { word: "ski", start: 0.5, end: 0.8 }]);
 });
 
 test("a sound missing from the table gets no entry, so it gets no frame (never a wrong pose)", () => {
-  const { sounds } = soundsFromTimings(TIMINGS, { ...TABLE, k: undefined as unknown as ArticulationEntry });
+  const { sounds } = soundsFromTimings(TIMINGS, { en: { ...TABLE, k: undefined as unknown as ArticulationEntry }, ko: {} });
   assert.equal(sounds[4].entry, null);
   assert.equal(framesFor(sounds, 0).length, 5);
+});
+
+test("a mixed sentence: each word's sounds come from its OWN language's table, and say which language", () => {
+  const KO_TABLE: Record<string, ArticulationEntry> = { k: I };
+  const mixedTimings: NativeTimings = {
+    version: 1, lang: "mix", duration_s: 0.9,
+    words: [
+      { word: "ski", lang: "en", start: 0.1, end: 0.4, phonemes: [{ ipa: "k", start: 0.1, end: 0.2 }] },
+      { word: "가", lang: "ko", start: 0.5, end: 0.8, phonemes: [{ ipa: "k", start: 0.5, end: 0.6 }] },
+    ],
+  };
+  const { sounds } = soundsFromTimings(mixedTimings, { en: TABLE, ko: KO_TABLE });
+  assert.equal(sounds[0].entry, K); // English k
+  assert.equal(sounds[1].entry, I); // the Korean table's k (a stand-in entry here)
+  assert.deepEqual(sounds.map((s) => s.lang), ["en", "ko"]);
+});
+
+test("one-language timings: every sound takes the sentence's language", () => {
+  const { sounds } = soundsFromTimings(TIMINGS, { en: TABLE, ko: {} });
+  assert.ok(sounds.every((s) => s.lang === "en"));
 });
 
 // ---------- the player plays at normal speed; "show what matters" marks each sound's key contact ----------
 import { readFileSync as readTable } from "node:fs";
 import { DEFAULT_SPEED, frameMark } from "./animate.ts";
 const realTable = JSON.parse(readTable(new URL("../../content/articulation.json", import.meta.url), "utf8"));
-const real = (lang: string, ipa: string): Sound => ({ ipa, start: 0, end: 0.1, entry: realTable.sounds[lang][ipa] });
+const real = (lang: string, ipa: string): Sound => ({ ipa, lang: lang as "en" | "ko", start: 0, end: 0.1, entry: realTable.sounds[lang][ipa] });
 const markFor = (...ss: Sound[]) => {
   const e = ss.find((s) => s.entry)!.entry!;
   const g = geometry(e.svg, e.kind, e.lips);
@@ -290,5 +310,5 @@ test("show what matters: F = lower lip on the upper teeth, P = lips together, t 
 test("show what matters: a merged frame uses the first sound with something to point at; nothing for h alone", () => {
   assert.equal(markFor(real("en", "h")).m, null);
   assert.match(markFor(real("en", "h"), real("en", "p")).m!.text, /lips/i);
-  assert.equal(frameMark([{ ipa: "?", start: 0, end: 0.1, entry: null }], geometry(svg({}), "consonant", "neutral")), null);
+  assert.equal(frameMark([{ ipa: "?", lang: "en", start: 0, end: 0.1, entry: null }], geometry(svg({}), "consonant", "neutral")), null);
 });

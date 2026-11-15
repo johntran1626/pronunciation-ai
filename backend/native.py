@@ -20,6 +20,7 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 
+from backend import mixed
 from backend.align import align, emissions
 from backend.listener import listener_id, live_listener
 from backend.g2p import expected_phonemes
@@ -55,12 +56,15 @@ def align_clip(wav_path, text, lang):
     last sound to where the voice stops, by at most MAX_TAIL. (Not done for learners: their audio has room noise,
     and scoring reads those windows.)"""
     samples, sr = sf.read(wav_path, dtype="float32")
-    em = emissions(samples, sr, lang)
-    words = align(em, expected_phonemes(text, lang), lang)
+    if lang == "mix":                                   # English + Korean: hybrid alignment (backend/mixed.py)
+        words, duration = mixed.align_mixed(samples, sr, expected_phonemes(text, lang)), len(samples) / sr
+    else:
+        em = emissions(samples, sr, lang)
+        words, duration = align(em, expected_phonemes(text, lang), lang), em.duration
     last, end = words[-1]["phonemes"][-1], voice_end(samples, sr)
     last["end"] = round(min(max(last["end"], end), last["end"] + MAX_TAIL), 3)
     words[-1]["end"] = last["end"]
-    return words, em.duration
+    return words, duration
 
 
 def native_timings(wav_path, text, lang):
@@ -68,7 +72,7 @@ def native_timings(wav_path, text, lang):
     text with no pronounceable words (same as /analyze)."""
     path = timings_path(wav_path)
     saved = _read(path)
-    model = listener_id(live_listener(lang))    # timings from another listener are redone
+    model = mixed.model_id() if lang == "mix" else listener_id(live_listener(lang))  # another listener: redone
     if saved and saved.get("version") == TIMINGS_VERSION and saved.get("model") == model and saved.get("lang") == lang:
         return saved
     words, duration = align_clip(wav_path, normalize_text(text), lang)
@@ -78,7 +82,8 @@ def native_timings(wav_path, text, lang):
         "lang": lang,
         "text": normalize_text(text),
         "duration_s": round(duration, 3),
-        "words": [{"word": w["word"], "start": w["start"], "end": w["end"], "phonemes": w["phonemes"]} for w in words],
+        "words": [{"word": w["word"], **({"lang": w["lang"]} if "lang" in w else {}),   # mixed: each word's language
+                   "start": w["start"], "end": w["end"], "phonemes": w["phonemes"]} for w in words],
     }
     _write(path, out)
     return out

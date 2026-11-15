@@ -1,7 +1,8 @@
 "use client"; // runs in the browser: it reacts to typing and clicks and fetches from the backend
 
-// Type-first: one big box. The language comes from what is typed (Hangul = Korean), the native mouth animation
-// loads and plays for the sentence with no extra tap, and "Practice it yourself" opens the recorder + scoring.
+// Type-first: one big box. The language comes from what is typed (Hangul = Korean, both = mixed), the native mouth
+// animation loads and plays for the sentence with no extra tap, and "Practice it yourself" opens the recorder +
+// scoring (one-language sentences only).
 // The Autoplay switch in the box (on by default) decides whether a new animation plays by itself.
 
 import { useEffect, useRef, useState } from "react";
@@ -11,19 +12,19 @@ import NativeMouth from "@/components/NativeMouth";
 import Recorder from "@/components/Recorder";
 import Translation from "@/components/Translation";
 import { UiLangProvider, UiToggle, useUi } from "@/components/UiLang";
-import { checkHealth, fetchCustom, fetchTranslation, type Lang } from "@/lib/api";
+import { checkHealth, fetchCustom, fetchTranslation, type TextLang } from "@/lib/api";
 import { MAX_CUSTOM_CHARS, checkLine } from "@/lib/custom";
 import { problemText, type Key } from "@/lib/i18n";
-import { detectLang, koreanToAnimate, translateOffered } from "@/lib/landing";
+import { detectLang, htmlLang, koreanToAnimate, practiceOffered, translateOffered } from "@/lib/landing";
 import { AUTOPLAY_DEFAULT, playerKey, readAutoplay, saveAutoplay } from "@/lib/player";
 import type { Translated } from "@/lib/translations";
 
-const LANG_NAME: Record<Lang, Key> = { en: "langEn", ko: "langKo" };
+const LANG_NAME: Record<TextLang, Key> = { en: "langEn", ko: "langKo", mix: "langMix" };
 
 // The sentence being animated: what was typed, or the Korean translation of typed English (`from`: the English and both Korean forms, so the 존댓말 / 반말 switch can re-animate).
 type FromEnglish = { en: string; t: Translated };
 // `run` counts animations, so showing the same sentence again still gets a fresh player (1x, plays again).
-type Shown = { run: number; text: string; lang: Lang; note: string | null; typed: string | null; from?: FromEnglish };
+type Shown = { run: number; text: string; lang: TextLang; note: string | null; typed: string | null; from?: FromEnglish };
 type Busy = null | "animate" | "kr" | "kr-animate";
 
 export default function Home() {
@@ -153,7 +154,7 @@ function Coach() {
                   void submit();
                 }
               }}
-              lang={lang ?? undefined}
+              lang={htmlLang(lang)}
               aria-label={t("boxLabel")}
               placeholder={t("placeholder")}
               className="block w-full resize-none bg-transparent break-keep px-5 pt-5 pb-2 text-2xl leading-snug outline-none placeholder:text-neutral-400 placeholder:uppercase placeholder:tracking-wide sm:text-3xl max-sm:text-xl"
@@ -203,7 +204,7 @@ function Coach() {
         {/* the sentence, its animation, and practice */}
         {shown && (
           <section ref={result} className="flex scroll-mt-4 flex-col gap-3" data-testid="result">
-            <p lang={shown.lang} className="text-2xl leading-relaxed">{shown.text}</p>
+            <p lang={htmlLang(shown.lang)} className="text-2xl leading-relaxed">{shown.text}</p>
             {shown.from && (
               <div className="flex flex-col gap-1" data-testid="from-english">
                 <p className="text-sm text-neutral-500">{t("koreanFor", { en: "" })}<span lang="en">{shown.from.en}</span></p>
@@ -212,7 +213,7 @@ function Coach() {
             )}
             {shown.note && (
               <p className="text-sm text-neutral-500">
-                {t("numbersNote")} {t("youTyped")} <span lang={shown.lang}>{shown.typed}</span>
+                {t("numbersNote")} {t("youTyped")} <span lang={htmlLang(shown.lang)}>{shown.typed}</span>
               </p>
             )}
             {/* a Korean sentence: its English meaning (a translation of typed English already shows it above) */}
@@ -221,7 +222,9 @@ function Coach() {
             )}
             {/* key: every new animation gets a fresh player (1x; it loads, and plays on its own if Autoplay is on) */}
             <NativeMouth key={playerKey(shown)} text={shown.text} lang={shown.lang} autoplay={autoplay} muted={muted} onMuted={setMuted} />
-            {practice ? (
+            {!practiceOffered(shown.lang) ? (
+              <p className="text-sm text-neutral-500" data-testid="practice-mixed">{t("practiceMixed")}</p>
+            ) : practice ? (
               <Recorder key={`rec:${shown.lang}:${shown.text}`} text={shown.text} lang={shown.lang} />
             ) : (
               <div>

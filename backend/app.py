@@ -154,7 +154,7 @@ async def _get_clip(request, text, lang, voice, rate):
 
 
 @app.get("/custom")
-def custom(text: str = Query(..., max_length=1000), lang: Literal["ko", "en"] = Query(...)):
+def custom(text: str = Query(..., max_length=1000), lang: Literal["ko", "en", "mix"] = Query(...)):
     """A typed Custom-mode sentence -> the words a native would SAY (커피 2잔 -> 커피 두 잔, Dr. -> Doctor).
     The frontend shows `text` and uses it for /tts and /analyze, so all three agree. 400 = the reason, for the user."""
     try:
@@ -196,7 +196,7 @@ async def translate_sentence(request: Request, text: str = Query(..., max_length
 @app.get("/tts")
 async def tts_clip(request: Request,
                    text: str = Query(..., max_length=1000),
-                   lang: Literal["ko", "en"] = Query(...),
+                   lang: Literal["ko", "en", "mix"] = Query(...),
                    voice: Literal["female", "male"] = "female",
                    rate: int = Query(0, ge=tts.MIN_RATE, le=tts.MAX_RATE)):
     """A WAV of `text` said by a native voice. rate=-30 = 30% slower. 429 when a limit is hit, 503 if Azure fails."""
@@ -209,7 +209,7 @@ async def tts_clip(request: Request,
 @app.get("/tts/timings")
 async def tts_timings(request: Request,
                       text: str = Query(..., max_length=1000),
-                      lang: Literal["ko", "en"] = Query(...),
+                      lang: Literal["ko", "en", "mix"] = Query(...),
                       voice: Literal["female", "male"] = "female",
                       rate: int = Query(0, ge=tts.MIN_RATE, le=tts.MAX_RATE)):
     """Start/end of every word and sound in the SAME clip /tts serves (same query = same WAV), so the

@@ -1,7 +1,7 @@
 // The native speaker's version of one word / sound, for the "Native" button in the detail card.
 // nativePart is pure (tested in native.test.ts); loadNativeClip fetches. The backend's /tts/timings runs the same G2P as /analyze on the same text, so word
 // number i and sound number k mean the same thing in both; we still check the word (and sound) to be safe.
-import { fetchNativeTimings, fetchTts, ttsUrl, type Lang, type NativeTimings } from "./api.ts";
+import { fetchNativeTimings, fetchTts, ttsUrl, type NativeTimings, type TextLang } from "./api.ts";
 import { decodeWav16, louderForPlayback } from "./wav.ts";
 
 export function nativePart(
@@ -24,7 +24,7 @@ export function nativePart(
 export type NativeClip = { samples: Float32Array<ArrayBuffer>; rate: number; timings: NativeTimings };
 const clips = new Map<string, Promise<NativeClip>>();
 
-export function loadNativeClip(text: string, lang: Lang): Promise<NativeClip> {
+export function loadNativeClip(text: string, lang: TextLang): Promise<NativeClip> {
   const key = ttsUrl(text, lang);
   let p = clips.get(key);
   if (!p) {

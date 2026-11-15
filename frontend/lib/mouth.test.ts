@@ -293,7 +293,7 @@ test("p and m stay shut in the animation too, even between two wide-open vowels 
   const { framesFor } = await import("./animate.ts");
   for (const [lang, c] of [["ko", "p͈"], ["ko", "m"], ["en", "p"], ["en", "m"]]) {
     const v = lang === "ko" ? "a" : "ɑː";
-    const sounds = [v, c, v].map((ipa, i) => ({ ipa, start: i * 0.15, end: (i + 1) * 0.15, entry: table.sounds[lang][ipa] }));
+    const sounds = [v, c, v].map((ipa, i) => ({ ipa, lang: lang as "en" | "ko", start: i * 0.15, end: (i + 1) * 0.15, entry: table.sounds[lang][ipa] }));
     const frames = framesFor(sounds);
     const shut = frames.find((f) => f.sounds.includes(1))!.pose;
     assert.equal(shut.lowerLip.top - shut.upperLip.bottom, 0, `${lang} ${c}`);

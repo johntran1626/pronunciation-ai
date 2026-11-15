@@ -2,6 +2,7 @@
 
     expected_phonemes("국물", "ko") -> [{"word": "국물", "pron": "궁물", "phonemes": ["k","u","ŋ","m","u","l"]}]
     expected_phonemes("cat", "en")  -> [{"word": "cat",  "pron": "K AE1 T", "phonemes": ["k","æ","t"]}]
+    expected_phonemes("I want 떡볶이", "mix") -> the same per word, each also tagged "lang": "en" / "ko"
 
 Korean:  g2pk rewrites the text as it is SAID (sound-change rules), then each jamo -> IPA (tables below).
 English: g2p_en gives ARPAbet (CMUdict, plus a neural guess for unknown words), then ARPAbet -> IPA.
@@ -13,6 +14,8 @@ sound voiced), except ㄹ: tap [ɾ] before a vowel, [l] at a syllable end and in
 """
 import re
 from functools import cache
+
+from backend.mixed_text import split_runs
 
 TENSE = "͈"  # combining double vertical line below: p͈ t͈ k͈ s͈ (IPA for Korean tense consonants)
 
@@ -120,6 +123,20 @@ def _english(text):
             for w, g in zip(written, groups) if g]
 
 
+# ---------- mixed English + Korean ----------
+def _mixed(text):
+    """Each language run gets its own G2P. Known limit: Korean sound changes across the border with English
+    (Ben 어제 -> 베너제) are not applied, because each Korean run is converted on its own."""
+    words = []
+    for lang, run in split_runs(text):
+        try:
+            run_words = expected_phonemes(run.strip(), lang)
+        except ValueError:
+            continue  # a run with nothing to say (lone jamo like ㅋㅋ)
+        words += [{**w, "lang": lang} for w in run_words]
+    return words
+
+
 # ---------- shared ----------
 def _strip_punct(token):
     """'Hello,' -> 'Hello'; '안녕하세요.' -> '안녕하세요'. Keeps inner marks like I'm and well-known."""
@@ -133,8 +150,10 @@ def expected_phonemes(text, lang):
         words = _korean(text)
     elif lang == "en":
         words = _english(text)
+    elif lang == "mix":
+        words = _mixed(text)
     else:
-        raise ValueError(f"unsupported language: {lang!r} (use 'ko' or 'en')")
+        raise ValueError(f"unsupported language: {lang!r} (use 'ko', 'en' or 'mix')")
     if not words:
         raise ValueError("no pronounceable words in the text")
     return words

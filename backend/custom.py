@@ -13,6 +13,7 @@ learner SEES the reading before recording.
 """
 import re
 
+from backend.mixed_text import edges, split_runs
 from backend.tts import normalize_text
 
 MAX_CHARS = 80                     # about what fits in the 15 s recording limit at learner speed
@@ -155,12 +156,18 @@ def _english(text):
 
 def custom_text(text, lang):
     """Typed sentence -> spoken-words sentence. Raises ValueError with a message the learner can read."""
-    if lang not in ("ko", "en"):
-        raise ValueError(f"unsupported language: {lang!r} (use 'ko' or 'en')")
+    if lang not in ("ko", "en", "mix"):
+        raise ValueError(f"unsupported language: {lang!r} (use 'ko', 'en' or 'mix')")
     text = normalize_text(text)
     if len(text) > MAX_CHARS:
         raise ValueError(f"That's {len(text)} characters. Keep it to {MAX_CHARS} or fewer (one short sentence).")
     if not re.search(r"\w", text):
         raise ValueError("Type a sentence with at least one word.")
-    said = _korean(text) if lang == "ko" else _english(text)
+    if lang == "mix":       # each language run by its own rules ("커피 2잔 please" -> "커피 두 잔 please")
+        said = ""
+        for run_lang, run in split_runs(text):
+            lead, core, tail = edges(run)
+            said += lead + (_korean(core) if run_lang == "ko" else _english(core)) + tail
+    else:
+        said = _korean(text) if lang == "ko" else _english(text)
     return normalize_text(said)

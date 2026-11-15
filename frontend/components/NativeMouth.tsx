@@ -19,7 +19,7 @@ import { descText, say } from "@/lib/i18n";
 import {
   DEFAULT_SPEED, EASE, frameIndexAt, frameMark, framesFor, poseAt, soundsFromTimings, wordFrames, type Frame, type Sound,
 } from "@/lib/animate";
-import { loadCardData, type Lang } from "@/lib/api";
+import { loadCardData, type TextLang } from "@/lib/api";
 import { loadNativeClip } from "@/lib/native";
 import { SPEEDS, changeSpeed } from "@/lib/player";
 import { playSlice, stopPlayback } from "@/lib/replay";
@@ -37,7 +37,7 @@ type Clip = {
 const SLICE_PAD = 0.02; // seconds of audio either side of one sound
 const holdTime = (f: Frame) => f.start + 0.5 * (f.end - f.start); // the middle of a frame: always a still
 
-type Props = { text: string; lang: Lang; autoplay?: boolean; muted?: boolean; onMuted?: (m: boolean) => void };
+type Props = { text: string; lang: TextLang; autoplay?: boolean; muted?: boolean; onMuted?: (m: boolean) => void };
 
 export default function NativeMouth({ text, lang, autoplay = true, muted = false, onMuted }: Props) {
   const { ui, t: tr } = useUi();
@@ -58,7 +58,7 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
     Promise.all([loadNativeClip(text, lang), loadCardData()]).then(
       ([native, { articulation }]) => {
         if (!live) return;
-        const { words, sounds } = soundsFromTimings(native.timings, articulation.sounds[lang]);
+        const { words, sounds } = soundsFromTimings(native.timings, articulation.sounds);
         const url = URL.createObjectURL(new Blob([encodeWav16(native.samples, native.rate)], { type: "audio/wav" }));
         setClip({ url, samples: native.samples, rate: native.rate, duration: native.timings.duration_s, words, sounds });
       },
@@ -159,7 +159,7 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
       </div>
       <p className="min-h-12 text-sm" data-testid="now">
         {shown[0]?.entry ? (
-          <><b className="text-base">[{shown.map((s) => s.ipa).join(" ")}]</b> {descText(ui, lang, shown[0].ipa, shown[0].entry.description)}</>
+          <><b className="text-base">[{shown.map((s) => s.ipa).join(" ")}]</b> {descText(ui, shown[0].lang, shown[0].ipa, shown[0].entry.description)}</>
         ) : <span className="text-neutral-500">{tr("noSounds")}</span>}
       </p>
       <div className="flex flex-wrap items-center gap-2">
@@ -200,7 +200,7 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
           })}
         </div>
         {/* each word placed by percentage: it starts at its first sound and spans its sounds (gaps stay gaps) */}
-        <div className="relative h-6 text-sm" data-testid="words" lang={lang}>
+        <div className="relative h-6 text-sm" data-testid="words" lang={lang === "mix" ? undefined : lang}>
           {clip.words.map((w, i) => {
             const sp = spans[i];
             if (!sp) return null;
