@@ -1,7 +1,7 @@
 """The README results block is generated from the results files, never typed by hand."""
 import pytest
 
-from eval.readme_results import END, START, fmt, pair_rows, render, update_readme
+from eval.readme_results import END, START, fmt, gap_points, korean_rows, pair_rows, render, update_readme
 
 
 def _k(k, n, lo, hi):
@@ -104,3 +104,78 @@ def test_update_readme_is_idempotent():
     block = render(LISTENERS, MATCH)
     once = update_readme("# Title\n", block)
     assert update_readme(once, block) == once
+
+
+# ---------- Korean (English speakers learning Korean) ----------
+
+def _bar(k, n, lo, hi, cap=None, ok=True):
+    return {**_k(k, n, lo, hi), "cap": cap, "pass": ok}
+
+
+def _check(live, b1, b2, gap, b4):
+    """b1, b2, b4 = (k, n, lo, hi, pass); gap = (top rate, lower rate, lo, hi, pass)."""
+    top, low, glo, ghi, gok = gap
+    return {"cut": 0.9, "tune_correct": 1000, "live": live,
+            "bar1": _bar(*b1[:4], cap=0.005, ok=b1[4]), "bar2": _bar(*b2[:4], cap=0.01, ok=b2[4]),
+            "bar3": {"top": {"rate": top}, "lower_rated": {"rate": low}, "gap": low - top,
+                     "gap_ci95_by_speaker": [glo, ghi], "pass": gok},
+            "bar4": {**_k(*b4[:4]), "speakers": 10, "bar": 0.25, "pass": b4[4]}}
+
+
+KOREAN = {
+    "model": "slplab/wav2vec2-xls-r-300m_phone-mfa_korean",
+    "recordings": {"natives": 1368, "learners": 4453, "learner_speakers": 151},
+    "settings": {"bar1": 0.005, "bar2": 0.01, "bar4": 0.25},
+    "checks": {
+        "ㅓ_as_ㅗ": _check(False, (7, 1830, 0.0019, 0.0079, True), (292, 10061, 0.0259, 0.0325, False),
+                          (0.029, 0.0504, 0.0098, 0.0356, True), (350, 445, 0.7461, 0.8221, True)),
+        "ㅜ_as_ㅡ": _check(True, (2, 1319, 0.0004, 0.0055, True), (23, 4168, 0.0037, 0.0083, True),
+                          (0.0055, 0.0153, 0.0049, 0.015, True), (358, 456, 0.7451, 0.8203, True)),
+        "asp_as_tense": _check(False, (9, 900, 0.005, 0.02, False), (50, 2000, 0.02, 0.03, False),
+                               (0.025, 0.028, -0.0101, 0.016, False), (188, 237, 0.74, 0.84, True)),
+    },
+}
+
+
+def test_gap_points_shows_the_interval_with_signs():
+    assert gap_points(0.0049, 0.015) == "+0.49 to +1.5 points"
+    assert gap_points(-0.0101, 0.016) == "−1.0 to +1.6 points"
+
+
+def test_korean_rows_live_first_and_name_the_failed_bars():
+    rows = korean_rows(KOREAN)
+    assert [r["check"] for r in rows] == ["ㅜ_as_ㅡ", "ㅓ_as_ㅗ", "asp_as_tense"]
+    assert rows[0]["in_app"] == "yes"
+    assert rows[1]["in_app"] == "off (failed bar 2)"
+    assert rows[2]["in_app"] == "off (failed bars 1, 2, 3)"
+
+
+def test_korean_rows_numbers_come_from_the_file():
+    r = korean_rows(KOREAN)[0]
+    assert r["label"] == "ㅜ said like ㅡ"
+    assert r["natives"] == "2/1,319 (0.15%; 0.04–0.55%)"
+    assert r["top_learners"] == "23/4,168 (0.55%; 0.37–0.83%)"
+    assert r["gap"] == "0.55% → 1.5% (+0.49 to +1.5 points)"
+    assert r["simulated"] == "358/456 (79%; 75–82%)"
+
+
+def test_korean_rows_unknown_check_fails_loudly():
+    bad = {**KOREAN, "checks": {"made_up": KOREAN["checks"]["ㅜ_as_ㅡ"]}}
+    with pytest.raises(KeyError):
+        korean_rows(bad)
+
+
+def test_render_with_korean_has_the_table_and_its_caveats():
+    md = render(LISTENERS, MATCH, korean=KOREAN)
+    assert "## Results: English speakers learning Korean" in md
+    assert "| ㅜ said like ㅡ | yes |" in md
+    assert "4,453 readings by 151" in md
+    assert "upper bound" in md.lower() and "simulated" in md.lower()
+    assert "no real detection rate" in md.lower()
+    assert "the sound checks are off" not in md          # the old sentence is gone once the table exists
+    assert md.rstrip().endswith(END)
+
+
+def test_render_without_korean_says_so():
+    md = render(LISTENERS, MATCH)
+    assert "English speakers learning Korean" in md and "not run yet" in md
