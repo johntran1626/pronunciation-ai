@@ -3,6 +3,8 @@
 // What happened + the mouth (target vs what you probably did) + how to fix it + practice words + replay.
 
 import MouthDiagram from "@/components/MouthDiagram";
+import { useUi } from "@/components/UiLang";
+import { descText, say } from "@/lib/i18n";
 import type { ArticulationTable } from "@/lib/api";
 import type { Card } from "@/lib/card";
 import { seeingSpeech } from "@/lib/reference";
@@ -26,6 +28,7 @@ export default function DetailCard({
   nativeStatus?: string; // "loading", "ready", or an error message (absent: no native audio for this card, e.g. dev page)
   onClose?: () => void;
 }) {
+  const { ui, t } = useUi();
   const target = card.target && articulation.sounds[card.target.lang][card.target.sym];
   const produced = card.produced && articulation.sounds[card.produced.lang][card.produced.sym];
   const real = card.target && target ? seeingSpeech(card.target.lang, card.target.sym, target.kind) : null;
@@ -37,10 +40,10 @@ export default function DetailCard({
       <header className="flex items-start justify-between gap-3">
         <div>
           <h3 className="text-lg font-semibold">{card.whatHappened}</h3>
-          <p className="text-sm text-neutral-500">Estimated from your audio. The app can&apos;t see your mouth.</p>
+          <p className="text-sm text-neutral-500">{t("cardEstimated")}</p>
         </div>
         {onClose && (
-          <button type="button" onClick={onClose} aria-label="Close" className={btn}>
+          <button type="button" onClick={onClose} aria-label={t("close")} className={btn}>
             ✕
           </button>
         )}
@@ -48,35 +51,36 @@ export default function DetailCard({
 
       {!card.simple && target && produced && (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <MouthDiagram entry={target} title={`Target: ${card.targetLabel}`} />
-          <MouthDiagram entry={produced} title={`What you probably did: ${card.producedLabel}`} tone="yours" />
+          <MouthDiagram entry={target} title={t("targetIs", { x: card.targetLabel })}
+            description={descText(ui, card.target!.lang, card.target!.sym, target.description)} />
+          <MouthDiagram entry={produced} title={t("yoursIs", { x: card.producedLabel ?? "" })} tone="yours"
+            description={descText(ui, card.produced!.lang, card.produced!.sym, produced.description)} />
         </div>
       )}
       {!card.simple && target && (
         <p className="text-xs text-neutral-500">
-          Drawings show the textbook position (based on public-domain diagrams by R. Wright &amp; D. McCloy), not your
-          mouth.
+          {t("drawings")}
           {real && (
             <>
               {" "}
-              See a real mouth:{" "}
+              {t("seeReal")}{" "}
               <a href={real.url} target="_blank" rel="noopener noreferrer" className="underline">
-                MRI on Seeing Speech (Univ. of Glasgow)
+                {t("mriLink")}
               </a>
-              {real.url.includes("ipa-charts") && <>, then tap [{real.tap}]</>}. {real.note}
+              {real.url.includes("ipa-charts") && t("thenTap", { x: real.tap })}. {real.note && say(ui)(real.note)}
             </>
           )}
         </p>
       )}
 
       <section>
-        <h4 className="font-medium">How to fix it</h4>
+        <h4 className="font-medium">{t("howToFix")}</h4>
         <p>{card.tip}</p>
       </section>
 
       {card.practice.length > 0 && (
         <section>
-          <h4 className="font-medium">Practice words</h4>
+          <h4 className="font-medium">{t("practiceWords")}</h4>
           <ul lang={card.target?.lang} className="mt-1 flex flex-wrap gap-2 text-lg">
             {card.practice.map((w) => (
               <li key={w} className="rounded bg-neutral-100 px-2 py-0.5 dark:bg-neutral-800">
@@ -89,17 +93,17 @@ export default function DetailCard({
 
       {(onPlaySound || onPlayWord || nativeStatus) && (
         <section className="flex flex-col gap-2">
-          <h4 className="font-medium">Compare</h4>
+          <h4 className="font-medium">{t("compare")}</h4>
           {card.sound && (onPlaySound || onPlayNativeSound) && (
             <div className="flex flex-wrap gap-2">
               {onPlaySound && (
                 <button type="button" onClick={onPlaySound} className={btn}>
-                  ▶ Your {card.targetLabel}
+                  {t("yourX", { x: card.targetLabel })}
                 </button>
               )}
               {onPlayNativeSound && (
                 <button type="button" onClick={onPlayNativeSound} className={btn}>
-                  ▶ Native {card.targetLabel}
+                  {t("nativeX", { x: card.targetLabel })}
                 </button>
               )}
             </div>
@@ -107,17 +111,17 @@ export default function DetailCard({
           <div className="flex flex-wrap gap-2">
             {onPlayWord && (
               <button type="button" onClick={onPlayWord} className={btn}>
-                ▶ Your “{card.word}”
+                {t("yourX", { x: `“${card.word}”` })}
               </button>
             )}
             {onPlayNativeWord ? (
               <button type="button" onClick={onPlayNativeWord} className={btn}>
-                ▶ Native “{card.word}”
+                {t("nativeX", { x: `“${card.word}”` })}
               </button>
             ) : (
               nativeStatus === "loading" && (
                 <button type="button" disabled className={`${btn} opacity-50`}>
-                  ▶ Native: loading…
+                  {t("nativeLoading")}
                 </button>
               )
             )}
@@ -128,9 +132,9 @@ export default function DetailCard({
         </section>
       )}
       <p className="text-xs text-neutral-500">
-        {nativeStatus && "Native = computer voice (Azure), cut at the times our aligner found (edges can be a little off)."}
-        {!card.reviewed && " Draft tip, not reviewed yet."}
-        {card.needsNativeReview && " Not yet checked by a native Korean speaker."}
+        {nativeStatus && t("nativeNote")}
+        {!card.reviewed && t("draftTip")}
+        {card.needsNativeReview && t("needsNative")}
       </p>
     </article>
   );

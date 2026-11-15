@@ -1,5 +1,8 @@
+import { useId } from "react";
+import { useUi } from "@/components/UiLang";
+import { say } from "@/lib/i18n";
 import type { ArticulationEntry } from "@/lib/api";
-import { facePaths, floorPath, geometry, palateY, PHARYNX_X, tonguePath, VELUM_CTRL, VELUM_START, VIEW, type Geometry, type Pt } from "@/lib/mouth";
+import { facePaths, floorPath, geometry, mouthOpening, textWidth, type Callout, OPENING_BACK_X, palateY, PHARYNX_X, tonguePath, VELUM_CTRL, VELUM_START, VIEW, type Geometry, type Pt } from "@/lib/mouth";
 import { caption, front, LOWER_TOOTH_SHOWS, side, UPPER_TOOTH_SHOWS, views, type View } from "@/lib/mouthViews";
 
 // Line-art mouth pictures in a line-art style (thin brown lines on a cream background, the key part
@@ -162,7 +165,8 @@ function InsideView({ e }: { e: ArticulationEntry }) {
 
 // The cut-away drawing from a Geometry alone, so the native animation (lib/animate.ts) can draw any
 // in-between frame. With `e` (one sound's entry) it also draws that sound's contact dot / "gap" marks.
-export function CutAway({ g, e }: { g: Geometry; e?: ArticulationEntry }) {
+export function CutAway({ g, e, mark }: { g: Geometry; e?: ArticulationEntry; mark?: Callout | null }) {
+  const { ui } = useUi();
   const { body: b, tip: t, velumTip: v, teeth } = g;
   const lt = teeth.lowerTop;
   const tongue = tonguePath(g);
@@ -171,10 +175,24 @@ export function CutAway({ g, e }: { g: Geometry; e?: ArticulationEntry }) {
   const { upper: face, lower: lowerFace } = facePaths(g); // Lib/mouth.ts faceOutline (tested)
   const upperTooth = `M 47 ${teeth.upperRoot} L 56 ${teeth.upperRoot} Q 55 84 51.5 ${teeth.upperTip + 0.5} Q 49 ${teeth.upperTip + 1} 48 ${teeth.upperTip - 1} Q 45.5 84 47 ${teeth.upperRoot} Z`;
   const lowerTooth = `M 49 ${lt + 1} Q 51 ${lt - 1.5} 53 ${lt + 0.5} Q 57 ${lt + 8} 57 ${teeth.lowerRoot} L 48 ${teeth.lowerRoot} Q 47.5 ${lt + 8} 49 ${lt + 1} Z`;
+  const opening = mouthOpening(g); // null when the lips are shut (p, b, m)
+  const fade = `mouth-${useId().replace(/:/g, "")}`;
   const touch = !e ? null : e.svg.contact ? (e.svg.tip === "down" || e.svg.tip === "palatal" ? b : t) : null;
   return (
     <svg viewBox={`${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`} className="w-full" aria-hidden>
       <rect x={0} y={0} width={220} height={200} className={BG} />
+      {/* the open mouth: dark between the lips, fading towards the back (tongue, teeth and face draw on top) */}
+      {opening && (
+        <>
+          <defs>
+            <linearGradient id={fade} gradientUnits="userSpaceOnUse" x1={Math.min(...opening.map((q) => q.x))} y1={0} x2={OPENING_BACK_X} y2={0}>
+              <stop offset="0" className="[stop-color:#3b2a22] dark:[stop-color:#0b0908]" stopOpacity={0.85} />
+              <stop offset="1" className="[stop-color:#3b2a22] dark:[stop-color:#0b0908]" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <path d={`M ${opening.map(p).join(" L ")} Z`} fill={`url(#${fade})`} />
+        </>
+      )}
       <path d={face} className={INK} strokeWidth={1.6} {...line} />
       <path d={lowerFace} className={INK} strokeWidth={1.6} {...line} />
       {/* roof of the mouth: hard palate, then the soft palate hanging at the back */}
@@ -192,10 +210,20 @@ export function CutAway({ g, e }: { g: Geometry; e?: ArticulationEntry }) {
         <g className="text-[#c2410c] dark:text-[#fb923c]">
           <line x1={t.x} y1={t.y - 1.5} x2={t.x} y2={palateY(t.x) + 1.5} stroke="currentColor" strokeWidth={1.3} />
           <path d={`M ${t.x - 2} ${palateY(t.x) + 3} L ${t.x} ${palateY(t.x) + 1} L ${t.x + 2} ${palateY(t.x) + 3} M ${t.x - 2} ${t.y - 3} L ${t.x} ${t.y - 1} L ${t.x + 2} ${t.y - 3}`} fill="none" stroke="currentColor" strokeWidth={1} />
-          <text x={t.x + 4} y={(t.y + palateY(t.x)) / 2 + 2.5} fill="currentColor" fontSize={7} fontWeight={600}>gap</text>
+          <text x={t.x + 4} y={(t.y + palateY(t.x)) / 2 + 2.5} fill="currentColor" fontSize={7} fontWeight={600}>{say(ui)("gap")}</text>
         </g>
       )}
       {touch && <circle cx={touch.x} cy={touch.y} r={3.4} className={`${ACCENT_FILL} stroke-white`} strokeWidth={1.2} />}
+      {/* "show what matters": a ring on the defining contact or shape, a thin line up to its plain-words label */}
+      {mark && (
+        <g className="text-[#c2410c] dark:text-[#fb923c]" data-testid="mark">
+          <line x1={mark.textAt.x + Math.min(textWidth(mark.text) / 2, Math.max(4, mark.at.x - mark.textAt.x))} y1={mark.textAt.y + 2}
+            x2={mark.at.x} y2={mark.at.y - 6} stroke="currentColor" strokeWidth={0.8} strokeDasharray="2 1.5" />
+          <circle cx={mark.at.x} cy={mark.at.y} r={6} fill="currentColor" fillOpacity={0.18} stroke="currentColor" strokeWidth={1.4} />
+          <rect x={mark.textAt.x - 2} y={mark.textAt.y - 7} width={textWidth(mark.text) + 4} height={9.5} rx={2} className={BG} fillOpacity={0.9} />
+          <text x={mark.textAt.x} y={mark.textAt.y} fill="currentColor" fontSize={7} fontWeight={600}>{mark.text}</text>
+        </g>
+      )}
     </svg>
   );
 }
@@ -215,11 +243,15 @@ export default function MouthDiagram({
   entry,
   title,
   tone = "target",
+  description,
 }: {
   entry: ArticulationEntry;
   title: string;
   tone?: "target" | "yours";
+  description?: string; // the sound's description in the site language (default: the table's English)
 }) {
+  const { ui } = useUi();
+  const sayIt = say(ui);
   const [, second] = views(entry);
   const vowel = entry.kind === "vowel" || entry.kind === "diphthong";
   // highlight the lips only when they ARE the key action (p/b/m, f/v via the side view, rounded vowels and w);
@@ -230,16 +262,16 @@ export default function MouthDiagram({
   const s = side(entry);
   const marks: string[] = [];
   if (second === "side") {
-    if (s.puff) marks.push(") ) )  puff of air");
-    if (s.nose) marks.push(")  air through the nose");
-    if (s.voice) marks.push("∿  voice on (buzz in the throat)");
-    if (s.tight) marks.push("> <  throat tight");
+    if (s.puff) marks.push(sayIt(") ) )  puff of air"));
+    if (s.nose) marks.push(sayIt(")  air through the nose"));
+    if (s.voice) marks.push(sayIt("∿  voice on (buzz in the throat)"));
+    if (s.tight) marks.push(sayIt("> <  throat tight"));
   }
   return (
     <figure className={`flex flex-col gap-2 rounded-lg border-2 ${ring} p-3`} aria-label={`${title}: ${entry.description}`}>
       <figcaption className="flex flex-col">
         <span className="font-medium">{title}</span>
-        <span className="text-base font-semibold text-[#c2410c] dark:text-[#fb923c]">{caption(entry)}</span>
+        <span className="text-base font-semibold text-[#c2410c] dark:text-[#fb923c]">{caption(entry, sayIt)}</span>
       </figcaption>
       <div className="grid grid-cols-2 gap-2">
         {(["front", second] as View[]).map((v) => (
@@ -247,7 +279,7 @@ export default function MouthDiagram({
             {v === "front" && <FrontView e={entry} focusLips={focusLips} focusTongue={focusTongue} />}
             {v === "side" && <SideView e={entry} focusLips={focusLips} />}
             {v === "inside" && <InsideView e={entry} />}
-            <span className="px-1.5 pb-1 text-[11px] text-neutral-500">{VIEW_NAME[v]}</span>
+            <span className="px-1.5 pb-1 text-[11px] text-neutral-500">{sayIt(VIEW_NAME[v])}</span>
           </div>
         ))}
       </div>
@@ -255,11 +287,11 @@ export default function MouthDiagram({
       <ul className="flex flex-wrap gap-1.5 text-xs">
         {badges(entry).map((x) => (
           <li key={x} className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
-            {x}
+            {sayIt(x)}
           </li>
         ))}
       </ul>
-      <p className="text-sm text-neutral-600 dark:text-neutral-400">{entry.description}</p>
+      <p className="text-sm text-neutral-600 dark:text-neutral-400">{description ?? entry.description}</p>
     </figure>
   );
 }

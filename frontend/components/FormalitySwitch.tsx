@@ -2,9 +2,13 @@
 // The small 존댓말 / 반말 switch. One page-wide setting: it flips a Korean translation (English packs, Custom
 // mode) and filters a Korean pack's lines. 존댓말 (polite) is the default.
 
+import { useUi } from "@/components/UiLang";
+
 type Props = { casual: boolean; onCasual: (v: boolean) => void; label?: string };
 
-export default function FormalitySwitch({ casual, onCasual, label = "Show 반말 (casual) instead of 존댓말 (polite)" }: Props) {
+export default function FormalitySwitch({ casual, onCasual, label }: Props) {
+  const { t } = useUi();
+  label ??= t("casualLabel");
   return (
     <button
       type="button"

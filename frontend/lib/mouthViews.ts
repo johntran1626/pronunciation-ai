@@ -122,27 +122,31 @@ export function side(e: Entry): Side {
 }
 
 // ---------- the one-line caption ----------
-function airflow(e: Entry): string {
+// what happens to the air after a stop, appended to the placement line ("Lips pressed together, then a light puff")
+export const airflowPhrases = ["then a big puff of air", "then a light puff", "throat tight, no puff", "then a puff of air"];
+type Say = (english: string) => string;
+function airflow(e: Entry, say: Say): string {
   if (e.manner !== "stop" && e.manner !== "affricate") return "";
-  if (e.laryngeal === "aspirated") return ", then a big puff of air";
-  if (e.laryngeal === "plain") return ", then a light puff";
-  if (e.laryngeal === "tense") return ", throat tight, no puff";
-  return e.voicing === "voiceless" ? ", then a puff of air" : "";
+  const [big, light, tight, puff] = airflowPhrases;
+  if (e.laryngeal === "aspirated") return `, ${say(big)}`;
+  if (e.laryngeal === "plain") return `, ${say(light)}`;
+  if (e.laryngeal === "tense") return `, ${say(tight)}`;
+  return e.voicing === "voiceless" ? `, ${say(puff)}` : "";
 }
 
 /** Where things go, in one plain line (shown big under the sound's name). */
-export function caption(e: Entry): string {
+export function caption(e: Entry, say: Say = (x) => x): string {
   const s = e.svg;
   if (isVowel(e)) {
     const lips = e.lips === "rounded" ? "Lips rounded and pushed forward" : e.lips === "spread" ? "Lips spread, like a slight smile" : "Lips relaxed";
     // four steps, so neighbours differ (ㅐ half open vs ㅔ slightly open; ship slightly open vs sheep almost closed)
     const jaw = s.tongue_y < 0.25 ? "mouth open wide" : s.tongue_y < 0.5 ? "mouth half open" : s.tongue_y < 0.9 ? "mouth slightly open" : "mouth almost closed";
-    return `${lips}, ${jaw}`;
+    return `${say(lips)}, ${say(jaw)}`;
   }
-  if (s.tip === "dental") return "Tongue tip lightly between the teeth";
-  const c = callout(e, geometry(s, e.kind, e.lips ?? undefined));
-  if (c) return c.text + airflow(e);
-  if (s.tip === "palatal") return "Front of the tongue up near the roof";
-  if (e.manner === "fricative") return "Mouth open, breathe out";
-  return "Mouth relaxed";
+  if (s.tip === "dental") return say("Tongue tip lightly between the teeth");
+  const c = callout(e, geometry(s, e.kind, e.lips ?? undefined), say);
+  if (c) return c.text + airflow(e, say);
+  if (s.tip === "palatal") return say("Front of the tongue up near the roof");
+  if (e.manner === "fricative") return say("Mouth open, breathe out");
+  return say("Mouth relaxed");
 }

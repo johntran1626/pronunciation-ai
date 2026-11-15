@@ -265,17 +265,58 @@ test("the lip outline still reaches the teeth: closed lips meet, f/v tuck under 
   assert.ok(upper[upper.length - 1].x >= TEETH_X - 3 && lower[0].x >= TEETH_X - 3); // back to the teeth
 });
 
-// ---------- an AH sound must open the mouth visibly ----------
-test("open vowels (ㅏ, English ah) clearly open the mouth: >= 18 units and >= 2.5x the opening of ㅣ / ee", () => {
-  const open = (lang: string, sym: string) => {
-    const e = table.sounds[lang][sym];
-    const geo = geometry(e.svg, e.kind, e.lips);
-    return geo.lowerLip.top - geo.upperLip.bottom;
-  };
-  for (const [lang, ah, ee] of [["ko", "a", "i"], ["en", "ɑː", "iː"], ["en", "aɪ", "iː"]]) {
-    assert.ok(open(lang, ah) >= 18, `${lang} ${ah}: ${open(lang, ah).toFixed(1)}`);
-    assert.ok(open(lang, ah) >= 2.5 * open(lang, ee), `${lang} ${ah} ${open(lang, ah).toFixed(1)} vs ${ee} ${open(lang, ee).toFixed(1)}`);
+// ---------- open vs closed must differ clearly at a glance ----------
+// Measured before the change: ㅏ / ah 21.6 units, ㅣ / ee 5.0, every plain consonant (s, t, k, n ...) 7.3 (MORE open
+// than ㅣ), p/b/m 0. The opening is the gap between the lips' inner edges, as drawn.
+const opening = (lang: string, sym: string) => {
+  const e = table.sounds[lang][sym];
+  const geo = geometry(e.svg, e.kind, e.lips);
+  return geo.lowerLip.top - geo.upperLip.bottom;
+};
+
+test("open vowels (ㅏ, ah, the start of eye/ow) open several times wider than ㅣ / ee: >= 5x and >= 26 units", () => {
+  for (const [lang, ah, ee] of [["ko", "a", "i"], ["en", "ɑː", "iː"], ["en", "aɪ", "iː"], ["en", "aʊ", "iː"]]) {
+    assert.ok(opening(lang, ah) >= 26, `${lang} ${ah}: ${opening(lang, ah).toFixed(1)}`);
+    assert.ok(opening(lang, ah) >= 5 * opening(lang, ee), `${lang} ${ah} ${opening(lang, ah).toFixed(1)} vs ${ee} ${opening(lang, ee).toFixed(1)}`);
   }
-  // in between stays in order: ah > ae/ㅐ > eh > ee
-  assert.ok(open("en", "ɑː") > open("en", "æ") && open("en", "æ") > open("en", "ɛ") && open("en", "ɛ") > open("en", "iː"));
+  // in between stays in order: ah > ae > eh > ee, and ㅏ > ㅐ > ㅔ > ㅣ
+  assert.ok(opening("en", "ɑː") > opening("en", "æ") && opening("en", "æ") > opening("en", "ɛ") && opening("en", "ɛ") > opening("en", "iː"));
+  assert.ok(opening("ko", "a") > opening("ko", "ɛ") && opening("ko", "ɛ") > opening("ko", "e") && opening("ko", "e") > opening("ko", "i"));
+});
+
+test("p, b, m stay shut: lips meet exactly, in both languages", () => {
+  for (const [lang, sym] of [["ko", "p"], ["ko", "p͈"], ["ko", "pʰ"], ["ko", "m"], ["en", "p"], ["en", "b"], ["en", "m"]])
+    assert.equal(opening(lang, sym), 0, `${lang} ${sym}`);
+});
+
+test("p and m stay shut in the animation too, even between two wide-open vowels (아빠, 'mama')", async () => {
+  const { framesFor } = await import("./animate.ts");
+  for (const [lang, c] of [["ko", "p͈"], ["ko", "m"], ["en", "p"], ["en", "m"]]) {
+    const v = lang === "ko" ? "a" : "ɑː";
+    const sounds = [v, c, v].map((ipa, i) => ({ ipa, start: i * 0.15, end: (i + 1) * 0.15, entry: table.sounds[lang][ipa] }));
+    const frames = framesFor(sounds);
+    const shut = frames.find((f) => f.sounds.includes(1))!.pose;
+    assert.equal(shut.lowerLip.top - shut.upperLip.bottom, 0, `${lang} ${c}`);
+  }
+});
+
+test("s, t, k, n and every other consonant or glide is NOT more open than ㅣ / ee (the teeth are nearly together)", () => {
+  const ee = { ko: opening("ko", "i"), en: opening("en", "iː") } as Record<string, number>;
+  for (const lang of ["ko", "en"])
+    for (const [sym, e] of Object.entries<{ kind: string }>(table.sounds[lang]))
+      if (e.kind !== "vowel" && e.kind !== "diphthong")
+        assert.ok(opening(lang, sym) <= ee[lang], `${lang} ${sym}: ${opening(lang, sym).toFixed(1)} vs ㅣ/ee ${ee[lang].toFixed(1)}`);
+});
+
+test("the gap between the lips is drawn as a dark opening: none for p/m, a slit for ㅣ / s, a big one for ㅏ", async () => {
+  const { mouthOpening } = await import("./mouth.ts");
+  const geo = (lang: string, sym: string) => { const e = table.sounds[lang][sym]; return geometry(e.svg, e.kind, e.lips); };
+  for (const [lang, sym] of [["ko", "p"], ["ko", "m"], ["en", "b"]]) assert.equal(mouthOpening(geo(lang, sym)), null, `${lang} ${sym}`);
+  const height = (pts: Pt[]) => Math.max(...pts.map((q) => q.y)) - Math.min(...pts.map((q) => q.y));
+  const a = geo("ko", "a"), i = geo("ko", "i");
+  assert.ok(Math.abs(height(mouthOpening(a)!) - (a.lowerLip.top - a.upperLip.bottom)) < 0.01); // exactly the lip gap
+  assert.ok(height(mouthOpening(a)!) >= 5 * height(mouthOpening(i)!));
+  // it starts at the lips and reaches back past the teeth, so the dark shows between the teeth too
+  const xs = mouthOpening(a)!.map((q) => q.x);
+  assert.ok(Math.min(...xs) <= a.upperLip.front + 1 && Math.max(...xs) >= TEETH_X + 10);
 });

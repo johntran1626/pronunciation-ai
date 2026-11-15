@@ -18,7 +18,7 @@
 //
 // What this is NOT: a measurement of any speaker. It is the TARGET articulation from phonetics tables, timed to a
 // native recording. Diphthongs show one pose (their "to" glide is not animated yet).
-import { geometry, type Geometry, type Svg } from "./mouth.ts";
+import { callout, geometry, type Callout, type Geometry, type Svg } from "./mouth.ts";
 import type { ArticulationEntry, NativeTimings } from "./api.ts";
 
 export type Sound = { ipa: string; start: number; end: number; entry: ArticulationEntry | null };
@@ -135,6 +135,19 @@ export function soundAt(sounds: Sound[], t: number): Sound | null {
 export type Frame = { start: number; end: number; sounds: number[]; pose: Geometry };
 export const MERGE = 2.5; // drawing units: two poses closer than this look the same (~5 px on a phone)
 export const EASE = 0.1; // seconds on screen per change
+export const DEFAULT_SPEED = 1; // the player starts at normal speed; 0.5x and 0.25x are one tap away
+
+/** "Show what matters": the one defining contact or shape for a frame (F: lower lip on the upper teeth, t: tip on
+ * the ridge, k: back of the tongue on the soft palate, vowels: highest point of the tongue), placed on the pose
+ * that is showing right now. A merged frame uses its first sound that has one; null when there's nothing to mark. */
+export function frameMark(sounds: Sound[], g: Geometry, say?: (english: string) => string): Callout | null {
+  for (const s of sounds) {
+    if (!s.entry) continue;
+    const c = callout(s.entry, g, say);
+    if (c) return c;
+  }
+  return null;
+}
 
 const pt = (a: { x: number; y: number }, b: { x: number; y: number }) => Math.hypot(a.x - b.x, a.y - b.y);
 /** How different two poses look: the biggest move of any visible part, in drawing units. */

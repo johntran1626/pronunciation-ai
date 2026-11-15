@@ -110,3 +110,15 @@ def test_api_serves_the_table():
     body = r.json()
     assert "ɹ" in body["sounds"]["en"] and "ʌ" in body["sounds"]["ko"]
     assert body["note"].startswith("Textbook TARGET")
+
+
+def test_descriptions_shown_to_users_have_no_working_notes(table):
+    # every description is shown on the public site (the native mouth player, the detail cards), so it must not
+    # carry notes meant for us, e.g. "[UNVERIFIED: ... find a source ...]"
+    import re
+    note = re.compile(r"\[(?!.*\])|UNVERIFIED|TODO|find a source|double-check", re.IGNORECASE)
+    for lang, sounds in table["sounds"].items():
+        for sym, e in sounds.items():
+            text = e["description"]
+            assert not note.search(text), f"{lang} {sym}: {text}"
+            assert not re.search(r"\[[A-Z][A-Z ,:]+", text), f"{lang} {sym}: {text}"  # a bracketed ALL-CAPS note

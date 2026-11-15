@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useUi } from "@/components/UiLang";
 import { analyze, type AnalyzeResult, type Lang } from "@/lib/api";
+import { SHOW_DEV } from "@/lib/devOnly";
+import { tr, type Ui } from "@/lib/i18n";
 import { MAX_SECONDS, startRecording, TARGET_RATE, toWav16k, type Recording } from "@/lib/recorder";
 import DebugPanel, { type Sent } from "./DebugPanel";
 import ResultSentence from "./ResultSentence";
@@ -14,15 +17,16 @@ type State =
   | { kind: "error"; message: string; sent?: Sent }; // sent = the audio we sent, for the debug panel
 
 // Turn a browser error into something a user can act on.
-function micErrorMessage(e: unknown): string {
+function micErrorMessage(e: unknown, ui: Ui): string {
   const name = (e as { name?: string })?.name;
-  if (name === "NotAllowedError") return "Microphone permission was denied. Allow it (icon in the address bar) and try again.";
-  if (name === "NotFoundError") return "No microphone found. Plug one in or check System Settings → Sound → Input.";
+  if (name === "NotAllowedError") return tr(ui, "micDenied");
+  if (name === "NotFoundError") return tr(ui, "micMissing");
   return (e as Error)?.message ?? String(e);
 }
 
 // Record -> stop (or auto-stop at 15 s) -> convert to WAV -> POST /analyze -> paint the result.
 export default function Recorder({ text, lang }: { text: string; lang: Lang }) {
+  const { ui, t } = useUi();
   const [state, setState] = useState<State>({ kind: "idle" });
   const recording = useRef<Recording | null>(null); // the live recording, if any
   const timers = useRef<{ tick?: ReturnType<typeof setInterval>; limit?: ReturnType<typeof setTimeout> }>({});
@@ -53,13 +57,13 @@ export default function Recorder({ text, lang }: { text: string; lang: Lang }) {
 
   async function start() {
     if (!navigator.mediaDevices?.getUserMedia) {
-      setState({ kind: "error", message: "This browser can't record here. Open http://localhost:3000 in Chrome or Safari." });
+      setState({ kind: "error", message: t("cantRecord") });
       return;
     }
     try {
       recording.current = await startRecording();
     } catch (e) {
-      setState({ kind: "error", message: micErrorMessage(e) });
+      setState({ kind: "error", message: micErrorMessage(e, ui) });
       return;
     }
     const startedAt = performance.now();
@@ -78,11 +82,11 @@ export default function Recorder({ text, lang }: { text: string; lang: Lang }) {
     clearTimers();
     let sent: Sent | undefined;
     try {
-      setState({ kind: "working", what: "Preparing audio…" });
+      setState({ kind: "working", what: t("preparing") });
       const { wav, playback, playbackSamples, stats } = await toWav16k(await rec.stop());
       const [sentUrl, playUrl] = newAudioUrls(wav, playback);
       sent = { sentUrl, playUrl, stats, playSamples: playbackSamples };
-      setState({ kind: "working", what: "Analyzing…" });
+      setState({ kind: "working", what: t("analyzing") });
       setState({ kind: "done", result: await analyze(wav, text, lang), sent });
     } catch (e) {
       setState({ kind: "error", message: (e as Error).message, sent });
@@ -97,11 +101,11 @@ export default function Recorder({ text, lang }: { text: string; lang: Lang }) {
       <div className="flex items-center gap-3">
         {state.kind === "recording" ? (
           <button onClick={stop} className={`${button} bg-red-600 hover:bg-red-700`}>
-            ■ Stop
+            ■ {t("stop")}
           </button>
         ) : (
           <button onClick={start} disabled={busy} className={`${button} bg-blue-600 hover:bg-blue-700`}>
-            ● {state.kind === "done" || state.kind === "error" ? "Record again" : "Record"}
+            ● {t(state.kind === "done" || state.kind === "error" ? "recordAgain" : "record")}
           </button>
         )}
         {state.kind === "recording" && (
@@ -115,14 +119,15 @@ export default function Recorder({ text, lang }: { text: string; lang: Lang }) {
       {state.kind === "error" && (
         <>
           <p className="rounded-lg bg-red-50 p-3 text-red-700 dark:bg-red-950 dark:text-red-300">{state.message}</p>
-          {state.sent && <DebugPanel sent={state.sent} />}
+          {/* developer output: local `next dev` only, never on the public site */}
+          {SHOW_DEV && state.sent && <DebugPanel sent={state.sent} />}
         </>
       )}
 
       {state.kind === "done" && (
         <div className="flex flex-col gap-3 border-t border-neutral-200 pt-4 dark:border-neutral-800">
           <ResultSentence result={state.result} audio={{ samples: state.sent.playSamples, rate: TARGET_RATE }} />
-          <DebugPanel sent={state.sent} result={state.result} />
+          {SHOW_DEV && <DebugPanel sent={state.sent} result={state.result} />}
         </div>
       )}
     </div>

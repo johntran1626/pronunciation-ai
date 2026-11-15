@@ -79,9 +79,10 @@ export function geometry(s: Svg, kind: string, lips?: string): Geometry {
   const protrude = s.lip_round * 7;
   const front = LIP_FRONT - protrude; // 22 -> 14 units in front of the teeth (lips read as too big)
   const mid = 93 + jaw * 0.5;
-  // The lips open WITH the jaw (x1.1, was x0.4), so ㅏ / ah opens
-  // ~22 units against ~5 for ㅣ / ee (was 12 vs 7)
-  const gap = (s.lip_gap * 10 + jaw * 1.1) * (1 - 0.45 * s.lip_round);
+  // Open vs closed must read at a glance. Vowels: the lips part mostly WITH the jaw (x1.6), so ㅏ / ah opens
+  // ~29 units against 4 for ㅣ / ee (7x). Consonants: the jaw stays nearly shut and the lips only slightly
+  // apart (s, t, k, n: 3.6, never more open than ㅣ). Rounding narrows either.
+  const gap = (isVowel ? s.lip_gap * 8 + jaw * 1.6 : s.lip_gap * 6 + jaw * 0.4) * (1 - 0.45 * s.lip_round);
   let upperBottom = mid - gap / 2;
   let lowerTop = mid + gap / 2;
   let lowerFront = front + 2;
@@ -280,20 +281,40 @@ export function faceOutline(g: Geometry): { upper: Pt[]; lower: Pt[] } {
 }
 export const facePaths = (g: Geometry) => { const f = faceOutline(g); return { upper: toPath(f.upper, false), lower: toPath(f.lower, false) }; };
 
+// ---------- the dark opening between the lips ----------
+/** The air between the lips as a shape to fill dark (fading inwards when drawn): from the front of the lips back
+ * past the teeth, exactly as tall as the lip gap. null when the lips are shut (p, b, m). Without it the open mouth
+ * was drawn in the background colour and ㅏ looked nearly the same as ㅣ or p. */
+export const OPENING_BACK_X = TEETH_X + 14; // how far into the mouth the dark reaches before it has faded out
+export function mouthOpening(g: Geometry): Pt[] | null {
+  const top = g.upperLip.bottom, bottom = g.lowerLip.top;
+  if (bottom - top < 0.5) return null;
+  // the front curves INWARDS between the two lips (they bulge forward around the opening), so the dark never
+  // pokes out in front of the face
+  const front = Math.min(g.upperLip.front, g.lowerLip.front) + 1;
+  const inset = Math.min(4, (bottom - top) / 4);
+  return [P(OPENING_BACK_X, top), P(front, top), ...quad(P(front, top), P(front + inset * 2, (top + bottom) / 2), P(front, bottom)), P(OPENING_BACK_X, bottom)];
+}
+
 // ---------- one plain-words label for "where it happens", with a line to the spot ----------
 export type Callout = { text: string; at: Pt; textAt: Pt };
 type Entry = { svg: Svg; kind: string; lips?: string | null };
-const CHAR_W = 4.2; // average width of one character at the 7-unit font the diagram uses
+const CHAR_W = 4.2; // average width of one Latin character at the 7-unit font the diagram uses
+const HANGUL_W = 7; // a Hangul block is about as wide as the font is tall
 const TEXT_Y = VIEW.y + 9; // all callouts sit in one row at the top of the picture
+/** How wide a label draws at the diagram's 7-unit font (Korean labels are wider per character). */
+export const textWidth = (text: string) => [...text].reduce((w, ch) => w + (/[\uac00-\ud7a3]/.test(ch) ? HANGUL_W : CHAR_W), 0);
 
-function place(text: string, at: Pt): Callout {
-  const w = text.length * CHAR_W;
+function placeLabel(text: string, at: Pt): Callout {
+  const w = textWidth(text);
   const x = Math.min(Math.max(at.x - w / 2, VIEW.x + 3), VIEW.x + VIEW.w - 3 - w);
   return { text, at, textAt: { x, y: TEXT_Y } };
 }
 
-/** The single most useful placement fact for this sound, or null if there's nothing specific to point at. */
-export function callout(e: Entry, g: Geometry): Callout | null {
+/** The single most useful placement fact for this sound, or null if there's nothing specific to point at.
+ * `say` turns the English label into the site language (the ENG / 한 switch). */
+export function callout(e: Entry, g: Geometry, say: (english: string) => string = (x) => x): Callout | null {
+  const place = (text: string, at: Pt) => placeLabel(say(text), at);
   const s = e.svg;
   if (e.kind === "vowel" || e.kind === "diphthong") return place("Highest point of the tongue", g.body);
   if (e.lips === "closed") return place("Lips pressed together", { x: g.upperLip.front + 2, y: g.upperLip.bottom });

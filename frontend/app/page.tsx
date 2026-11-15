@@ -1,299 +1,289 @@
-"use client"; // runs in the browser: it reacts to clicks and fetches from the backend
+"use client"; // runs in the browser: it reacts to typing and clicks and fetches from the backend
 
-import { useEffect, useState } from "react";
+// Type-first: one big box. The language comes from what is typed (Hangul = Korean), the native mouth animation
+// loads and plays for the sentence with no extra tap, and "Practice it yourself" opens the recorder + scoring.
+// Sample sentences (Basics and Casual, both languages) sit lightly to the side for visitors with nothing to type.
+
+import { useEffect, useRef, useState } from "react";
 import BackendStatus from "@/components/BackendStatus";
-import NativeAudio from "@/components/NativeAudio";
+import FormalityLine from "@/components/FormalityLine";
 import NativeMouth from "@/components/NativeMouth";
 import Recorder from "@/components/Recorder";
-import FormalityLine from "@/components/FormalityLine";
-import FormalitySwitch from "@/components/FormalitySwitch";
 import Translation from "@/components/Translation";
-import { fetchCustom, fetchPack, fetchPacks, type CustomText, type Lang, type Pack, type PackSummary } from "@/lib/api";
-import { MAX_CUSTOM_CHARS, checkLine, typedProblem } from "@/lib/custom";
-import { SHOW_DEV, pickerPacks } from "@/lib/devOnly";
-import { tagLabel } from "@/lib/tags";
-import { bySpeech, hasSpeechLevels } from "@/lib/translations";
+import { UiLangProvider, UiToggle, useUi } from "@/components/UiLang";
+import { fetchCustom, fetchPack, fetchTranslation, type Lang, type Pack, type PackItem } from "@/lib/api";
+import { MAX_CUSTOM_CHARS, checkLine } from "@/lib/custom";
+import { problemText, type Key } from "@/lib/i18n";
+import { SAMPLE_PACKS, detectLang, koreanToAnimate, sampleLines, storedTranslation, translateOffered } from "@/lib/landing";
+import type { Translated } from "@/lib/translations";
 
-// "type your own" sits next to the packs; this id can't clash with a pack file name.
-const CUSTOM = "__custom__";
+const LANG_NAME: Record<Lang, Key> = { en: "langEn", ko: "langKo" };
 
-const DIRECTIONS: { lang: Lang; label: string }[] = [
-  { lang: "ko", label: "I'm learning Korean" },
-  { lang: "en", label: "I'm learning English" },
-];
-
-// Shared look for a choice button; `on` = currently selected.
-const choice = (on: boolean) =>
-  `rounded-lg border px-4 py-3 text-left transition-colors ${
-    on
-      ? "border-blue-600 bg-blue-50 dark:bg-blue-950"
-      : "border-neutral-300 hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-800"
-  }`;
+// The sentence being animated: a sample (with its pack line: translation, source), what was typed, or the Korean
+// translation of typed English (`from`: the English and both Korean forms, so the 존댓말 / 반말 switch can re-animate).
+type FromEnglish = { en: string; t: Translated };
+type Shown = { text: string; lang: Lang; item: PackItem | null; note: string | null; typed: string | null; from?: FromEnglish };
+type Busy = null | "animate" | "kr" | "kr-animate";
 
 export default function Home() {
-  // The user's choices, in order: direction -> pack -> sentence.
-  const [lang, setLang] = useState<Lang | null>(null);
-  const [packs, setPacks] = useState<PackSummary[] | null>(null);
-  const [packId, setPackId] = useState<string | null>(null);
-  const [pack, setPack] = useState<Pack | null>(null);
-  const [itemId, setItemId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  // Custom mode: what the user typed, and the backend's spoken-words version of it (null = not checked yet).
+  return (
+    <UiLangProvider>
+      <Coach />
+    </UiLangProvider>
+  );
+}
+
+function Coach() {
+  const { ui, t } = useUi();
   const [typed, setTyped] = useState("");
-  const [custom, setCustom] = useState<CustomText | null>(null);
-  const [customBusy, setCustomBusy] = useState(false);
-  const [customError, setCustomError] = useState<string | null>(null);
-  // Korean translations: 존댓말 by default; the small switch flips to 반말. One setting for the page.
-  const [casual, setCasual] = useState(false);
+  const [shown, setShown] = useState<Shown | null>(null);
+  const [busy, setBusy] = useState<Busy>(null);
+  const [kr, setKr] = useState<FromEnglish | null>(null); // "Translate to KR" without animating
+  const [picked, setPicked] = useState<PackItem | null>(null); // the last sample tapped (English ones carry Korean)
+  const [error, setError] = useState<string | null>(null);
+  const [practice, setPractice] = useState(false);
+  const [casual, setCasual] = useState(false); // 존댓말 by default; one setting for the page
+  const [samples, setSamples] = useState<Pack[]>([]);
+  const [sampleLang, setSampleLang] = useState<Lang>("en");
+  const result = useRef<HTMLElement | null>(null);
 
-  function resetCustom() {
-    setTyped("");
-    setCustom(null);
-    setCustomError(null);
-  }
+  const lang = detectLang(typed);
+  const tooLong = typed.trim().length > MAX_CUSTOM_CHARS;
 
-  // Choosing an earlier step clears everything after it (in the click, so effects only fetch).
-  function chooseLang(l: Lang) {
-    setLang(l);
-    setPacks(null);
-    setPackId(null);
-    setPack(null);
-    setItemId(null);
+  // the four sample packs, once
+  useEffect(() => {
+    let live = true;
+    Promise.all([...SAMPLE_PACKS.en, ...SAMPLE_PACKS.ko].map(fetchPack)).then(
+      (packs) => live && setSamples(packs),
+      () => {}, // samples are optional; typing still works without them
+    );
+    return () => { live = false; };
+  }, []);
+
+  function show(s: Shown) {
+    setShown(s);
+    setPractice(false);
     setError(null);
-    resetCustom();
+    // bring the animation into view on small screens (the box stays above it)
+    requestAnimationFrame(() => result.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }));
   }
-  function choosePack(id: string) {
-    setPackId(id);
-    setPack(null);
-    setItemId(null);
+
+  async function submit() {
+    const problem = problemText(ui, typed);
+    if (problem) return setError(problem);
+    if (!lang) return setError(t("errNoLang"));
+    setBusy("animate");
     setError(null);
-    resetCustom();
-  }
-
-  // Editing the sentence drops the old check, so we never score text the user no longer sees.
-  function editTyped(t: string) {
-    setTyped(t);
-    setCustom(null);
-    setCustomError(null);
-  }
-
-  // "Check it": quick local checks, then the backend writes numbers / short forms out as spoken words.
-  async function checkTyped() {
-    if (!lang) return;
-    const problem = typedProblem(typed);
-    if (problem) return setCustomError(problem);
-    setCustomBusy(true);
-    setCustomError(null);
     try {
-      setCustom(await fetchCustom(typed.trim(), lang));
+      // the backend writes numbers and short forms out the way they're said
+      const checked = checkLine(await fetchCustom(typed.trim(), lang));
+      show({ text: checked.text, lang, item: null, note: checked.note, typed: typed.trim() });
     } catch (e) {
-      setCustomError((e as Error).message);
+      setError((e as Error).message);
     } finally {
-      setCustomBusy(false);
+      setBusy(null);
     }
   }
 
-  // When the direction changes: load the packs for that language.
-  useEffect(() => {
-    if (!lang) return;
-    let ignore = false; // drop a late reply if the user already switched direction
-    fetchPacks(lang).then(
-      (list) => !ignore && setPacks(pickerPacks(list, SHOW_DEV)),
-      (e: Error) => !ignore && setError(e.message),
-    );
-    return () => {
-      ignore = true;
-    };
-  }, [lang]);
+  // English -> Korean: a sample's stored Korean, else the backend's translation (both forms)
+  async function toKorean(en: string): Promise<Translated | null> {
+    return storedTranslation(picked, en) ?? (await fetchTranslation(en, "en"));
+  }
 
-  // When a pack is chosen: load its sentences.
-  useEffect(() => {
-    if (!packId || packId === CUSTOM) return; // Custom mode has no pack to load
-    let ignore = false;
-    fetchPack(packId).then(
-      (p) => !ignore && setPack(p),
-      (e: Error) => !ignore && setError(e.message),
-    );
-    return () => {
-      ignore = true;
-    };
-  }, [packId]);
+  // animate one Korean form of an English sentence (numbers in the Korean are written out first, as for typing)
+  async function animateKorean(from: FromEnglish, c: boolean) {
+    const ko = koreanToAnimate(from.t, c);
+    if (!ko) return;
+    const checked = checkLine(await fetchCustom(ko, "ko"));
+    show({ text: checked.text, lang: "ko", item: null, note: null, typed: null, from });
+  }
 
-  // Korean packs: the 존댓말 / 반말 switch decides which lines are listed (a hidden line's card closes too).
-  const shownItems = pack ? bySpeech(pack.items, casual) : [];
-  const item = shownItems.find((it) => it.id === itemId) ?? null;
-  const isCustom = packId === CUSTOM;
-  const line = custom ? checkLine(custom) : null;
+  async function translate(animate: boolean) {
+    const problem = problemText(ui, typed);
+    if (problem) return setError(problem);
+    const en = typed.trim();
+    setBusy(animate ? "kr-animate" : "kr");
+    setError(null);
+    try {
+      const found = await toKorean(en);
+      if (!found) return setError(t("errTranslate"));
+      if (animate) {
+        setKr(null);
+        await animateKorean({ en, t: found }, casual);
+      } else setKr({ en, t: found });
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  // the 존댓말 / 반말 switch: one setting for the page; on an animated translation it animates the other form
+  function flipCasual(c: boolean) {
+    setCasual(c);
+    if (shown?.from) void animateKorean(shown.from, c).catch((e: Error) => setError(e.message));
+  }
+
+  function pickSample(it: PackItem, l: Lang) {
+    setTyped(it.text);
+    setPicked(it);
+    setKr(null);
+    show({ text: it.text, lang: l, item: it, note: null, typed: null });
+  }
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-4 py-12">
-      <header>
-        <h1 className="text-3xl font-semibold">Pronunciation coach</h1>
-        <p className="mt-1 text-neutral-500">Record a sentence, see which sounds need work.</p>
+    <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8 sm:py-12">
+      <header className="flex items-center justify-between">
+        <span className="text-sm font-semibold tracking-wide text-neutral-500">{t("brand")}</span>
+        <UiToggle />
       </header>
 
-      {/* 1. Direction */}
-      <section className="flex flex-col gap-3">
-        <h2 className="font-medium">1. What are you learning?</h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {DIRECTIONS.map((d) => (
-            <button key={d.lang} onClick={() => chooseLang(d.lang)} className={choice(lang === d.lang)}>
-              {d.label}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {error && <p className="rounded-lg bg-red-50 p-3 text-red-700 dark:bg-red-950 dark:text-red-300">{error}</p>}
-
-      {/* 2. Pack */}
-      {lang && (
-        <section className="flex flex-col gap-3">
-          <h2 className="font-medium">2. Pick a sentence pack</h2>
-          {!packs && !error && <p className="text-neutral-500">Loading packs…</p>}
-          {packs?.length === 0 && <p className="text-neutral-500">No packs for this language yet.</p>}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {packs?.map((p) => (
-              <button key={p.id} onClick={() => choosePack(p.id)} className={choice(packId === p.id)}>
-                <span className="block">{p.name}</span>
-                <span className="block text-sm text-neutral-500">{p.count} sentences</span>
-                {p.dev_only && (
-                  <span className="mt-1 inline-block rounded bg-amber-100 px-1.5 text-xs text-amber-900 dark:bg-amber-900 dark:text-amber-100">
-                    dev only · not reviewed
-                  </span>
-                )}
-              </button>
-            ))}
-            {packs && (
-              <button onClick={() => choosePack(CUSTOM)} className={choice(isCustom)}>
-                <span className="block">Custom</span>
-                <span className="block text-sm text-neutral-500">Type your own sentence</span>
-              </button>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* 3. Custom mode: type a sentence */}
-      {lang && isCustom && (
-        <section className="flex flex-col gap-3">
-          <h2 className="font-medium">3. Type a sentence</h2>
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_16rem]">
+        <div className="flex min-w-0 flex-col gap-6">
+          {/* the box: usable the moment the page opens */}
           <form
-            className="flex flex-col gap-2 sm:flex-row"
+            className="flex flex-col gap-2"
             onSubmit={(e) => {
-              e.preventDefault(); // stay on the page (a form would reload it)
-              checkTyped();
+              e.preventDefault(); // stay on the page
+              void submit();
             }}
           >
-            <input
-              value={typed}
-              onChange={(e) => editTyped(e.target.value)}
-              lang={lang}
-              placeholder={lang === "ko" ? "예: 커피 2잔 주세요." : "e.g. I'd like 2 coffees, please."}
-              className="flex-1 rounded-lg border border-neutral-300 bg-transparent px-3 py-2 dark:border-neutral-700"
-            />
-            <button
-              type="submit"
-              disabled={customBusy}
-              className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white disabled:opacity-50"
-            >
-              {customBusy ? "Checking…" : "Check it"}
-            </button>
-          </form>
-          <p className={`text-sm ${typed.trim().length > MAX_CUSTOM_CHARS ? "text-red-600" : "text-neutral-500"}`}>
-            {typed.trim().length}/{MAX_CUSTOM_CHARS} characters
-          </p>
-          {customError && (
-            <p className="rounded-lg bg-red-50 p-3 text-red-700 dark:bg-red-950 dark:text-red-300">{customError}</p>
-          )}
-        </section>
-      )}
-
-      {/* 3. Sentence */}
-      {packId && !isCustom && (
-        <section className="flex flex-col gap-3">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="font-medium">3. Pick a sentence</h2>
-            {pack && hasSpeechLevels(pack.items) && (
-              <FormalitySwitch casual={casual} onCasual={setCasual} label="Show 반말 (casual) lines instead of 존댓말 (polite)" />
-            )}
-          </div>
-          {!pack && !error && <p className="text-neutral-500">Loading sentences…</p>}
-          {pack?.dev_only && (
-            <p className="text-sm text-neutral-500">
-              {pack.note} Source: {pack.source}. License: {pack.license}.
-            </p>
-          )}
-          <ol className="flex flex-col gap-2">
-            {pack && shownItems.map((it) => (
-              <li key={it.id}>
-                <button onClick={() => setItemId(it.id)} lang={pack.lang} className={`w-full ${choice(itemId === it.id)}`}>
-                  {it.text}
-                </button>
-              </li>
-            ))}
-          </ol>
-        </section>
-      )}
-
-      {/* 4. The chosen sentence + the recorder */}
-      {item && pack && (
-        <section className="flex flex-col gap-3 rounded-lg border border-neutral-300 p-5 dark:border-neutral-700">
-          <p lang={pack.lang} className="text-2xl leading-relaxed">
-            {item.text}
-          </p>
-          {item.translation ? (
-            <FormalityLine t={item} textLang={pack.lang === "en" ? "ko" : "en"} casual={casual} onCasual={setCasual} />
-          ) : (
-            <p className="text-sm text-neutral-500">No translation yet (dev pack).</p>
-          )}
-          {item.tags.length > 0 && (
-            <p className="flex flex-wrap gap-1.5 text-sm">
-              <span className="text-neutral-500">Practices:</span>
-              {item.tags.map((t) => (
-                <span key={t} className="rounded bg-neutral-100 px-1.5 dark:bg-neutral-800">
-                  {tagLabel(t)}
+            <div className="rounded-2xl border-2 border-neutral-300 bg-white shadow-sm transition focus-within:border-green-600 focus-within:shadow-[0_0_0_6px_rgba(22,163,74,0.15)] dark:border-neutral-700 dark:bg-neutral-900">
+              <textarea
+                autoFocus
+                rows={3}
+                value={typed}
+                onChange={(e) => { setTyped(e.target.value); setError(null); setKr(null); }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { // isComposing: Korean IME
+                    e.preventDefault();
+                    void submit();
+                  }
+                }}
+                lang={lang ?? undefined}
+                aria-label={t("boxLabel")}
+                placeholder={t("placeholder")}
+                className="block w-full resize-none bg-transparent break-keep px-5 pt-5 pb-2 text-2xl leading-snug outline-none placeholder:text-neutral-400 placeholder:uppercase placeholder:tracking-wide sm:text-3xl max-sm:text-xl"
+                data-testid="box"
+              />
+              <div className="flex flex-wrap items-center gap-3 px-5 pb-4">
+                <span className="text-sm text-neutral-500" data-testid="detected">
+                  {t(lang ? LANG_NAME[lang] : "langEither")}
                 </span>
-              ))}
-            </p>
-          )}
-          {item.credit && (
-            <p className="text-xs text-neutral-500">
-              Source:{" "}
-              <a href={item.source_url} target="_blank" rel="noreferrer" className="underline">
-                {item.credit}
-              </a>
-              , {item.license}.
-            </p>
-          )}
-          {/* Hear it first, then record */}
-          <NativeAudio text={item.text} lang={pack.lang} />
-          {/* key: a new sentence starts closed (the old animation and its clip are dropped) */}
-          <NativeMouth key={`mouth:${item.id}`} text={item.text} lang={pack.lang} />
-          {/* key: a new sentence gets a fresh recorder (old result and any live recording are dropped) */}
-          <Recorder key={item.id} text={item.text} lang={pack.lang} />
-        </section>
-      )}
+                <span className={`text-xs ${tooLong ? "text-red-600" : "text-neutral-400"}`}>
+                  {typed.trim().length}/{MAX_CUSTOM_CHARS}
+                </span>
+                <div className="ml-auto flex flex-wrap justify-end gap-2">
+                  {translateOffered(lang) && (
+                    <>
+                      <button type="button" onClick={() => void translate(false)} disabled={!!busy} data-testid="kr"
+                        className="rounded-full border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-100 disabled:opacity-40 dark:border-neutral-700 dark:hover:bg-neutral-800">
+                        {busy === "kr" ? t("translating") : t("translateKr")}
+                      </button>
+                      <button type="button" onClick={() => void translate(true)} disabled={!!busy} data-testid="kr-animate"
+                        className="rounded-full border border-green-700 px-4 py-2 text-sm text-green-800 hover:bg-green-50 disabled:opacity-40 dark:text-green-300 dark:hover:bg-green-950">
+                        {busy === "kr-animate" ? t("translating") : t("translateKrAnimate")}
+                      </button>
+                    </>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={!!busy || !typed.trim()}
+                    className="rounded-full bg-green-700 px-5 py-2 font-medium text-white transition hover:bg-green-800 disabled:opacity-40"
+                    data-testid="go"
+                  >
+                    {busy === "animate" ? t("loading") : t("animate")}
+                  </button>
+                </div>
+              </div>
+            </div>
+            {/* "Translate to KR": the Korean, and only now the 존댓말 / 반말 switch */}
+            {kr && kr.en === typed.trim() && (
+              <div className="rounded-xl bg-neutral-50 px-5 py-3 dark:bg-neutral-900" data-testid="kr-result">
+                <FormalityLine t={kr.t} textLang="ko" casual={casual} onCasual={setCasual} big />
+              </div>
+            )}
+            {error && <p className="rounded-lg bg-red-50 p-3 text-red-700 dark:bg-red-950 dark:text-red-300">{error}</p>}
+          </form>
 
-      {/* 4. Custom mode: the sentence we'll actually score + the same hear / record flow as a pack sentence */}
-      {lang && isCustom && line && (
-        <section className="flex flex-col gap-3 rounded-lg border border-neutral-300 p-5 dark:border-neutral-700">
-          <p className="text-sm text-neutral-500">We&apos;ll check:</p>
-          <p lang={lang} className="text-2xl leading-relaxed">
-            {line.text}
-          </p>
-          <Translation text={line.text} lang={lang} casual={casual} onCasual={setCasual} />
-          {line.note && (
-            <p className="text-sm text-neutral-500">
-              {line.note} You typed: <span lang={lang}>{custom?.typed}</span>
-            </p>
+          {/* the sentence, its animation, and practice */}
+          {shown && (
+            <section ref={result} className="flex scroll-mt-4 flex-col gap-3" data-testid="result">
+              <p lang={shown.lang} className="text-2xl leading-relaxed">{shown.text}</p>
+              {shown.from && (
+                <div className="flex flex-col gap-1" data-testid="from-english">
+                  <p className="text-sm text-neutral-500">{t("koreanFor", { en: "" })}<span lang="en">{shown.from.en}</span></p>
+                  <FormalityLine t={shown.from.t} textLang="ko" casual={casual} onCasual={flipCasual} switchOnly />
+                </div>
+              )}
+              {shown.note && (
+                <p className="text-sm text-neutral-500">
+                  {t("numbersNote")} {t("youTyped")} <span lang={shown.lang}>{shown.typed}</span>
+                </p>
+              )}
+              {/* a Korean sentence: its English meaning (a translation of typed English already shows it above) */}
+              {shown.lang === "ko" && !shown.from &&
+                (shown.item ? (
+                  <FormalityLine t={shown.item} textLang="en" casual={casual} onCasual={setCasual} />
+                ) : (
+                  <Translation text={shown.text} lang="ko" casual={casual} onCasual={setCasual} />
+                ))}
+              {shown.item?.credit && (
+                <p className="text-xs text-neutral-500">
+                  {t("source")}{" "}
+                  <a href={shown.item.source_url} target="_blank" rel="noreferrer" className="underline">
+                    {shown.item.credit}
+                  </a>
+                  , {shown.item.license}.
+                </p>
+              )}
+              {/* key: a new sentence gets a fresh player (it loads and plays on its own) */}
+              <NativeMouth key={`mouth:${shown.lang}:${shown.text}`} text={shown.text} lang={shown.lang} />
+              {practice ? (
+                <Recorder key={`rec:${shown.lang}:${shown.text}`} text={shown.text} lang={shown.lang} />
+              ) : (
+                <div>
+                  <button onClick={() => setPractice(true)} data-testid="practice"
+                    className="rounded-full border-2 border-blue-600 px-5 py-2 font-medium text-blue-700 hover:bg-blue-50 dark:text-blue-300 dark:hover:bg-blue-950">
+                    {t("practice")}
+                  </button>
+                  <p className="mt-1 text-xs text-neutral-500">{t("practiceHint")}</p>
+                </div>
+              )}
+            </section>
           )}
-          <NativeAudio text={line.text} lang={lang} />
-          <NativeMouth key={`mouth:custom:${line.text}`} text={line.text} lang={lang} />
-          {/* key: a new checked sentence gets a fresh recorder */}
-          <Recorder key={`custom:${line.text}`} text={line.text} lang={lang} />
-        </section>
-      )}
+        </div>
+
+        {/* samples: light, to the side (below the box on phones) */}
+        <aside className="flex flex-col gap-3 text-sm lg:pt-2" data-testid="samples">
+          <div className="flex items-center gap-2">
+            <span className="text-neutral-500">{t("samplesTitle")}</span>
+          </div>
+          <div className="flex gap-1" role="tablist">
+            {(["en", "ko"] as Lang[]).map((l) => (
+              <button key={l} role="tab" aria-selected={sampleLang === l} onClick={() => setSampleLang(l)}
+                className={`rounded-full px-3 py-0.5 text-xs ${sampleLang === l ? "bg-neutral-800 text-white dark:bg-neutral-200 dark:text-neutral-900" : "text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}>
+                {t(l === "en" ? "tabEn" : "tabKo")}
+              </button>
+            ))}
+          </div>
+          {samples.filter((p) => p.lang === sampleLang).map((p) => (
+            <div key={p.id} className="flex flex-col gap-1">
+              <span className="text-xs font-medium uppercase tracking-wide text-neutral-400">{p.name === "Basics" || p.name === "Casual" ? t(`pack_${p.name}`) : p.name}</span>
+              <ul className="flex flex-col">
+                {sampleLines(p).map((it) => (
+                  <li key={it.id}>
+                    <button onClick={() => pickSample(it, p.lang)} lang={p.lang}
+                      className={`w-full rounded px-1.5 py-0.5 text-left text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 ${shown?.item?.id === it.id ? "bg-neutral-100 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100" : ""}`}>
+                      {it.text}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </aside>
+      </div>
 
       <footer className="mt-auto pt-8">
         <BackendStatus />

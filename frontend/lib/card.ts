@@ -1,5 +1,6 @@
 // Turning a red word into what its detail card shows. Pure functions, tested in card.test.ts.
 import type { Lang, TipsTable, WordResult } from "./api.ts";
+import { tipText, type Ui } from "./i18n.ts";
 
 // One thing wrong in a word: which mistake, on which sound, and when that sound was (for replay).
 // index = which sound of the word (0 = first): used to find the same sound in the native clip.
@@ -43,9 +44,10 @@ export type Card = {
 };
 
 // Issue + its word + tips.json -> the card. null when we have no tip for this mistake (never show a broken card).
-export function buildCard(issue: Issue, word: WordResult, tips: TipsTable, lang: Lang): Card | null {
-  const t = tips.tips[lang]?.[issue.pair];
-  if (!t) return null;
+export function buildCard(issue: Issue, word: WordResult, tips: TipsTable, lang: Lang, ui: Ui = "en"): Card | null {
+  const raw = tips.tips[lang]?.[issue.pair];
+  if (!raw) return null;
+  const t = tipText(ui, lang, issue.pair, raw); // the words in the site language; sounds and flags unchanged
   const target = t.target ? { lang: t.target_lang, sym: t.target } : null;
   const produced = t.produced ? { lang: t.produced_lang, sym: t.produced } : null;
   const notHeard = issue.pair === "word_not_heard";

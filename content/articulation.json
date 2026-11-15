@@ -1091,7 +1091,7 @@
     "voicing": "voiced",
     "laryngeal": null,
     "lips": "closed",
-    "description": "ㅁ: lips closed, air through the nose. At a word start it may sound partly like b in Seoul speech [UNVERIFIED: anecdotal, find a source before showing users]; if true it is native, not an error.",
+    "description": "ㅁ: lips closed, air through the nose.",
     "reviewed": false,
     "svg": {
      "tongue_x": 0.5,
@@ -1110,7 +1110,7 @@
     "voicing": "voiced",
     "laryngeal": null,
     "lips": "neutral",
-    "description": "ㄴ: tongue tip behind the upper teeth, air through the nose. May sound partly d-like at a word start in Seoul speech [UNVERIFIED, as for ㅁ].",
+    "description": "ㄴ: tongue tip behind the upper teeth, air through the nose.",
     "reviewed": false,
     "svg": {
      "tongue_x": 0.6,

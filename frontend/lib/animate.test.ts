@@ -256,3 +256,39 @@ test("a sound missing from the table gets no entry, so it gets no frame (never a
   assert.equal(sounds[4].entry, null);
   assert.equal(framesFor(sounds, 0).length, 5);
 });
+
+// ---------- the player plays at normal speed; "show what matters" marks each sound's key contact ----------
+import { readFileSync as readTable } from "node:fs";
+import { DEFAULT_SPEED, frameMark } from "./animate.ts";
+const realTable = JSON.parse(readTable(new URL("../../content/articulation.json", import.meta.url), "utf8"));
+const real = (lang: string, ipa: string): Sound => ({ ipa, start: 0, end: 0.1, entry: realTable.sounds[lang][ipa] });
+const markFor = (...ss: Sound[]) => {
+  const e = ss.find((s) => s.entry)!.entry!;
+  const g = geometry(e.svg, e.kind, e.lips);
+  return { m: frameMark(ss, g), g };
+};
+
+test("the player starts at normal speed (1x)", () => {
+  assert.equal(DEFAULT_SPEED, 1);
+});
+
+test("show what matters: F = lower lip on the upper teeth, P = lips together, t = tip on the ridge, k = back on the soft palate", () => {
+  let { m, g } = markFor(real("en", "f"));
+  assert.match(m!.text, /lower lip on the upper teeth/i);
+  assert.ok(Math.abs(m!.at.y - g.teeth.upperTip) <= 2);
+  ({ m } = markFor(real("en", "p")));
+  assert.match(m!.text, /lips pressed together/i);
+  ({ m, g } = markFor(real("en", "t")));
+  assert.match(m!.text, /ridge/i);
+  assert.deepEqual(m!.at, g.tip);
+  ({ m, g } = markFor(real("ko", "k")));
+  assert.match(m!.text, /soft palate/i);
+  ({ m } = markFor(real("en", "θ")));
+  assert.match(m!.text, /teeth/i);
+});
+
+test("show what matters: a merged frame uses the first sound with something to point at; nothing for h alone", () => {
+  assert.equal(markFor(real("en", "h")).m, null);
+  assert.match(markFor(real("en", "h"), real("en", "p")).m!.text, /lips/i);
+  assert.equal(frameMark([{ ipa: "?", start: 0, end: 0.1, entry: null }], geometry(svg({}), "consonant", "neutral")), null);
+});

@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import DetailCard from "@/components/DetailCard";
+import { useUi } from "@/components/UiLang";
+import { describeChecksIn } from "@/lib/i18n";
 import { loadCardData, type AnalyzeResult, type ArticulationTable, type DisplayPiece, type TipsTable, type WordResult } from "@/lib/api";
 import { buildCard, issuesOf, tapAction } from "@/lib/card";
 import { loadNativeClip, nativePart, type NativeClip } from "@/lib/native";
 import { playSlice, stopPlayback } from "@/lib/replay";
-import { describeChecks, jamoParts, summarize } from "@/lib/results";
+import { jamoParts, summarize } from "@/lib/results";
 
 // Red = color AND a wavy underline, so it still reads for color-blind users.
 const RED = "text-red-600 underline decoration-wavy decoration-2 underline-offset-4 dark:text-red-400";
@@ -16,10 +18,6 @@ const TAP =
   "cursor-pointer rounded px-0.5 hover:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-blue-600 dark:hover:bg-neutral-800";
 const PLAYING = "bg-blue-100 dark:bg-blue-900";
 
-const NO_MATCH: Record<string, string> = {
-  no_speech: "We couldn't hear any speech. Check that the right microphone is selected, then try again.",
-  mismatch: "This didn't sound like the sentence. Try reading it again, word for word.",
-};
 
 type Audio = { samples: Float32Array<ArrayBuffer>; rate: number }; // the learner's own recording (louder copy)
 
@@ -44,6 +42,7 @@ function Piece({ piece }: { piece: DisplayPiece }) {
 // The sentence, painted per piece (English letters; Korean syllable blocks), or a "couldn't match" message.
 // With `audio`, each English word / Korean syllable is a button that plays YOUR audio for just that part.
 export default function ResultSentence({ result, audio }: { result: AnalyzeResult; audio?: Audio }) {
+  const { ui, t } = useUi();
   const [playing, setPlaying] = useState<string | null>(null); // which part is playing ("3" or "3-1")
   const [open, setOpen] = useState<number | null>(null); // which word's detail card is open
   const [data, setData] = useState<{ tips: TipsTable; articulation: ArticulationTable } | null>(null);
@@ -78,7 +77,7 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
   if (!result.matched) {
     return (
       <p className="rounded-lg bg-amber-50 p-3 text-amber-900 dark:bg-amber-950 dark:text-amber-200">
-        {NO_MATCH[result.reason ?? "mismatch"] ?? NO_MATCH.mismatch} (Estimated from your audio.)
+        {t(result.reason === "no_speech" ? "noSpeech" : "mismatch")} {t("estimated")}
       </p>
     );
   }
@@ -117,7 +116,7 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
         <button
           type="button"
           onClick={() => tap(i, `${i}`, w.start, w.end)}
-          aria-label={hasCard ? `Show what to fix in "${w.word}"` : `Play your "${w.word}"`}
+          aria-label={t(hasCard ? "showFix" : "playYour", { w: w.word })}
           aria-expanded={hasCard ? open === i : undefined}
           className={`${TAP} ${playing === `${i}` ? PLAYING : ""}`}
         >
@@ -132,7 +131,7 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
         key={j}
         type="button"
         onClick={() => tap(i, `${i}-${j}`, piece.start ?? w.start, piece.end ?? w.end)}
-        aria-label={hasCard ? `Show what to fix in "${piece.text}"` : `Play your "${piece.text}"`}
+        aria-label={t(hasCard ? "showFix" : "playYour", { w: piece.text })}
         className={`${TAP} ${playing === `${i}-${j}` ? PLAYING : ""}`}
       >
         <Piece piece={piece} />
@@ -145,37 +144,35 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
   const notHeard = result.words.filter((w) => w.not_heard).length;
   const headline =
     red > 0
-      ? `${red} of ${words} words ${red === 1 ? "has" : "have"} something to work on${
-          notHeard ? ` (${notHeard} not heard)` : ""
-        }.`
+      ? t(red === 1 ? "headlineOne" : "headlineMany", { red, words, nh: notHeard ? t("notHeardCount", { n: notHeard }) : "" })
       : anyGreen
-        ? "No problems found in what we checked."
+        ? t("noProblems")
         : result.checks.includes("word_heard") // heard every word, but no sound here has a check yet
-          ? "We heard every word. None of these sounds can be checked yet."
-          : "Nothing was graded this time.";
+          ? t("heardAll")
+          : t("nothingGraded");
 
   return (
     <div className="flex flex-col gap-3">
       <p className="font-medium">{headline}</p>
       <p lang={result.lang} className="flex flex-wrap gap-x-3 gap-y-4 text-3xl leading-[2.2]">
         {result.words.map((w, i) => (
-          <span key={i} title={w.not_heard ? "This word wasn't heard. Skipped, or said as a different word?" : undefined}>
+          <span key={i} title={w.not_heard ? t("notHeardTitle") : undefined}>
             {renderWord(w, i)}
           </span>
         ))}
       </p>
       {audio && (
         <p className="text-sm text-neutral-600 dark:text-neutral-300">
-          Tap a {result.lang === "ko" ? "syllable" : "word"} to hear how you said it
-          {anyRed ? `. Tap a red one to see what to fix (its card has the replay buttons).` : "."}
+          {t(result.lang === "ko" ? "tapSyllable" : "tapWord")}
+          {anyRed ? t("tapRed") : "."}
         </p>
       )}
-      {open !== null && dataError && <p className="text-sm text-red-600">Couldn&apos;t load the tips: {dataError}</p>}
+      {open !== null && dataError && <p className="text-sm text-red-600">{t("tipsError", { e: dataError })}</p>}
       {open !== null &&
         data &&
         issuesOf(result.words[open]).map((issue) => {
           const w = result.words[open];
-          const card = buildCard(issue, w, data.tips, result.lang);
+          const card = buildCard(issue, w, data.tips, result.lang, ui);
           if (!card) return null;
           return (
             <DetailCard
@@ -194,8 +191,8 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
           );
         })}
       <p className="text-sm text-neutral-500">
-        <span className={GREEN}>Green</span> = this sound passed a check · <span className={RED}>red</span> = needs
-        work or not heard. Results are estimated from your audio. {describeChecks(result.checks)}
+        <span className={GREEN}>{t("green")}</span>{t("greenMeans")}<span className={RED}>{t("red")}</span>
+        {t("redMeans")} {describeChecksIn(ui, result.checks)}
       </p>
     </div>
   );
