@@ -27,15 +27,8 @@ export const UI = {
   koreanFor: s("Korean for: {en}", "원문: {en}"),
   numbersNote: s("Numbers and short forms are written out the way they're said.", "숫자와 줄임말은 읽는 대로 풀어 썼어요."),
   youTyped: s("You typed:", "입력한 문장:"),
-  source: s("Source:", "출처:"),
   practice: s("Practice it yourself", "직접 연습하기"),
   practiceHint: s("Record yourself and see which sounds need work.", "녹음하면 어떤 소리를 더 연습해야 하는지 보여 드려요."),
-  samplesTitle: s("Nothing to type? Try one:", "입력할 문장이 없나요? 하나 골라 보세요:"),
-  tabEn: s("English", "영어"),
-  tabKo: s("한국어", "한국어"),
-  pack_Basics: s("Basics", "기초"),
-  pack_Casual: s("Casual", "일상"),
-  samplePick: s("Pick a sentence…", "문장 고르기…"),
   autoplay: s("Autoplay", "자동 재생"),
   switchLabel: s("Site language", "사이트 언어"),
   casualLabel: s("Show 반말 (casual) instead of 존댓말 (polite)", "존댓말 대신 반말 보기"),
@@ -45,12 +38,10 @@ export const UI = {
   play: s("Play", "재생"),
   pause: s("Pause", "일시정지"),
   replay: s("Replay", "다시 보기"),
-  mouthCaption: s(
-    "A native speaker's target mouth position, from phonetics tables, timed to the native clip. Not your mouth.",
-    "원어민의 목표 입 모양이에요. 음성학 자료를 바탕으로 원어민 음성에 맞춰 움직여요. 내 입 모양이 아니에요.",
-  ),
   noSounds: s("(no sounds)", "(소리 없음)"),
-  showKey: s("Show what matters", "핵심 부분 표시"),
+  placementTips: s("Placement tips", "발음 위치 팁"),
+  soundOn: s("Sound on", "소리 켜기"),
+  soundOff: s("Sound off", "소리 끄기"),
   // recording
   record: s("Record", "녹음"),
   recordAgain: s("Record again", "다시 녹음"),
@@ -106,10 +97,6 @@ export const UI = {
   draftTip: s(" Draft tip, not reviewed yet.", " 초안 팁이에요. 아직 검토 전이에요."),
   needsNative: s(" Not yet checked by a native Korean speaker.", " 아직 한국어 원어민이 확인하지 않았어요."),
   // footer
-  backendChecking: s("Backend: checking…", "서버: 확인 중…"),
-  backendConnected: s("Backend: connected ({url})", "서버: 연결됨 ({url})"),
-  backendDown: s("Backend: not reachable. {msg}", "서버에 연결할 수 없어요. {msg}"),
-  checkAgain: s("Check again", "다시 확인"),
 } as const;
 export type Key = keyof typeof UI;
 

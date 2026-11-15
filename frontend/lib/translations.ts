@@ -1,6 +1,5 @@
 // Which Korean form to show: 존댓말 (polite) by default; a small switch flips to 반말 (casual).
-// Used by pack sentences and Custom mode. Something with one translation (a Korean pack line's English meaning,
-// Korean -> English in Custom mode) shows it as is; nothing (dev packs) gives null.
+// Something with one translation (Korean -> English) shows it as is; no translation gives null.
 
 export type Translated = { translation: string | null; translation_informal?: string | null };
 export type Shown = { form: "존댓말" | "반말" | null; text: string };
@@ -11,15 +10,4 @@ export function pickTranslation(t: Translated, casual: boolean): Shown | null {
   if (!t.translation) return null;
   if (!hasBothForms(t)) return { form: null, text: t.translation };
   return casual ? { form: "반말", text: t.translation_informal as string } : { form: "존댓말", text: t.translation };
-}
-
-// Korean packs: every line is already one speech level (`speech`), so the switch filters which lines are listed.
-// Packs whose lines have no `speech` (English packs, dev packs) are never filtered.
-type Leveled = { speech?: "존댓말" | "반말"; [key: string]: unknown }; // any item; only `speech` is read
-
-export const hasSpeechLevels = (items: Leveled[]) => items.some((it) => it.speech);
-
-export function bySpeech<T extends Leveled>(items: T[], casual: boolean): T[] {
-  if (!hasSpeechLevels(items)) return items;
-  return items.filter((it) => it.speech === (casual ? "반말" : "존댓말"));
 }

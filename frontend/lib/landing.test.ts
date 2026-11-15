@@ -1,7 +1,7 @@
-// The type-first landing page: which language a typed sentence is in, and which sample sentences to offer.
+// The type-first landing page: which language a typed sentence is in, and what English input can do.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { detectLang, SAMPLE_PACKS, sampleLines } from "./landing.ts";
+import { detectLang } from "./landing.ts";
 
 test("Hangul means Korean, Latin letters mean English, whatever the site language is", () => {
   assert.equal(detectLang("안녕하세요"), "ko");
@@ -19,34 +19,13 @@ test("mixed text goes by the larger share of letters; nothing to read gives null
   assert.equal(detectLang("123 !?"), null);
 });
 
-test("samples come from Basics and Casual only, in both languages", () => {
-  assert.deepEqual(SAMPLE_PACKS, { en: ["en-basics", "en-casual"], ko: ["ko-basics", "ko-casual"] });
-});
-
-const item = (text: string, speech?: "존댓말" | "반말") => ({ id: text, text, translation: null, tags: [], speech });
-test("Korean samples: Basics shows the polite lines, Casual the casual ones; English lines are all shown", () => {
-  const ko = [item("감사합니다.", "존댓말"), item("고마워.", "반말")];
-  assert.deepEqual(sampleLines({ id: "ko-basics", items: ko }).map((i) => i.text), ["감사합니다."]);
-  assert.deepEqual(sampleLines({ id: "ko-casual", items: ko }).map((i) => i.text), ["고마워."]);
-  const en = [item("Thank you."), item("Hi.")];
-  assert.equal(sampleLines({ id: "en-casual", items: en }).length, 2);
-});
-
 // ---------- English input -> "Translate to KR" / "Translate to KR and Animate" ----------
-import { koreanToAnimate, storedTranslation, translateOffered } from "./landing.ts";
+import { koreanToAnimate, translateOffered } from "./landing.ts";
 
 test("only English input offers the translate buttons", () => {
   assert.equal(translateOffered("en"), true);
   assert.equal(translateOffered("ko"), false);
   assert.equal(translateOffered(null), false);
-});
-
-test("an English sample uses its stored Korean (no translate call); typed or edited text has none", () => {
-  const it = { id: "x", text: "Thank you very much.", translation: "정말 감사합니다.", translation_informal: "정말 고마워.", tags: [] };
-  assert.deepEqual(storedTranslation(it, "Thank you very much."), { translation: "정말 감사합니다.", translation_informal: "정말 고마워." });
-  assert.equal(storedTranslation(it, "Thank you so much."), null); // the box was edited after picking it
-  assert.equal(storedTranslation(null, "Thank you very much."), null);
-  assert.equal(storedTranslation({ ...it, translation: null }, it.text), null);
 });
 
 test("the Korean that gets animated is the form the switch shows: 존댓말 by default, 반말 when flipped", () => {

@@ -17,11 +17,12 @@ for replaying each word or syllable. Everything it reports about your pronunciat
 Source code, method and evaluation results: https://github.com/johntran1626/pronunciation-ai
 
 - `GET /health`: is the server up
-- `GET /packs`: sentence packs
+- `GET /tts`, `GET /tts/timings`: the native reference clip for a sentence, and when each sound in it starts
+- `GET /translate`: English ↔ Korean translation of a typed sentence
 - `POST /analyze`: audio + target text → per-sound results (interactive docs at `/docs`)
 
-Native reference audio for every pack sentence (Azure neural TTS, normal and slower speed) is generated ahead of time
-and shipped in the image; only Custom-mode sentences are synthesized on demand.
+Native reference audio (Azure neural TTS) is made on demand for each typed sentence and cached on disk, so a
+sentence is synthesized once.
 
 The fine-tuned English listener is kept in a private model repo and downloaded when the container starts, because
 part of its training data is licensed for non-commercial use only and is not redistributed.

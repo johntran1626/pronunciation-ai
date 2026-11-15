@@ -1,0 +1,68 @@
+// The page and the native mouth player, checked from their source: what's on screen and in which order.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { existsSync, readFileSync } from "node:fs";
+import { UI, tr } from "./i18n.ts";
+import * as landing from "./landing.ts";
+
+const src = (p: string) => readFileSync(new URL(p, import.meta.url), "utf8");
+const mouth = src("../components/NativeMouth.tsx");
+const page = src("../app/page.tsx");
+const HANGUL = /[가-힣]/;
+
+test("Play/Pause only plays and pauses; a separate Replay button sits right after it", () => {
+  assert.match(mouth, /playing \? tr\("pause"\) : tr\("play"\)/);
+  const play = mouth.indexOf('data-testid="play"');
+  const replay = mouth.indexOf('data-testid="replay"');
+  const speeds = mouth.indexOf("SPEEDS.map");
+  assert.ok(play > 0 && replay > play && speeds > replay, "Play, then Replay, then the speeds");
+});
+
+test("no caption under the animation", () => {
+  assert.ok(!mouth.includes("figcaption") && !mouth.includes("mouthCaption"));
+  assert.ok(!("mouthCaption" in UI));
+});
+
+test("a small sound on/off button in the top-right corner of the animation box, in both site languages", () => {
+  assert.match(mouth, /data-testid="sound"/);
+  assert.match(mouth, /absolute right-\d+ top-\d+/);
+  assert.match(mouth, /muted=\{muted\}/); // the clip itself
+  assert.match(mouth, /if \(!muted\) playSlice/); // and the single sounds the timeline plays
+  for (const k of ["soundOn", "soundOff"] as const) assert.ok(HANGUL.test(UI[k].ko), k);
+});
+
+test("'Show what matters' is now 'Placement tips', in English and Korean", () => {
+  assert.equal(tr("en", "placementTips"), "Placement tips");
+  assert.ok(HANGUL.test(tr("ko", "placementTips")));
+  assert.ok(!("showKey" in UI));
+  assert.match(mouth, /tr\("placementTips"\)/);
+});
+
+test("timeline: the bar, then the sounds right under it, then the words", () => {
+  const bar = mouth.indexOf('type="range"');
+  const sounds = mouth.indexOf('data-testid="frames"');
+  const words = mouth.indexOf('data-testid="words"');
+  assert.ok(bar > 0 && sounds > bar && words > sounds, "bar, sounds, words");
+});
+
+test("no sample sentences beside the box", () => {
+  assert.ok(!page.includes('data-testid="samples"') && !page.includes("fetchPack"));
+  for (const gone of ["SAMPLE_PACKS", "sampleLines", "sampleGroups", "findSample", "storedTranslation"])
+    assert.ok(!(gone in landing), gone);
+  for (const k of ["samplesTitle", "samplePick", "tabEn", "tabKo", "pack_Basics", "pack_Casual"]) assert.ok(!(k in UI), k);
+});
+
+test("no pack code left in the frontend", () => {
+  const api = src("./api.ts");
+  assert.ok(!/fetchPack|PackItem|PackSummary/.test(api));
+  assert.ok(!existsSync(new URL("./tags.ts", import.meta.url)), "pack tag names");
+  assert.ok(!/bySpeech/.test(src("./translations.ts")));
+  assert.ok(!/pickerPacks/.test(src("./devOnly.ts")));
+});
+
+test("no backend status line on the page (it was a developer aid); the backend is still woken on load", () => {
+  assert.ok(!page.includes("BackendStatus"));
+  assert.ok(!existsSync(new URL("../components/BackendStatus.tsx", import.meta.url)));
+  for (const k of ["backendChecking", "backendConnected", "backendDown", "checkAgain"]) assert.ok(!(k in UI), k);
+  assert.match(page, /checkHealth\(\)/);
+});

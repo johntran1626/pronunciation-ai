@@ -1,10 +1,9 @@
 // The native mouth player: speed changes at any moment, a fresh 1x player for every new animation, the autoplay
-// setting, the sample dropdown, and Replay kept beside the speed buttons (never over the picture).
+// setting, and Replay kept beside the speed buttons (never over the picture).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { AUTOPLAY_DEFAULT, SPEEDS, changeSpeed, playerKey, readAutoplay, saveAutoplay, type Media } from "./player.ts";
-import { findSample, sampleGroups } from "./landing.ts";
 import { DEFAULT_SPEED } from "./animate.ts";
 
 // a stand-in for the <audio> element: the clock moves only while playing
@@ -69,25 +68,6 @@ test("autoplay is on by default and remembered; blocked or empty storage means o
   assert.equal(readAutoplay(blocked), true);
   assert.doesNotThrow(() => saveAutoplay(blocked, false));
   assert.equal(readAutoplay(null), true);
-});
-
-const pack = (id: string, name: string, lang: "en" | "ko", items: { id: string; text: string; speech?: "존댓말" | "반말" }[]) =>
-  ({ id, name, lang, items });
-const PACKS = [
-  pack("en-basics", "Basics", "en", [{ id: "e1", text: "Hi." }, { id: "e2", text: "Bye." }]),
-  pack("ko-basics", "Basics", "ko", [{ id: "k1", text: "안녕하세요.", speech: "존댓말" }, { id: "k2", text: "안녕.", speech: "반말" }]),
-  pack("ko-casual", "Casual", "ko", [{ id: "k3", text: "뭐 해요?", speech: "존댓말" }, { id: "k4", text: "뭐 해?", speech: "반말" }]),
-];
-
-test("the sample dropdown groups one language's lines by pack (Korean Basics polite, Casual casual)", () => {
-  const ko = sampleGroups(PACKS, "ko");
-  assert.deepEqual(ko.map((g) => [g.name, g.items.map((i) => i.id)]), [["Basics", ["k1"]], ["Casual", ["k4"]]]);
-  assert.deepEqual(sampleGroups(PACKS, "en").map((g) => g.items.length), [2]);
-});
-
-test("picking a dropdown line finds the sentence and its language", () => {
-  assert.deepEqual(findSample(PACKS, "k4"), { item: PACKS[2].items[1], lang: "ko" });
-  assert.equal(findSample(PACKS, "nope"), null);
 });
 
 test("Replay sits beside the speed buttons, never over the mouth picture", () => {

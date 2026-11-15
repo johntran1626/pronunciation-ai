@@ -21,7 +21,6 @@ from backend import native, translate, tts
 from backend.g2p import expected_phonemes
 from backend.limits import TTSLimiter
 from backend.match import active_checks, finalize, load_match_thresholds, mark_unchecked, sentence_check
-from backend.packs import get_pack, list_packs
 from backend.recognize import recognize
 from backend.scoring import load_thresholds, score_words
 from backend.text_map import attach_display
@@ -51,7 +50,7 @@ ALLOWED_ORIGINS = allowed_origins(os.environ.get("FRONTEND_ORIGINS"))
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    allow_methods=["GET", "POST"],   # all the app uses: GET (/health, /packs, /tts...) and POST /analyze
+    allow_methods=["GET", "POST"],   # all the app uses: GET (/health, /tts, /translate...) and POST /analyze
     allow_headers=["*"],
 )
 ALLOWED_ORIGIN_SET = {o.lower() for o in ALLOWED_ORIGINS}
@@ -109,21 +108,6 @@ def client_ip(request: Request) -> str:
 def health():
     """Tiny 'are you alive?' check. Hosting services call this to know the server is up."""
     return {"ok": True}
-
-
-@app.get("/packs")
-def packs(lang: Literal["ko", "en"] | None = None):
-    """Pack summaries for the picker (no sentences). ?lang=ko shows only packs for learning Korean."""
-    return list_packs(lang)
-
-
-@app.get("/packs/{pack_id}")
-def pack(pack_id: str):
-    """One pack with its sentences."""
-    found = get_pack(pack_id)
-    if found is None:
-        raise HTTPException(status_code=404, detail=f"No pack called '{pack_id}'")
-    return found
 
 
 ARTICULATION = Path(__file__).resolve().parent.parent / "content" / "articulation.json"

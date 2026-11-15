@@ -8,32 +8,6 @@ export type Lang = "ko" | "en"; // the language being LEARNED (and spoken in the
 
 export type Health = { ok: boolean };
 
-// Matches content/packs/*.json (see backend/packs.py).
-export type PackItem = {
-  id: string;
-  text: string;
-  translation: string | null; // English packs: the 존댓말 (polite) Korean form; Korean packs: the English meaning
-  translation_informal?: string | null; // English packs: the 반말 (casual) Korean form
-  tags: string[];
-  // Korean packs only: the line's speech level (the 존댓말 / 반말 switch filters on it) and where it comes from.
-  speech?: "존댓말" | "반말";
-  source_url?: string;
-  license?: string;
-  credit?: string;
-};
-type PackInfo = {
-  id: string;
-  lang: Lang;
-  name: string;
-  dev_only: boolean;
-  reviewed: boolean;
-  note: string;
-  source: string;
-  license: string;
-};
-export type PackSummary = PackInfo & { count: number };
-export type Pack = PackInfo & { items: PackItem[] };
-
 // GET a JSON reply, or throw an Error with a readable message.
 async function getJSON<T>(path: string): Promise<T> {
   let res: Response;
@@ -48,8 +22,6 @@ async function getJSON<T>(path: string): Promise<T> {
 }
 
 export const checkHealth = () => getJSON<Health>("/health");
-export const fetchPacks = (lang: Lang) => getJSON<PackSummary[]>(`/packs?lang=${lang}`);
-export const fetchPack = (id: string) => getJSON<Pack>(`/packs/${encodeURIComponent(id)}`);
 
 // ---------- /analyze ----------
 

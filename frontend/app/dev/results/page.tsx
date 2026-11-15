@@ -50,7 +50,7 @@ const ENGLISH: AnalyzeResult = {
   ],
 };
 
-// A dev-pack sentence. 엉 has ㅇ twice (silent start, [ŋ] end): only the END one is marked red.
+// A test sentence. 엉 has ㅇ twice (silent start, [ŋ] end): only the END one is marked red.
 // 날's final ㄹ is red too. (Fake errors, for the display only.)
 const KOREAN: AnalyzeResult = {
   ...BASE,

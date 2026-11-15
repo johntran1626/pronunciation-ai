@@ -35,9 +35,6 @@ RUN python -c "from huggingface_hub import hf_hub_download; from transformers im
 
 COPY --chown=user backend/ backend/
 COPY --chown=user content/ content/
-# Native reference clips for every pack sentence, made ahead by backend/bake_refs.py: pack mode is then all cache
-# hits, so it never needs new Azure audio (deploy/space/upload.sh adds them; only Custom mode makes clips live).
-COPY --chown=user data/tts_cache/ data/tts_cache/
 
 EXPOSE 7860
 
