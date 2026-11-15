@@ -96,19 +96,34 @@ def test_korean_practice_words_are_hangul(tips):
 
 
 # Review status: every English tip is approved; a native speaker approved the Korean
-# vowel and ㄹ tips. The ㅂ/ㅃ/ㅍ tips were reworded after review, so they stay unreviewed until checked again.
-KO_STOPS = {"pp_as_p", "pp_as_ph", "ph_as_p", "p_as_ph", "p_as_pp", "t_as_tt", "k_as_kk"}
-# Drafted from cited references for the live Korean checks; reviewed once checked against those references.
-KO_CITED_DRAFTS = {"u_as_eu", "p_as_pp", "t_as_tt", "k_as_kk"}
+# vowel and ㄹ tips; the tips for the live Korean checks were approved against their cited references.
+# The other ㅂ/ㅃ/ㅍ tips were reworded after review, so they stay unreviewed until checked again.
+KO_UNREVIEWED = {"pp_as_p", "pp_as_ph", "ph_as_p", "p_as_ph"}
+KO_LIVE_CHECK_TIPS = {"u_as_eu", "p_as_pp", "t_as_tt", "k_as_kk"}
+KO_STOPS = KO_UNREVIEWED | {"p_as_pp", "t_as_tt", "k_as_kk"}
 
 
 def test_review_status_matches_the_reviews(tips):
     for name, e in tips["tips"]["en"].items():
         assert e["reviewed"] is True, name
     for name, e in tips["tips"]["ko"].items():
-        approved = name not in KO_STOPS | KO_CITED_DRAFTS
+        approved = name not in KO_UNREVIEWED
         assert e["reviewed"] is approved, name
         assert e["needs_native_review"] is (not approved), name
+
+
+def test_live_korean_check_tips_are_reviewed_and_cited(tips):
+    for name in KO_LIVE_CHECK_TIPS:
+        e = tips["tips"]["ko"][name]
+        assert e["reviewed"] is True, name
+        assert e["sources"], name
+
+
+def test_u_tip_does_not_claim_only_the_lips_differ(tips):
+    """Some descriptions place ㅡ more central than ㅜ, so the tip must not say the tongue is identical."""
+    tip = tips["tips"]["ko"]["u_as_eu"]["tip"]
+    assert "only the lips" not in tip
+    assert "the big difference is the lips" in tip
 
 
 def test_korean_stop_tips_treat_them_as_different_sounds(tips):

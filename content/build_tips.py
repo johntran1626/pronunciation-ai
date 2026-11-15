@@ -147,7 +147,7 @@ KO = {
     # The two live Korean checks (backend/korean_scoring.py): ㅜ said like ㅡ, and a plain stop said tense.
     "u_as_eu": tip("u", "ɯ", "ㅜ", "ㅡ",
                    "In “{word}”, ㅜ probably sounded like ㅡ.",
-                   "Round your lips and push them forward a little, like English “oo”. The tongue stays high and back, as for ㅡ; only the lips change.",
+                   "Round your lips and push them forward a little, like English “oo”. The tongue stays high and back for both; the big difference is the lips.",
                    ["구두", "수박", "두부"],
                    {"target": {"rounded": True, "lips": "rounded", "height": "close"},
                     "produced": {"rounded": False, "lips": "spread", "height": "close"}},
@@ -173,10 +173,12 @@ KO = {
 }
 
 
-# Review status: every English tip, plus the Korean vowel and ㄹ tips (checked by a native speaker).
+# Review status: every English tip, plus the Korean vowel and ㄹ tips (checked by a native speaker), plus the
+# tips for the live Korean checks (checked against their cited references).
 # The ㅂ/ㅃ/ㅍ tips are worded "you said X where the word needs Y", because Koreans hear ㅂ ㅃ ㅍ as clearly
-# different sounds ("ㅃ sounded like ㅂ" would mislead); they stay unreviewed until checked against a reference.
-REVIEWED = {"en": set(EN), "ko": {"eo_as_o", "eu_as_u", "ae_as_e", "tap_as_r", "tap_as_l"}}
+# different sounds ("ㅃ sounded like ㅂ" would mislead); the rest stay unreviewed until checked against a reference.
+REVIEWED = {"en": set(EN), "ko": {"eo_as_o", "eu_as_u", "ae_as_e", "tap_as_r", "tap_as_l",
+                                  "u_as_eu", "p_as_pp", "t_as_tt", "k_as_kk"}}
 
 
 def build():

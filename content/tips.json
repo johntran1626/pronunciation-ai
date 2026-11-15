@@ -475,7 +475,7 @@
     "produced_lang": "ko",
     "produced_label": "ㅡ",
     "what_happened": "In “{word}”, ㅜ probably sounded like ㅡ.",
-    "tip": "Round your lips and push them forward a little, like English “oo”. The tongue stays high and back, as for ㅡ; only the lips change.",
+    "tip": "Round your lips and push them forward a little, like English “oo”. The tongue stays high and back for both; the big difference is the lips.",
     "practice": [
      "구두",
      "수박",
@@ -493,12 +493,12 @@
       "height": "close"
      }
     },
-    "reviewed": false,
+    "reviewed": true,
     "sources": [
      "Lee, Hyun Bok (1993), 'Korean', Journal of the International Phonetic Association 23(1) (Illustrations of the IPA)",
      "Shin, Kiaer & Cha (2013), The Sounds of Korean, Cambridge University Press"
     ],
-    "needs_native_review": true
+    "needs_native_review": false
    },
    "p_as_pp": {
     "target": "p",
@@ -522,14 +522,14 @@
       "laryngeal": "tense"
      }
     },
-    "reviewed": false,
+    "reviewed": true,
     "sources": [
      "Cho, Jun & Ladefoged (2002), 'Acoustic and aerodynamic correlates of Korean stops and fricatives', Journal of Phonetics 30",
      "Silva (2006), 'Acoustic evidence for the emergence of tonal contrast in contemporary Korean', Phonology 23",
      "Shin, Kiaer & Cha (2013), The Sounds of Korean, Cambridge University Press"
     ],
     "position": "initial",
-    "needs_native_review": true
+    "needs_native_review": false
    },
    "t_as_tt": {
     "target": "t",
@@ -553,14 +553,14 @@
       "laryngeal": "tense"
      }
     },
-    "reviewed": false,
+    "reviewed": true,
     "sources": [
      "Cho, Jun & Ladefoged (2002), 'Acoustic and aerodynamic correlates of Korean stops and fricatives', Journal of Phonetics 30",
      "Silva (2006), 'Acoustic evidence for the emergence of tonal contrast in contemporary Korean', Phonology 23",
      "Shin, Kiaer & Cha (2013), The Sounds of Korean, Cambridge University Press"
     ],
     "position": "initial",
-    "needs_native_review": true
+    "needs_native_review": false
    },
    "k_as_kk": {
     "target": "k",
@@ -584,14 +584,14 @@
       "laryngeal": "tense"
      }
     },
-    "reviewed": false,
+    "reviewed": true,
     "sources": [
      "Cho, Jun & Ladefoged (2002), 'Acoustic and aerodynamic correlates of Korean stops and fricatives', Journal of Phonetics 30",
      "Silva (2006), 'Acoustic evidence for the emergence of tonal contrast in contemporary Korean', Phonology 23",
      "Shin, Kiaer & Cha (2013), The Sounds of Korean, Cambridge University Press"
     ],
     "position": "initial",
-    "needs_native_review": true
+    "needs_native_review": false
    }
   }
  }
