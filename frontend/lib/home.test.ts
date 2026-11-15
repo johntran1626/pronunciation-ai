@@ -226,10 +226,10 @@ test("an info icon beside Autoplay and beside Placement tips: hover, focus or ta
 test("the bubble: a KakaoTalk-style chat bubble (yellow, no border, no shadow, small hooked tail) on phone and desktop", () => {
   const b = src("../components/TypedBubble.tsx");
   const css = src("../app/globals.css");
-  assert.match(css, /--color-kakao: #FEE500;/);
+  assert.match(css, /--color-kakao: #FFEE8C;/);
   assert.ok(!/Cloud|BUMPS|thought-dots/.test(b), "the cloud is gone");
   assert.match(b, /bg-kakao/);
-  assert.match(b, /fill="#FEE500"/); // the tail, same yellow
+  assert.match(b, /fill="#FFEE8C"/); // the tail, same yellow
   assert.ok(!/border-ink|shadow-pop|rotate-45/.test(b), "no black outline, no offset shadow, no square tail");
   assert.match(b, /tail === "down"/); // desktop: the tail points down at Blueberry; phone: right
 });

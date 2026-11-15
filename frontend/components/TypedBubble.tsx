@@ -79,11 +79,11 @@ export default function TypedBubble({ typed, tail, className = "" }: { typed: Ty
       <Lines typed={typed} big={down} />
       {down ? (
         <svg aria-hidden="true" width="16" height="12" viewBox="0 0 16 12" className="absolute top-[calc(100%-1px)] left-[calc(50%-4px)]">
-          <path d="M0 0 H16 Q8 4 2 12 Q3 5 0 0 Z" fill="#FEE500" />
+          <path d="M0 0 H16 Q8 4 2 12 Q3 5 0 0 Z" fill="#FFEE8C" />
         </svg>
       ) : (
         <svg aria-hidden="true" width="12" height="16" viewBox="0 0 12 16" className="absolute top-2.5 right-[-11px]">
-          <path d="M0 0 V16 Q4 8 12 2 Q5 3 0 0 Z" fill="#FEE500" />
+          <path d="M0 0 V16 Q4 8 12 2 Q5 3 0 0 Z" fill="#FFEE8C" />
         </svg>
       )}
     </div>
