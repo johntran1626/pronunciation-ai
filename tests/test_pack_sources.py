@@ -169,16 +169,25 @@ def test_krdict_candidates_carry_source_and_license():
     assert "국립국어원" in r["credit"] and r["context"] == "메뉴"
 
 
-def test_collect_krdict_sends_food_topic_and_bar_seeds_to_bar_restaurant(tmp_path):
-    fetch = lambda url: SEARCH_XML if "/search?" in url else VIEW_XML   # noqa: E731
+def _collect(tmp_path, view_xml):
+    fetch = lambda url: SEARCH_XML if "/search?" in url else view_xml   # noqa: E731
     c = S.Krdict(key="k" * 32, cache_dir=tmp_path, fetch=fetch, pause=0)
-    out = S.collect_krdict(c, ["메"])
+    return S.collect_krdict(c, ["메"])
+
+
+def test_collect_krdict_sends_a_word_to_the_pack_of_its_topic(tmp_path):
+    out = _collect(tmp_path, VIEW_XML.replace("음식 주문하기", "감사하기"))
     assert set(out) == set(S.PACKS)
-    assert {r["text"] for r in out["bar_restaurant"]} == {"아줌마, 여기 메뉴 좀 주세요.", "여기 있습니다."}
-    assert all(not rows for pack, rows in out.items() if pack != "bar_restaurant")
+    assert {r["text"] for r in out["basics"]} == {"아줌마, 여기 메뉴 좀 주세요.", "여기 있습니다."}
+    assert not out["casual"]
 
 
-# ---------- Chatbot_data and KLUE WoS ----------
+def test_collect_krdict_drops_a_word_whose_topic_no_pack_uses(tmp_path):
+    out = _collect(tmp_path, VIEW_XML)          # 음식 주문하기: the old restaurant topic
+    assert all(not rows for rows in out.values())
+
+
+# ---------- Chatbot_data ----------
 
 CHATBOT_CSV = "Q,A,label\n오늘 한잔 할까,좋아요.,0\n이별했어,힘내세요.,1\n수건 썩었어,식초 넣고 빨래해보세요.,0\n"
 
@@ -188,20 +197,6 @@ def test_chatbot_rows_daily_life_questions_and_answers():
     assert [r["text"] for r in rows] == ["오늘 한잔 할까", "좋아요.", "수건 썩었어", "식초 넣고 빨래해보세요."]
     assert [r["context"] for r in rows] == ["Q", "A", "Q", "A"]
     assert rows[0]["license"] == "MIT" and rows[0]["source_id"] == "row1.Q" and rows[3]["source_id"] == "row3.A"
-
-
-def test_wos_rows_restaurant_only_dialogues_split_into_sentences():
-    dialogues = [
-        {"guid": "wos-v1_dev_1", "domains": ["식당"], "dialogue": [
-            {"role": "user", "text": "가격은 상관없어요. 야외석이 있으면 좋겠네요.", "state": []},
-            {"role": "sys", "text": "원하시는 가격대가 있으실까요?", "state": []}]},
-        {"guid": "wos-v1_dev_2", "domains": ["숙소"], "dialogue": [
-            {"role": "user", "text": "방 있어요?", "state": []}]},
-    ]
-    rows = S.wos_rows(dialogues)
-    assert [r["text"] for r in rows] == ["가격은 상관없어요.", "야외석이 있으면 좋겠네요.", "원하시는 가격대가 있으실까요?"]
-    assert rows[0]["source_id"] == "wos-v1_dev_1#0.0" and rows[0]["license"] == "CC BY-SA 4.0"
-    assert rows[2]["context"] == "sys"
 
 
 # ---------- Tatoeba ----------
@@ -224,17 +219,12 @@ def test_tatoeba_rows_native_authors_only_no_tom():
 # ---------- topic words -> packs ----------
 
 @pytest.mark.parametrize("text,packs", [
-    ("내일 시험 있어.", {"school"}),
-    ("대학생이라 바빠요.", {"school"}),
-    ("회사 가기 싫어.", {"office"}),
-    ("팀장님께 보고서 드렸어요.", {"office"}),
-    ("오늘 한잔 할까?", {"bar_restaurant"}),
-    ("여기 메뉴 좀 주세요.", {"bar_restaurant"}),
-    ("기술 배우고 싶어.", set()),                 # 기술 is not 술 (drink)
     ("안녕하세요, 반가워요.", {"basics"}),
     ("도와줘서 고마워.", {"basics"}),
+    ("생일 축하해!", {"basics"}),
     ("오늘 너무 피곤해.", set()),
-    ("회식 때 술 마셨어.", {"office", "bar_restaurant"}),
+    ("내일 시험 있어.", set()),                   # school words no longer pick a pack
+    ("회식 때 술 마셨어.", set()),
 ])
 def test_topic_packs(text, packs):
     assert S.topic_packs(text) == packs
@@ -259,7 +249,7 @@ def test_pool_keeps_both_speech_levels_cleans_and_dedupes():
 
 def test_pool_labels_banmal_and_jondaetmal():
     rows = [_row("오늘 한잔 할까?"), _row("여기 메뉴 좀 주세요."), _row("맛있게 드십시오.")]
-    assert [r["speech"] for r in S.pool(rows, "bar_restaurant")] == ["반말", "존댓말", "존댓말"]
+    assert [r["speech"] for r in S.pool(rows, "casual")] == ["반말", "존댓말", "존댓말"]
 
 
 def test_dedupe_ignores_spacing_and_punctuation():
@@ -268,23 +258,19 @@ def test_dedupe_ignores_spacing_and_punctuation():
 
 
 def test_route_sends_rows_to_packs():
-    chat = [_row("내일 시험 있어."), _row("오늘 너무 피곤해."), _row("회사 가기 싫어.")]
-    wos = [_row("가격은 상관없어요.", source="klue_wos")]
+    chat = [_row("오늘 너무 피곤해."), _row("도와줘서 고마워.")]
     tat = [_row("안녕하세요, 반가워요.", source="tatoeba")]
     kr = {p: [] for p in S.PACKS}
-    kr["office"] = [_row("손님, 회의실은 이쪽입니다.", source="krdict")]
-    raw = S.route(chat, wos, tat, kr)
+    kr["basics"] = [_row("감사합니다.", source="krdict")]
+    raw = S.route(chat, tat, kr)
     assert set(raw) == set(S.PACKS)
     texts = {p: [r["text"] for r in rows] for p, rows in raw.items()}
-    assert texts["school"] == ["내일 시험 있어."]
-    assert texts["office"] == ["손님, 회의실은 이쪽입니다.", "회사 가기 싫어."]   # krdict first
-    assert texts["basics"] == ["안녕하세요, 반가워요."]
-    assert texts["bar_restaurant"] == ["가격은 상관없어요."]          # every WoS line is restaurant talk
-    assert "오늘 너무 피곤해." in texts["casual"] and "가격은 상관없어요." not in texts["casual"]
+    assert texts["basics"] == ["감사합니다.", "도와줘서 고마워.", "안녕하세요, 반가워요."]   # krdict first
+    assert texts["casual"] == ["오늘 너무 피곤해.", "도와줘서 고마워.", "안녕하세요, 반가워요."]  # every line
 
 
 def test_every_pack_is_defined():
-    assert set(S.PACKS) == {"basics", "school", "office", "casual", "bar_restaurant"}
+    assert set(S.PACKS) == {"basics", "casual"}
     for name, p in S.PACKS.items():
         assert p["styles"] and p["styles"] <= {"formal", "polite", "casual"}
     assert all(p["styles"] == {"formal", "polite", "casual"} for p in S.PACKS.values())   # both levels
@@ -293,4 +279,3 @@ def test_every_pack_is_defined():
 def test_every_dictionary_topic_has_a_code_and_a_pack():
     used = [t for p in S.PACKS.values() for t in p["topics"]]
     assert sorted(used) == sorted(S.TOPIC_CODES) and len(used) == len(set(used))
-    assert S.PACKS["bar_restaurant"]["seeds"] and "음식 주문하기" in S.PACKS["bar_restaurant"]["topics"]

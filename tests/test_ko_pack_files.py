@@ -1,4 +1,4 @@
-"""The 5 learning-Korean packs on disk: native lines (source + license per line) with English translations.
+"""The 2 learning-Korean sample packs on disk (Basics, Casual): native lines (source + license per line) with English translations.
 
 The picks themselves come from data/ (git-ignored, rebuilt by `python -m content.ko_packs`), so these tests read
 the committed pack files, plus one small fake report for the builder.
@@ -15,9 +15,9 @@ from content.ko_translations import TRANSLATIONS
 from content.sources import spoken_style
 
 PACKS_DIR = Path(__file__).resolve().parent.parent / "content" / "packs"
-PACK_NAMES = ["basics", "school", "office", "casual", "bar_restaurant"]
+PACK_NAMES = ["basics", "casual"]
 KOREAN_TAGS = {"eo_vs_o", "eu", "ae_vs_e", "tap_r", "p_stops"}
-NATIVE = {"krdict", "chatbot", "klue_wos", "tatoeba"}
+NATIVE = {"krdict", "chatbot", "tatoeba"}
 HANGUL = re.compile(r"[가-힣]")
 
 
@@ -30,7 +30,7 @@ def items(packs):
     return [it for p in packs.values() for it in p["items"]]
 
 
-def test_five_packs_of_ten_polite_and_ten_casual(on_disk):
+def test_two_packs_of_ten_polite_and_ten_casual(on_disk):
     for name, pack in on_disk.items():
         speech = [it["speech"] for it in pack["items"]]
         assert speech.count("존댓말") == 10 and speech.count("반말") == 10, name
@@ -74,6 +74,16 @@ def test_translations_come_from_the_table(on_disk):
     # Editing a translation without rerunning `python -m content.ko_packs` fails here.
     for it in items(on_disk):
         assert it["translation"] == TRANSLATIONS[it["source_id"]], it["id"]
+
+
+def test_every_translation_belongs_to_a_shipped_line(on_disk):
+    # No leftover English for lines that are no longer in any pack.
+    assert set(TRANSLATIONS) == {it["source_id"] for it in items(on_disk)}
+
+
+def test_only_the_sample_packs_ship():
+    learner = {f.stem for f in PACKS_DIR.glob("*.json") if not f.stem.startswith("dev_")}
+    assert learner == {f"{lang}_{n}" for lang in ("en", "ko") for n in PACK_NAMES}
 
 
 def test_every_line_practices_a_target(on_disk):

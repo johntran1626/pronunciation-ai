@@ -7,7 +7,7 @@ Every Korean line is a native line, copied with its source and license; only the
 (content/ko_translations.py) are LLM-written.
 
 How a line is chosen, per pack and per level (존댓말 / 반말), one at a time:
-  1. source order: krdict, then Chatbot_data, then KLUE WoS, then Tatoeba
+  1. source order: krdict, then Chatbot_data, then Tatoeba
   2. krdict only: the line that actually says the dictionary word (the topic belongs to the WORD, and a dictionary
      dialogue has two lines, often only one of them on topic)
   3. krdict only: easier words first (초급, then 중급, then the rest)
@@ -27,11 +27,10 @@ from content.ko_translations import TRANSLATIONS
 from content.sources import OUT, PACKS
 
 PACK_FILES = Path(__file__).resolve().parent / "packs"
-NAMES = {"basics": "Basics", "school": "School", "office": "Office", "casual": "Casual",
-         "bar_restaurant": "Bar & restaurant"}
+NAMES = {"basics": "Basics", "casual": "Casual"}
 ITEM_KEYS = ["text", "translation", "speech", "tags", "source", "source_id", "source_url", "license", "credit"]
 
-SOURCE_ORDER = ["krdict", "chatbot", "klue_wos", "tatoeba"]
+SOURCE_ORDER = ["krdict", "chatbot", "tatoeba"]
 GRADE_ORDER = {"초급": 0, "중급": 1}
 LEVELS = ["존댓말", "반말"]
 TARGET_LEN = 9
@@ -41,58 +40,9 @@ LOOK = 200          # lines per level that get G2P-tagged (see _pick_level)
 # dictionary WORD as a substring, so look-alikes, homonyms and idioms slip through. Excluded by source id; the
 # next-best native line takes the slot (nothing is rewritten).
 EXCLUDE = {
-    "school": {
-        "58167#8": "가게가 왜 이렇게 조용해요? = a quiet shop, not school",
-        "27260#23": "말도 마십시오. = idiom 'don't even ask', not school",
-        "89445#22": "저 사람은 돈만 알아. = 'only cares about money', not school",
-        "34734#6": "오늘 회사 끝나고 뭐 해? = after work, not school",
-        "57301#6": "몇 통 몇 반 = neighborhood units (통/반), not a school class",
-        "57301#7": "십사 통 육 반 반장 = same 통/반 dialogue",
-    },
-    "office": {
-        "48995#0": "범행 동기 = a crime motive (동기 homonym: coworker / motive)",
-        "62839#11": "네가 잘 안 먹어서 끊었어. = stopped buying food (끊다 homonym), not office",
-        "38269#0": "기사님, 이 버스가 시청에 가나요? = a bus driver (기사 homonym: article / driver)",
-        "62839#18": "영화 표 미리 끊을까? = movie tickets, not office",
-        "62839#17": "천천히 끊어 읽어 줄게 = reading in chunks (끊다), not office",
-        "61058#0": "아름다워진 비결 = a beauty secret, not office",
-        "72882#1": "사람 목숨이 어디 인력으로 되나요? = life and death (인력 homonym)",
-        "48995#4": "춤을 배우기 시작한 동기 = a dance motive (동기 homonym)",
-        "55825#1": "생사를 건 모험 = a life-or-death adventure",
-        "64685#4": "맡기신 가방 = a cloakroom bag, not office",
-        "56351#5": "마당에서 바깥일 = yard work",
-        "75463#0": "제대까지 = military discharge",
-        "61303#1": "사적 권리 침해 = a legal-rights line, not office talk",
-        "15676#0": "일차 산업 = a school-style economics question",
-        "27765#0": "인공 지능을 가진 로봇 = robots, not office",
-        "58299#0": "교재 구했어? 도서관에 = school, not office",
-        "62839#28": "요가 학원을 끊었어 = signed up for yoga (끊다), not office",
-        "14013#0": "선생님께 급히 오라는 연락 = school, not office",
-        "64540#1": "어른들이 부르시면 대답을 = parenting, not office",
-        "70089#0": "장래 희망 = a school question, not office",
-        "62839#0": "이 끈 좀 끊어라 = cutting a string (끊다)",
-    },
     "casual": {
         "57323#48": "점을 치고 = fortune-telling idiom (치다), odd as a first practice line",
         "62819#1": "숨을 크게 한번 쉬어 보세요. = a doctor's instruction, not casual talk",
-    },
-    "bar_restaurant": {
-        "56181#0": "물고기 키우고 싶어요 = a pet fish (물 substring)",
-        "31685#2": "고기 좀 잡으셨어요? = fishing (고기 = fish here)",
-        "66228#11": "맛이 간 거 = slang for 'gone crazy' (맛 idiom)",
-        "16488#5": "쓰다 달다 말이 없어 = idiom 'says nothing at all'",
-        "57275#4": "저 갈비는 누구야? = 갈비 as a nickname for a skinny person",
-        "57306#0": "무슨 사탕을 그렇게 많이 샀어? = candy shopping, not a bar or restaurant",
-        "17371#2": "내 잔을 받게 = 하게체 (an older style, not 반말; 하오체 is dropped the same way)",
-        "27372#4": "회의 전에 커피 준비해 놓을까요? = office prep, not a bar or restaurant",
-        "57275#3": "갈비에 금만 조금 갔대요 = a cracked rib (갈비 homonym)",
-        "70811#0": "소리가 아주 맛있게 들리는데요? = a sound, not food",
-        "15631#5": "자리 비우셨어요 = away from the desk (비우다)",
-        "30204#5": "땀이 식지 않아 = sweat, not food (식다)",
-        "64682#3": "시원한 공기를 좀 마시고 = fresh air, not a drink",
-        "65343#1": "신선한데? 이 디자인으로 = a fresh design (신선하다)",
-        "57411#1": "퇴근하는 길에 밀가루를 좀 사 와 = grocery shopping",
-        "77501#0": "집들이 선물로 젓가락 = a housewarming gift, not eating out",
     },
 }
 

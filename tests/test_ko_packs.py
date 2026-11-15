@@ -23,11 +23,11 @@ def test_count_by_speech_and_source():
     assert K.count(cands) == {"존댓말": {"krdict": 1, "chatbot": 1}, "반말": {"tatoeba": 1}}
 
 
-def test_krdict_comes_first_then_the_d38_order():
-    cands = [_c("a tat", source="tatoeba", sid="t1"), _c("a wos", source="klue_wos", sid="w1"),
-             _c("a chat", source="chatbot", sid="c1"), _c("a kr", source="krdict", sid="9#0")]
-    picked = K.pick(cands, n=4, tag_fn=fake_tags)["존댓말"]
-    assert [p["source"] for p in picked] == ["krdict", "chatbot", "klue_wos", "tatoeba"]
+def test_krdict_comes_first_then_chatbot_then_tatoeba():
+    cands = [_c("a tat", source="tatoeba", sid="t1"), _c("a chat", source="chatbot", sid="c1"),
+             _c("a kr", source="krdict", sid="9#0")]
+    picked = K.pick(cands, n=3, tag_fn=fake_tags)["존댓말"]
+    assert [p["source"] for p in picked] == ["krdict", "chatbot", "tatoeba"]
 
 
 def test_easier_dictionary_words_first():
@@ -95,7 +95,7 @@ def test_answers_that_need_the_question_come_last():
 def test_casual_pack_prefers_haeyo_over_hamnida():
     cands = [_c("a 합니다", sid="1#0", style="formal"), _c("a 해요", sid="2#0", style="polite")]
     assert K.pick(cands, n=1, tag_fn=fake_tags, pack="casual")["존댓말"][0]["style"] == "polite"
-    assert K.pick(cands, n=1, tag_fn=fake_tags, pack="office")["존댓말"][0]["source_id"] == "1#0"
+    assert K.pick(cands, n=1, tag_fn=fake_tags, pack="basics")["존댓말"][0]["source_id"] == "1#0"
 
 
 # ---------- hand-picked misfits out, the next-best native line fills in ----------

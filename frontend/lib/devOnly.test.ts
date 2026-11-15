@@ -6,15 +6,15 @@ import { pickerPacks, showDevContent } from "./devOnly.ts";
 const packs = [
   { id: "dev-en", dev_only: true },
   { id: "en-basics", dev_only: false },
-  { id: "en-office", dev_only: false },
+  { id: "en-casual", dev_only: false },
 ];
 
 test("the public build lists only learner packs", () => {
-  assert.deepEqual(pickerPacks(packs, false).map((p) => p.id), ["en-basics", "en-office"]);
+  assert.deepEqual(pickerPacks(packs, false).map((p) => p.id), ["en-basics", "en-casual"]);
 });
 
 test("a local dev server still lists the dev packs, in the backend's order", () => {
-  assert.deepEqual(pickerPacks(packs, true).map((p) => p.id), ["dev-en", "en-basics", "en-office"]);
+  assert.deepEqual(pickerPacks(packs, true).map((p) => p.id), ["dev-en", "en-basics", "en-casual"]);
 });
 
 test("dev content shows only outside a production build", () => {

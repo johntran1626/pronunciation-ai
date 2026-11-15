@@ -1,4 +1,4 @@
-"""The 5 learning-English packs (LLM-written sentences and Korean translations, human-reviewed English).
+"""The 2 learning-English sample packs (Basics, Casual) (LLM-written sentences and Korean translations, human-reviewed English).
 
 """
 import json
@@ -12,7 +12,7 @@ from backend.packs import list_packs
 
 PACKS_DIR = Path(__file__).resolve().parent.parent / "content" / "packs"
 ENGLISH_TAGS = {"r_as_l", "l_as_r", "f_as_p", "v_as_b", "th_as_s", "dh_as_d", "ih_as_iy", "iy_as_ih"}
-PACK_NAMES = ["basics", "school", "office", "casual", "bar_restaurant"]
+PACK_NAMES = ["basics", "casual"]
 HANGUL = re.compile(r"[가-힣]")
 
 
@@ -26,7 +26,7 @@ def all_items(built):
     return [it for pack in built.values() for it in pack["items"]]
 
 
-def test_five_packs_of_ten(built):
+def test_two_packs_of_ten(built):
     assert list(built) == PACK_NAMES
     for pack in built.values():
         assert len(pack["items"]) == 10
@@ -87,7 +87,7 @@ def test_every_sentence_practices_a_target(built):
 
 def test_every_target_is_well_covered(built):
     counts = {t: sum(t in it["tags"] for it in all_items(built)) for t in ENGLISH_TAGS}
-    assert min(counts.values()) >= 5, counts
+    assert min(counts.values()) >= 3, counts   # 20 sentences; TH ([θ]) is the rarest, in 3 of them
     for name, pack in built.items():
         covered = {t for it in pack["items"] for t in it["tags"]}
         assert len(covered) >= 6, (name, sorted(ENGLISH_TAGS - covered))
@@ -100,6 +100,6 @@ def test_written_files_match_the_source(built):
         assert on_disk == pack
 
 
-def test_api_lists_the_new_packs():
-    ids = {p["id"] for p in list_packs("en")}
-    assert {"en-" + n.replace("_", "-") for n in PACK_NAMES} <= ids
+def test_api_lists_exactly_the_sample_packs():
+    ids = {p["id"] for p in list_packs("en") if not p.get("dev_only")}
+    assert ids == {"en-" + n for n in PACK_NAMES}

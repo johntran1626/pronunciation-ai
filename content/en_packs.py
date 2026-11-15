@@ -21,8 +21,7 @@ SOURCE = ("Written for this project with an LLM (Claude, Anthropic); English rev
           "Korean translations (존댓말 + 반말) also LLM-written.")
 LICENSE = "This project's own content"
 
-NAMES = {"basics": "Basics", "school": "School", "office": "Office", "casual": "Casual",
-         "bar_restaurant": "Bar & restaurant"}
+NAMES = {"basics": "Basics", "casual": "Casual"}
 
 # pack -> [(English sentence, Korean 존댓말 (polite), Korean 반말 (casual))]. Every line gets both.
 SENTENCES = {
@@ -38,30 +37,6 @@ SENTENCES = {
         ("This is my friend.", "이쪽은 제 친구예요.", "얘는 내 친구야."),
         ("Can you help me, please?", "좀 도와주시겠어요?", "좀 도와줄래?"),
     ],
-    "school": [
-        ("I forgot my homework.", "숙제를 깜빡했어요.", "숙제 깜빡했어."),
-        ("Can I borrow your eraser?", "지우개 좀 빌려도 돼요?", "지우개 좀 빌려도 돼?"),
-        ("The library opens at nine.", "도서관은 아홉 시에 열어요.", "도서관은 아홉 시에 열어."),
-        ("Let's study together after class.", "수업 끝나고 같이 공부해요.", "수업 끝나고 같이 공부하자."),
-        ("Please read the first three pages.", "처음 세 쪽을 읽어 주세요.", "처음 세 쪽 읽어 줘."),
-        ("What did the teacher say?", "선생님이 뭐라고 하셨어요?", "선생님이 뭐라고 하셨어?"),
-        ("I have a math test this Friday.", "이번 주 금요일에 수학 시험이 있어요.", "이번 주 금요일에 수학 시험 있어."),
-        ("Which room is the lecture in?", "강의실이 어디예요?", "강의실 어디야?"),
-        ("Raise your hand if you have a question.", "질문 있으면 손 드세요.", "질문 있으면 손 들어."),
-        ("Our final exam is very long.", "기말고사가 정말 길어요.", "기말고사 진짜 길어."),
-    ],
-    "office": [
-        ("I have a meeting at three.", "세 시에 회의가 있어요.", "세 시에 회의 있어."),
-        ("Could you send me the file?", "그 파일 좀 보내 주시겠어요?", "그 파일 좀 보내 줄래?"),
-        ("I'll finish the report by Friday.", "금요일까지 보고서 끝낼게요.", "금요일까지 보고서 끝낼게."),
-        ("Let's have a video call later.", "이따가 화상 통화해요.", "이따가 화상 통화하자."),
-        ("The printer is broken again.", "프린터가 또 고장 났어요.", "프린터 또 고장 났어."),
-        ("Please review this before lunch.", "점심 전에 이거 검토해 주세요.", "점심 전에 이거 검토해 줘."),
-        ("My boss is very busy today.", "오늘 상사가 정말 바빠요.", "오늘 상사가 진짜 바빠."),
-        ("Can we move the deadline?", "마감일을 미룰 수 있을까요?", "마감일 미룰 수 있을까?"),
-        ("I'm working from home this week.", "이번 주는 재택근무해요.", "이번 주는 재택근무해."),
-        ("Thanks for your help with the project.", "프로젝트 도와주셔서 감사해요.", "프로젝트 도와줘서 고마워."),
-    ],
     "casual": [
         ("What are you doing this weekend?", "이번 주말에 뭐 해요?", "이번 주말에 뭐 해?"),
         ("That movie was really funny.", "그 영화 정말 웃겼어요.", "그 영화 진짜 웃겼어."),
@@ -73,18 +48,6 @@ SENTENCES = {
         ("Let's take the bus there.", "거기 버스 타고 가요.", "거기 버스 타고 가자."),
         ("Your new phone looks great.", "새 폰 멋지네요.", "새 폰 멋지네."),
         ("Think about it and tell me.", "생각해 보고 말해 주세요.", "생각해 보고 말해 줘."),
-    ],
-    "bar_restaurant": [
-        ("A table for two, please.", "두 명이요.", "두 명이야."),
-        ("Can I see the menu?", "메뉴 좀 볼 수 있을까요?", "메뉴 좀 볼 수 있을까?"),
-        ("I'd like the fish, please.", "생선으로 할게요.", "난 생선으로 할래."),
-        ("Could we have some more water?", "물 좀 더 주실 수 있어요?", "물 좀 더 줄 수 있어?"),
-        ("The food here is really good.", "여기 음식 정말 맛있어요.", "여기 음식 진짜 맛있어."),
-        ("Can I get the bill, please?", "계산서 주세요.", "계산서 좀 줘."),
-        ("Let's order another round.", "한 잔씩 더 시켜요.", "한 잔씩 더 시키자."),
-        ("This beer is really cold.", "이 맥주 정말 시원해요.", "이 맥주 진짜 시원해."),
-        ("Thanks, that was delicious.", "감사합니다, 정말 맛있었어요.", "고마워, 진짜 맛있었어."),
-        ("Is this seat free?", "이 자리 비었어요?", "이 자리 비었어?"),
     ],
 }
 
