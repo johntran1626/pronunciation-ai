@@ -223,16 +223,15 @@ test("an info icon beside Autoplay and beside Placement tips: hover, focus or ta
   for (const k of ["autoplayInfo", "placementInfo", "infoAbout"] as const) assert.ok(HANGUL.test(UI[k].ko), k);
 });
 
-test("desktop: a cloud thought bubble (bumps + thought circles); phone: the speech bubble with its tail", () => {
+test("the bubble: a KakaoTalk-style chat bubble (yellow, no border, no shadow, small hooked tail) on phone and desktop", () => {
   const b = src("../components/TypedBubble.tsx");
-  const cloud = b.slice(b.indexOf("function CloudBubble"));
-  assert.match(cloud, /data-testid="cloud"/);
-  assert.match(b, /BUMPS/);
-  assert.match(cloud, /data-testid="thought-dots"/);
-  assert.ok(!cloud.includes("rotate-45"), "no speech-bubble tail on the cloud");
-  assert.match(b, /if \(tail === "down"\) return <CloudBubble/);
-  const speech = b.slice(b.indexOf("export default function TypedBubble"), b.indexOf("function CloudBubble"));
-  assert.match(speech, /rotate-45/, "the phone bubble keeps its pointed tail");
+  const css = src("../app/globals.css");
+  assert.match(css, /--color-kakao: #FEE500;/);
+  assert.ok(!/Cloud|BUMPS|thought-dots/.test(b), "the cloud is gone");
+  assert.match(b, /bg-kakao/);
+  assert.match(b, /fill="#FEE500"/); // the tail, same yellow
+  assert.ok(!/border-ink|shadow-pop|rotate-45/.test(b), "no black outline, no offset shadow, no square tail");
+  assert.match(b, /tail === "down"/); // desktop: the tail points down at Blueberry; phone: right
 });
 
 test("GitHub and LinkedIn links in the top-left corner: small icons, new tab, bilingual labels", () => {

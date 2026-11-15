@@ -12,14 +12,16 @@ import NativeMouth from "@/components/NativeMouth";
 import Recorder from "@/components/Recorder";
 import Translation from "@/components/Translation";
 import InfoTip from "@/components/InfoTip";
+import LoadingScreen from "@/components/LoadingScreen";
 import SocialLinks from "@/components/SocialLinks";
 import TypedBubble, { useTypedLines } from "@/components/TypedBubble";
 import TypewriterBlueberry from "@/components/TypewriterBlueberry";
 import { UiLangProvider, UiToggle, useUi } from "@/components/UiLang";
-import { checkHealth, fetchCustom, type TextLang } from "@/lib/api";
+import { checkHealth, fetchCustom, loadCardData, type TextLang } from "@/lib/api";
 import { MAX_CUSTOM_CHARS, checkLine } from "@/lib/custom";
 import { problemText, type Key } from "@/lib/i18n";
 import { detectLang, gradingLive, htmlLang, practiceOffered } from "@/lib/landing";
+import { loadNativeClip } from "@/lib/native";
 import { AUTOPLAY_DEFAULT, playerKey, readAutoplay, saveAutoplay } from "@/lib/player";
 
 const LANG_NAME: Record<TextLang, Key> = { en: "langEn", ko: "langKo", mix: "langMix" };
@@ -40,7 +42,8 @@ function Coach() {
   const { ui, t } = useUi();
   const [typed, setTyped] = useState("");
   const [shown, setShown] = useState<Shown | null>(null);
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState(false); // the loading screen is up
+  const [ready, setReady] = useState<Omit<Shown, "run"> | null>(null); // the answer, once everything is in
   const [error, setError] = useState<string | null>(null);
   const [practice, setPractice] = useState(false);
   const [muted, setMuted] = useState(false); // the sound button on the animation; kept for the visit
@@ -80,17 +83,28 @@ function Coach() {
     const problem = problemText(ui, typed);
     if (problem) return setError(problem);
     if (!lang) return setError(t("errNoLang"));
+    // the loading screen replaces the home (kept, hidden) until the sentence, its native clip + timings and the
+    // articulation table are all in; the bar then reaches 100 and onFinished shows the animation
+    setShown(null); // the old animation stops
+    setReady(null);
     setBusy(true);
     setError(null);
+    window.scrollTo({ top: 0 });
     try {
       // the backend writes numbers and short forms out the way they're said
       const checked = checkLine(await fetchCustom(typed.trim(), lang));
-      show({ text: checked.text, lang, note: checked.note, typed: typed.trim() });
+      // fetched now and kept (lib/native.ts, lib/api.ts), so the player starts at once
+      await Promise.all([loadNativeClip(checked.text, lang), loadCardData()]);
+      setReady({ text: checked.text, lang, note: checked.note, typed: typed.trim() });
     } catch (e) {
-      setError((e as Error).message);
-    } finally {
       setBusy(false);
+      setError((e as Error).message);
     }
+  }
+
+  function loaded() {
+    setBusy(false);
+    if (ready) show(ready);
   }
 
   return (
@@ -100,8 +114,10 @@ function Coach() {
         <UiToggle />
       </header>
 
+      {busy && <LoadingScreen done={ready !== null} onFinished={loaded} />}
+
       {/* home: phone = one column (title, then Blueberry sitting on the box); desktop = two columns */}
-      <div className="mx-auto flex w-full max-w-[1160px] flex-1 flex-col justify-center lg:flex-row lg:flex-wrap lg:items-center lg:gap-16">
+      <div hidden={busy} className="mx-auto flex w-full max-w-[1160px] flex-1 flex-col justify-center lg:flex-row lg:flex-wrap lg:items-center lg:gap-16">
         <div className="flex min-w-0 flex-col items-center gap-[22px] lg:flex-[1_1_380px]">
           <h1 className="m-0 text-center font-display text-[30px] leading-[1.15] font-normal lg:text-[52px] lg:leading-[1.05]">
             {t("brand")}

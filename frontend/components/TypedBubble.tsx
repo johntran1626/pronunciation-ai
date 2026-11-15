@@ -7,7 +7,7 @@
 // - Visitors who ask for less motion get one finished line and no clock at all.
 // - Before the page is live in the browser the bubble is empty (the shuffle is random, so the server can't draw it).
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HOME_LINES, TICK_MS, advance, startTyping, view, type Typing } from "@/lib/home";
 
 export function useTypedLines() {
@@ -36,34 +36,6 @@ export function useTypedLines() {
 }
 
 type Typed = ReturnType<typeof useTypedLines>;
-
-// The cloud's bumps: x = where along the edge (%), at = which edge, s = diameter in px on desktop (phone: 60%).
-const BUMPS: { x: number; at: "top" | "bottom" | "left" | "right"; s: number }[] = [
-  { x: 20, at: "top", s: 56 }, { x: 46, at: "top", s: 72 }, { x: 74, at: "top", s: 58 },
-  { x: 30, at: "bottom", s: 52 }, { x: 64, at: "bottom", s: 58 },
-  { x: 0, at: "left", s: 62 }, { x: 0, at: "right", s: 58 },
-];
-
-function bumpStyle(b: (typeof BUMPS)[number], k: number): CSSProperties {
-  const s = b.s * k;
-  const across = `calc(${b.x}% - ${s / 2}px)`;
-  const middle = `calc(50% - ${s / 2}px)`;
-  const out = -s * 0.38; // how far a bump sticks out past the body
-  const place = { top: { left: across, top: out }, bottom: { left: across, bottom: out },
-    left: { top: middle, left: out }, right: { top: middle, right: out } }[b.at];
-  return { position: "absolute", width: s, height: s, borderRadius: "50%", ...place };
-}
-
-/** The cloud outline: the body + bumps drawn as one shape. `paint` styles every piece of one layer. */
-function CloudLayer({ k, paint, className = "" }: { k: number; paint: string; className?: string }) {
-  // a fixed corner radius (not a full pill), so a cloud that grows to more lines keeps its text inside the curve
-  return (
-    <div aria-hidden="true" className={`absolute inset-0 ${className}`}>
-      <div className={`absolute inset-0 rounded-[44px] ${paint}`} />
-      {BUMPS.map((b, i) => <div key={i} style={bumpStyle(b, k)} className={paint} />)}
-    </div>
-  );
-}
 
 /** The line's text: the Korean being typed (a link for the GitHub / LinkedIn lines) and its English gloss. */
 function Lines({ typed, big }: { typed: Typed; big: boolean }) {
@@ -97,36 +69,23 @@ const pausing = (typed: Typed) => ({
   onBlur: () => typed.pause(false),
 });
 
-/** `tail`: "right" = phone: a speech bubble pointing at Blueberry beside it; "down" = desktop: a cloud thought
- *  bubble above Blueberry. */
+/** A KakaoTalk-style chat bubble: flat yellow, rounded, no outline, with a small hooked tail pointing at Blueberry.
+ *  `tail`: "right" = phone (Blueberry beside it); "down" = desktop (Blueberry under it). */
 export default function TypedBubble({ typed, tail, className = "" }: { typed: Typed; tail: "right" | "down"; className?: string }) {
-  if (tail === "down") return <CloudBubble typed={typed} className={className} />;
+  const down = tail === "down";
   return (
-    <div {...pausing(typed)} className={`rounded-[18px] border-[2.5px] border-ink bg-white px-3 py-2.5 shadow-pop-sm ${className}`}
-      data-testid="bubble">
-      <Lines typed={typed} big={false} />
-      <span aria-hidden="true" className="absolute right-[-9px] bottom-4 size-3.5 rotate-45 border-t-[2.5px] border-r-[2.5px] border-ink bg-white" />
-    </div>
-  );
-}
-
-function CloudBubble({ typed, className }: { typed: Typed; className: string }) {
-  const dot = "absolute rounded-full border-[2.5px] border-ink bg-white shadow-pop-xs";
-  return (
-    <div {...pausing(typed)} className={`px-10 py-4 text-center ${className}`} data-testid="bubble">
-      {/* drawn three times: the offset shadow, the outlined pieces, then each piece's inside painted white,
-          which covers the outlines where pieces overlap, so only the cloud's outer edge stays outlined */}
-      <div data-testid="cloud">
-        <CloudLayer k={1} paint="bg-ink" className="translate-x-[3px] translate-y-[3px]" />
-        <CloudLayer k={1} paint="border-[2.5px] border-ink bg-white" />
-        <CloudLayer k={1} paint="border-[2.5px] border-transparent bg-white bg-clip-padding" />
-      </div>
-      {/* the little thought circles, trailing down toward Blueberry */}
-      <div aria-hidden="true" data-testid="thought-dots">
-        <span className={`${dot} bottom-[-36px] left-[calc(50%-10px)] size-5`} />
-        <span className={`${dot} bottom-[-58px] left-[calc(50%+8px)] size-3`} />
-      </div>
-      <Lines typed={typed} big />
+    <div {...pausing(typed)} data-testid="bubble"
+      className={`rounded-[18px] bg-kakao ${down ? "px-7 py-4 text-center lg:rounded-[22px]" : "px-3.5 py-2.5"} ${className}`}>
+      <Lines typed={typed} big={down} />
+      {down ? (
+        <svg aria-hidden="true" width="16" height="12" viewBox="0 0 16 12" className="absolute top-[calc(100%-1px)] left-[calc(50%-4px)]">
+          <path d="M0 0 H16 Q8 4 2 12 Q3 5 0 0 Z" fill="#FEE500" />
+        </svg>
+      ) : (
+        <svg aria-hidden="true" width="12" height="16" viewBox="0 0 12 16" className="absolute top-2.5 right-[-11px]">
+          <path d="M0 0 V16 Q4 8 12 2 Q5 3 0 0 Z" fill="#FEE500" />
+        </svg>
+      )}
     </div>
   );
 }

@@ -13,6 +13,7 @@
   --color-grid: #FFD3E5;
   --color-tray: #F4F8FF;
   --color-mouth: #3A0F24;
+  --color-kakao: #FEE500;
   --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-jua), var(--font-outfit), ui-sans-serif, sans-serif;
   /* the solid offset shadows of the look */
@@ -80,8 +81,112 @@ body {
   50% { opacity: 0; }
 }
 
-/* Visitors who ask for less motion: no loops at all (the bubble shows one finished line, see TypedBubble.tsx) */
+/* The loading screen (components/LoadingScreen.tsx): Blueberry's six poses. Own names (ld-*) so the home loops keep
+   their timings. The pose drawings use SVG user units, so px here = units of the 160 x 152 drawing. */
+.ld-bob { transform-origin: 50% 100%; animation: ld-bob 1.2s infinite ease-in-out; }
+@keyframes ld-bob {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  50% { transform: translateY(-6px) scale(0.98, 1.02); }
+}
+@media (min-width: 1024px) {
+  .ld-bob { animation-name: ld-bob-lg; }
+  @keyframes ld-bob-lg {
+    0%, 100% { transform: translateY(0) scale(1, 1); }
+    50% { transform: translateY(-8px) scale(0.98, 1.02); }
+  }
+}
+.ld-shadow { animation: ld-shadow 1.2s infinite ease-in-out; opacity: 0.2; }
+@keyframes ld-shadow {
+  0%, 100% { transform: scaleX(1); opacity: 0.22; }
+  50% { transform: scaleX(0.85); opacity: 0.14; }
+}
+/* laptop: the laptop squashes with each key */
+.ld-tap { transform-origin: 50% 100%; animation: ld-tap 0.22s infinite alternate ease-in-out; }
+@keyframes ld-tap {
+  from { transform: scale(1.03, 0.97); }
+  to { transform: scale(0.99, 1.01); }
+}
+/* detective: the magnifying glass wanders */
+.ld-search { animation: ld-search 1.6s infinite ease-in-out; }
+@keyframes ld-search {
+  0%, 100% { transform: translate(-6px, 2px); }
+  50% { transform: translate(4px, -3px); }
+}
+/* pencil: the pencil's tip follows the strokes of ㅎ then ㅇ, each stroke drawn as the tip passes */
+.ld-pen { animation: ld-pen 3.2s infinite linear; }
+@keyframes ld-pen {
+  0% { transform: translate(120px, 92px); }
+  8% { transform: translate(124px, 95px); }
+  14% { transform: translate(114px, 99px); }
+  24% { transform: translate(130px, 99px); }
+  30% { transform: translate(122px, 103px); }
+  37% { transform: translate(128px, 109px); }
+  44% { transform: translate(122px, 115px); }
+  51% { transform: translate(116px, 109px); }
+  58% { transform: translate(122px, 103px); }
+  64% { transform: translate(142px, 96px); }
+  70.5% { transform: translate(150px, 104px); }
+  77% { transform: translate(142px, 112px); }
+  83.5% { transform: translate(134px, 104px); }
+  90%, 100% { transform: translate(142px, 96px); }
+}
+.ld-h1 { animation: ld-h1 3.2s infinite linear; }
+@keyframes ld-h1 { 0% { stroke-dashoffset: 6; } 8%, 100% { stroke-dashoffset: 0; } }
+.ld-h2 { animation: ld-h2 3.2s infinite linear; }
+@keyframes ld-h2 { 0%, 14% { stroke-dashoffset: 16; } 24%, 100% { stroke-dashoffset: 0; } }
+.ld-h3 { animation: ld-h3 3.2s infinite linear; }
+@keyframes ld-h3 { 0%, 30% { stroke-dashoffset: 38; } 58%, 100% { stroke-dashoffset: 0; } }
+.ld-o1 { animation: ld-o1 3.2s infinite linear; }
+@keyframes ld-o1 { 0%, 64% { stroke-dashoffset: 51; } 90%, 100% { stroke-dashoffset: 0; } }
+/* painter: the brush sweeps across while 한들 is uncovered behind it; the palette floats */
+.ld-brush { animation: ld-brush 3s infinite ease-in-out; }
+@keyframes ld-brush {
+  0% { transform: translate(100px, 92px); }
+  20% { transform: translate(112px, 84px); }
+  40% { transform: translate(124px, 96px); }
+  60% { transform: translate(136px, 84px); }
+  80%, 100% { transform: translate(148px, 94px); }
+}
+.ld-reveal { transform-box: fill-box; transform-origin: right center; animation: ld-reveal 3s infinite ease-in-out; }
+@keyframes ld-reveal { 0% { transform: scaleX(1); } 80%, 100% { transform: scaleX(0); } }
+.ld-float { animation: ld-float 2s infinite ease-in-out; }
+@keyframes ld-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+/* reader: the head scans the page left to right, then a page flips */
+.ld-read { transform-box: view-box; transform-origin: 80px 110px; animation: ld-read 1.6s infinite ease-in-out; }
+@keyframes ld-read {
+  0% { transform: rotate(-7deg) translateX(-5px); }
+  65% { transform: rotate(7deg) translateX(5px); }
+  80%, 100% { transform: rotate(-7deg) translateX(-5px); }
+}
+.ld-flip { transform-box: view-box; transform-origin: 80px 112px; animation: ld-flip 1.6s infinite ease-in-out; }
+@keyframes ld-flip {
+  0%, 64% { transform: scaleX(1); opacity: 0; }
+  65% { transform: scaleX(1); opacity: 1; }
+  82% { transform: scaleX(-1); opacity: 1; }
+  83%, 100% { transform: scaleX(-1); opacity: 0; }
+}
+/* sweeper: the body sways, the broom swings, dust puffs up */
+.ld-sway { transform-box: view-box; transform-origin: 54px 104px; animation: ld-sway 0.9s infinite ease-in-out; }
+@keyframes ld-sway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+.ld-swing { transform-box: view-box; transform-origin: 140px 18px; animation: ld-swing 0.9s infinite alternate ease-in-out; }
+@keyframes ld-swing { from { transform: rotate(-14deg); } to { transform: rotate(14deg); } }
+.ld-dust { transform-box: fill-box; transform-origin: center; animation: ld-dust 0.9s infinite ease-out; }
+.ld-dust-2 { animation-delay: 0.45s; }
+@keyframes ld-dust {
+  0% { transform: scale(0.2); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(-8px) scale(1.2); opacity: 0; }
+}
+
+/* Visitors who ask for less motion: no loops at all (the bubble shows one finished line, see TypedBubble.tsx).
+   The loading poses then show their finished picture: ㅎㅇ written, 한들 painted, pencil and brush at rest. */
 @media (prefers-reduced-motion: reduce) {
   .bob, .blink, .talk, .caret, .ground, .bob-body, .tap, .keys { animation: none; }
   .ground { opacity: 0.2; }
+  .ld-bob, .ld-shadow, .ld-tap, .ld-search, .ld-pen, .ld-h1, .ld-h2, .ld-h3, .ld-o1, .ld-brush, .ld-reveal, .ld-float,
+  .ld-read, .ld-flip, .ld-sway, .ld-swing, .ld-dust { animation: none; }
+  .ld-h1, .ld-h2, .ld-h3, .ld-o1 { stroke-dashoffset: 0; }
+  .ld-pen { transform: translate(142px, 96px); }
+  .ld-brush { transform: translate(148px, 94px); }
+  .ld-reveal, .ld-flip, .ld-dust { display: none; }
 }
