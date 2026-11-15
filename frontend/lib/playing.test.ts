@@ -68,6 +68,20 @@ test("Animate another (both site languages) sits above Practice and goes back to
   assert.match(page, /box\.current\?\.focus\(\)/);
 });
 
+test("a Home button (both site languages) sits just left of ENG/한 and does what Animate another does, even mid-loading", () => {
+  assert.equal(tr("en", "home"), "Home");
+  assert.ok(HANGUL.test(UI.home.ko));
+  const header = page.slice(page.indexOf("<header"), page.indexOf("</header>"));
+  const home = header.indexOf('data-testid="home"');
+  assert.ok(home > 0 && header.indexOf("<UiToggle") > home, "Home, then ENG/한");
+  assert.match(header, /onClick=\{another\}/);
+  // going home while the loading screen is up drops that request, so its answer never pops up later
+  const another = page.slice(page.indexOf("function another()"), page.indexOf("function openPractice()"));
+  assert.match(another, /setBusy\(false\)/);
+  assert.match(another, /request\.current\+\+/);
+  assert.match(page, /if \(id !== request\.current\) return/);
+});
+
 test("the playing screen replaces the home (like the loading screen), and the recorder opens full width under the player", () => {
   assert.match(page, /hidden=\{busy \|\| shown !== null\}/);
   const player = page.indexOf("<NativeMouth");

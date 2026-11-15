@@ -54,6 +54,7 @@ export const UI = {
     "연습은 한 번에 한 언어만 돼요. 녹음하려면 문장을 영어로만, 또는 한국어로만 입력해 주세요."),
   autoplay: s("Autoplay", "자동 재생"),
   switchLabel: s("Site language", "사이트 언어"),
+  home: s("Home", "홈"),
   // the native mouth player
   mouthLoading: s("Loading the native mouth…", "원어민 입 모양을 불러오는 중…"),
   tryAgain: s("Try again", "다시 시도"),

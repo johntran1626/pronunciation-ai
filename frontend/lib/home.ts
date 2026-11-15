@@ -1,12 +1,14 @@
-// The home page's speech bubble: Blueberry "types" short Korean lines, jamo by jamo, each with an English gloss
-// once it is typed. Pure (no React), tested in home.test.ts; components/TypedBubble.tsx runs the clock.
+// The home page's speech bubble: Blueberry "types" short lines in the site language (Korean jamo by jamo, English
+// letter by letter), each with the other language as a small gloss once it is typed. Pure (no React), tested in
+// home.test.ts; components/TypedBubble.tsx runs the clock.
+import type { Ui } from "./i18n.ts";
 
 export const GITHUB_URL = "https://github.com/johntran1626";
 export const LINKEDIN_URL: string | null = "https://www.linkedin.com/in/johnthientran/";
 
 export type HomeLine = { ko: string; en: string; href?: string };
 
-// Every line is shown in both languages whatever the site language is: the Korean is typed, the English sits under it.
+// Every line is shown in both languages: the site language is typed (big), the other sits under it (small).
 export const HOME_LINES: HomeLine[] = [
   { ko: "좋아하는 드라마 대사 써 봐!", en: "Try a line from your favorite drama!" },
   { ko: "노래 가사 한 줄 넣어 봐!", en: "Drop in a line from a song!" },
@@ -37,6 +39,10 @@ export const RETURN_TICKS = 8; // ~0.5 s: the carriage slides back (bubble empty
 
 const FIRST = 0xac00; // 가
 const ONSETS = [..."ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ"];
+
+/** The side of a line that is typed (the site language) and the side shown under it once it is done. */
+export const typedSide = (line: HomeLine, ui: Ui) => (ui === "ko" ? line.ko : line.en);
+export const glossSide = (line: HomeLine, ui: Ui) => (ui === "ko" ? line.en : line.ko);
 
 /** What the bubble shows after each keystroke: a block appears as its first consonant, then with its vowel,
  *  then (if it has one) with its final consonant, the way a Korean keyboard builds it. */
@@ -79,17 +85,17 @@ export function startTyping(n: number, rand: () => number = Math.random): Typing
 
 /** One tick later: the carriage return, the next keystroke, the hold, then the next line (after the last line, a
  *  new shuffle). Each line is RETURN_TICKS (carriage sliding back, bubble empty) + one tick per keystroke + the hold. */
-export function advance(s: Typing, n: number, rand: () => number = Math.random, lines = HOME_LINES): Typing {
+export function advance(s: Typing, n: number, rand: () => number = Math.random, lines = HOME_LINES, ui: Ui = "ko"): Typing {
   const step = s.step + 1;
-  if (step < RETURN_TICKS + typeSteps(lines[s.order[s.pos]].ko).length + HOLD_TICKS) return { ...s, step };
+  if (step < RETURN_TICKS + typeSteps(typedSide(lines[s.order[s.pos]], ui)).length + HOLD_TICKS) return { ...s, step };
   if (s.pos + 1 < s.order.length) return { ...s, pos: s.pos + 1, step: 0 };
   return { order: shuffleOrder(n, s.order[s.order.length - 1], rand), pos: 0, step: 0 };
 }
 
 /** The text on screen now (empty while the carriage returns); the gloss only once the line is fully typed. */
-export function view(s: Typing, lines: HomeLine[]) {
+export function view(s: Typing, lines: HomeLine[], ui: Ui = "ko") {
   const line = lines[s.order[s.pos]];
-  const steps = typeSteps(line.ko);
+  const steps = typeSteps(typedSide(line, ui));
   const last = steps.length - 1;
   const returning = s.step < RETURN_TICKS;
   const k = s.step - RETURN_TICKS; // keystrokes so far (index into steps)
@@ -97,19 +103,19 @@ export function view(s: Typing, lines: HomeLine[]) {
   // how far along the line the typing is, 0..1: where the typewriter's carriage sits
   const progress = returning ? 0 : last > 0 ? Math.min(1, k / last) : 1;
   const typed = returning ? "" : steps[Math.min(k, last)];
-  return { typed, gloss: done ? line.en : "", line, done, progress, returning };
+  return { typed, gloss: done ? glossSide(line, ui) : "", line, done, progress, returning };
 }
 
-export type TypingSound = "key" | "ding" | "return";
+export type TypingSound = "key" | "lever" | "return";
 
 /** The typewriter sound for one tick: the carriage return as a line opens (the same tick the bubble clears),
- *  a click per keystroke, a ding the tick after the line is finished, nothing while sliding or holding. */
-export function soundFor(prev: Typing, next: Typing, lines: HomeLine[]): TypingSound | null {
+ *  a click per keystroke, a soft lever click the tick after the line is finished, nothing while sliding or holding. */
+export function soundFor(prev: Typing, next: Typing, lines: HomeLine[], ui: Ui = "ko"): TypingSound | null {
   if (next.pos !== prev.pos || (next.step === 0 && prev.step !== 0)) return "return"; // a new line (or a new shuffle)
   if (next.step === prev.step) return null;
-  const last = typeSteps(lines[next.order[next.pos]].ko).length - 1;
+  const last = typeSteps(typedSide(lines[next.order[next.pos]], ui)).length - 1;
   const k = next.step - RETURN_TICKS;
   if (k >= 0 && k <= last) return "key";
-  if (k === last + 1) return "ding";
+  if (k === last + 1) return "lever";
   return null;
 }

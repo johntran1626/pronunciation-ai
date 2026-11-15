@@ -5,8 +5,8 @@
 // scoring (one-language sentences only).
 // One button, Animate, for English, Korean and mixed text alike.
 // The Autoplay switch in the box (on by default) decides whether a new animation plays by itself.
-// Three screens in turn: home (the box), loading, playing (the sentence + player). "Animate another" goes back
-// to the home with an empty box, ready to type.
+// Three screens in turn: home (the box), loading, playing (the sentence + player). "Animate another" and the Home
+// button in the top corner both go back to the home with an empty box, ready to type, and the typewriter sounds off.
 
 import { useEffect, useRef, useState } from "react";
 import AutoplaySwitch from "@/components/AutoplaySwitch";
@@ -50,15 +50,16 @@ function Coach() {
   const [practice, setPractice] = useState(false);
   const [muted, setMuted] = useState(false); // the sound button on the animation; kept for the visit
   const [autoplay, setAutoplayState] = useState(AUTOPLAY_DEFAULT);
+  // Blueberry's typewriter sounds: off when the page opens; a tap on Blueberry turns them on until the next tap
+  const [typingSound, setTypingSound] = useState(false);
   const runs = useRef(0);
+  const request = useRef(0); // counts Animate presses, so an answer that arrives after Home is pressed is dropped
   const box = useRef<HTMLTextAreaElement | null>(null);
   const recorder = useRef<HTMLElement | null>(null);
   const typedLines = useTypedLines(); // Blueberry's bubble (the same lines on phone and desktop)
 
   const lang = detectLang(typed);
   const tooLong = typed.trim().length > MAX_CUSTOM_CHARS;
-  // the typewriter's sounds: only while the visitor isn't typing and no animation is showing
-  const typingSound = !typed && !shown && !busy;
 
   // wake the backend as the page opens (a sleeping server starts while the visitor types); nothing is shown
   useEffect(() => { checkHealth().catch(() => {}); }, []);
@@ -81,8 +82,13 @@ function Coach() {
     window.scrollTo({ top: 0 });
   }
 
-  // back to the home: the animation stops, the box is empty and ready to type
+  // back to the home (Animate another, or Home): the animation or loading stops, the box is empty and ready to
+  // type, and the typewriter sounds are off again
   function another() {
+    request.current++; // a sentence still loading is dropped
+    setBusy(false);
+    setReady(null);
+    setTypingSound(false);
     setShown(null);
     setPractice(false);
     setTyped("");
@@ -103,6 +109,7 @@ function Coach() {
     if (!lang) return setError(t("errNoLang"));
     // the loading screen replaces the home (kept, hidden) until the sentence, its native clip + timings and the
     // articulation table are all in; the bar then reaches 100 and onFinished shows the animation
+    const id = ++request.current;
     setShown(null); // the old animation stops
     setReady(null);
     setBusy(true);
@@ -113,8 +120,10 @@ function Coach() {
       const checked = checkLine(await fetchCustom(typed.trim(), lang));
       // fetched now and kept (lib/native.ts, lib/api.ts), so the player starts at once
       await Promise.all([loadNativeClip(checked.text, lang), loadCardData()]);
+      if (id !== request.current) return; // Home was pressed while it loaded
       setReady({ text: checked.text, lang, note: checked.note, typed: typed.trim() });
     } catch (e) {
+      if (id !== request.current) return;
       setBusy(false);
       setError((e as Error).message);
     }
@@ -129,7 +138,17 @@ function Coach() {
     <main className="flex min-h-dvh w-full flex-col px-[22px] pt-5 pb-7 lg:px-10 lg:pt-7 lg:pb-12">
       <header className="mx-auto flex w-full max-w-[1160px] items-center justify-between">
         <SocialLinks />
-        <UiToggle />
+        <div className="flex items-center gap-2 lg:gap-2.5">
+          <button type="button" onClick={another} data-testid="home" aria-label={t("home")} title={t("home")}
+            className="flex items-center gap-1.5 rounded-xl border-[2.5px] border-ink bg-white px-2.5 py-1.5 font-display text-sm text-ink shadow-pop-xs hover:bg-sky lg:px-3.5 lg:py-[7px] lg:text-base">
+            <svg className="size-4 lg:size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8"
+              strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M3 11 12 3l9 8" /><path d="M5 9.5V21h14V9.5" />
+            </svg>
+            {t("home")}
+          </button>
+          <UiToggle />
+        </div>
       </header>
 
       {busy && <LoadingScreen done={ready !== null} onFinished={loaded} />}
@@ -144,7 +163,7 @@ function Coach() {
           {/* desktop: the bubble above Blueberry at the typewriter, with a shadow on the ground */}
           <TypedBubble typed={typedLines} tail="down" className="relative mt-[18px] hidden w-full max-w-[400px] lg:block" />
           <div className="hidden flex-col items-center lg:flex">
-            <TypewriterBlueberry typed={typedLines} typingSound={typingSound} width={240} />
+            <TypewriterBlueberry typed={typedLines} soundOn={typingSound} onSoundChange={setTypingSound} width={240} />
             <span aria-hidden="true" className="ground -mt-1 block h-3 w-[200px] rounded-[50%] bg-ink" />
           </div>
         </div>
@@ -161,7 +180,7 @@ function Coach() {
             {/* phone: the bubble to the left, Blueberry's typewriter standing on the box's top-right corner */}
             <TypedBubble typed={typedLines} tail="right" className="absolute right-[136px] bottom-[calc(100%+34px)] left-0 lg:hidden" />
             <div className="absolute right-0 bottom-[calc(100%-3px)] lg:hidden">
-              <TypewriterBlueberry typed={typedLines} typingSound={typingSound} width={128} />
+              <TypewriterBlueberry typed={typedLines} soundOn={typingSound} onSoundChange={setTypingSound} width={128} />
             </div>
             {/* no overflow-hidden here, so the Autoplay note can pop out of the box; the parts round their own corners */}
             <div className="relative rounded-[20px] border-[2.5px] border-ink bg-white shadow-pop lg:rounded-3xl lg:shadow-pop-lg">

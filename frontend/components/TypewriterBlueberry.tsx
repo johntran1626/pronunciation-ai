@@ -1,42 +1,34 @@
 "use client";
 // The home mascot: Blueberry in round glasses at a typewriter, typing the bubble's lines.
 // - The carriage (roller + paper) slides one notch left per keystroke, the way a real one does, and a line of ink
-//   grows on the paper; when the line is done it dings, the carriage slides back and the paper moves up a line.
-// - Typing sounds (lib/typingSound.ts) play only when the page allows it (`typingSound`: nothing typed in the box
-//   and no animation showing), after the visitor's first click / tap / key (a browser rule), and only from the
-//   copy of Blueberry that is on screen (the page draws one for phones and one for desktops).
-// - Tapping Blueberry turns the sounds off or on; the choice is remembered in this browser.
+//   grows on the paper; when the line is done the lever clicks softly, the carriage slides back and the paper moves up a line.
+// - Typing sounds (lib/typingSound.ts) are off until Blueberry is tapped, then stay on (typing in the box doesn't
+//   stop them) until Blueberry is tapped again. The page holds the on/off, so the phone and desktop copies agree,
+//   and Home / Animate another turn it back off. They play only after the visitor's first click / tap / key (a
+//   browser rule), and only from the copy of Blueberry that is on screen (the page draws one for each width).
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef } from "react";
 import { useUi } from "@/components/UiLang";
 import { useTypedLines } from "@/components/TypedBubble";
 import { HOME_LINES, soundFor, type Typing } from "@/lib/home";
 import { play, unlock } from "@/lib/typingSound";
 
-const SOUND_KEY = "typing-sound";
 const TRAVEL = 36; // how far the carriage moves over one line, in drawing units
 
 // how long each finished line's ink is on the paper (a fixed width per line, so lines look different)
 const inkWidth = (line: number) => 20 + ((line * 13) % 17);
 
-export default function TypewriterBlueberry({ typed, typingSound, width, className = "" }: {
+export default function TypewriterBlueberry({ typed, soundOn, onSoundChange, width, className = "" }: {
   typed: ReturnType<typeof useTypedLines>;
-  typingSound: boolean;
+  soundOn: boolean;
+  onSoundChange: (on: boolean) => void;
   width: number;
   className?: string;
 }) {
-  const { t } = useUi();
+  const { ui, t } = useUi();
   const clip = useId();
   const root = useRef<HTMLButtonElement | null>(null);
-  const [soundOn, setSoundOn] = useState(true);
   const last = useRef<Typing | null>(null);
-
-  // the remembered on/off, read once in the browser
-  useEffect(() => {
-    try {
-      if (localStorage.getItem(SOUND_KEY) === "off") setSoundOn(false); // eslint-disable-line react-hooks/set-state-in-effect -- read once after mount
-    } catch {}
-  }, []);
 
   // sound needs one gesture first; any click, tap or key on the page counts
   useEffect(() => {
@@ -54,17 +46,15 @@ export default function TypewriterBlueberry({ typed, typingSound, width, classNa
   useEffect(() => {
     const prev = last.current;
     last.current = state;
-    if (!prev || !state || !soundOn || !typingSound) return;
+    if (!prev || !state || !soundOn) return;
     if (!root.current?.getClientRects().length) return; // this copy is hidden at this screen width
-    const sound = soundFor(prev, state, HOME_LINES);
+    const sound = soundFor(prev, state, HOME_LINES, ui);
     if (sound) play(sound);
-  }, [state, soundOn, typingSound]);
+  }, [state, soundOn, ui]);
 
   function toggle() {
     unlock();
-    const on = !soundOn;
-    setSoundOn(on);
-    try { localStorage.setItem(SOUND_KEY, on ? "on" : "off"); } catch {}
+    onSoundChange(!soundOn);
   }
 
   const shown = typed.shown;

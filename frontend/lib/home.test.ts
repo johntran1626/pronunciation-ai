@@ -123,7 +123,7 @@ test("the header: small GitHub / LinkedIn links on the left, the ENG / 한 switc
   const page = src("../app/page.tsx");
   const header = page.slice(page.indexOf("<header"), page.indexOf("</header>"));
   assert.match(header, /<SocialLinks \/>[\s\S]*<UiToggle \/>/, "links top-left, ENG / 한 top-right");
-  assert.ok(!header.includes("t("), "no other text in the header");
+  assert.ok(!header.replaceAll('t("home")', "").includes("t("), "no other text in the header besides Home");
   assert.match(page, /<h1[\s\S]*t\("brand"\)[\s\S]*t\("byline"\)[\s\S]*<\/h1>/);
   assert.equal(tr("en", "byline"), "by John Tran");
   assert.ok(HANGUL.test(tr("ko", "byline")));
@@ -146,6 +146,33 @@ test("the typed-lines bubble: pauses on hover, static when motion is reduced, li
   assert.match(b, /target="_blank"/);
   assert.match(b, /rel="noopener noreferrer"/);
   assert.match(src("../app/page.tsx"), /useTypedLines\(/);
+});
+
+test("the bubble follows the site language: ENG types the English (big) with the Korean under it; 한 the reverse", () => {
+  const line = HOME_LINES[2];
+  const s = (step: number) => ({ order: [2], pos: 0, step });
+  // English: letter by letter, then the Korean appears underneath
+  const enDone = RETURN_TICKS + typeSteps(line.en).length - 1;
+  assert.equal(view(s(RETURN_TICKS), HOME_LINES, "en").typed, line.en[0]);
+  assert.equal(view(s(enDone), HOME_LINES, "en").typed, line.en);
+  assert.equal(view(s(enDone - 1), HOME_LINES, "en").gloss, "", "no gloss while typing");
+  assert.equal(view(s(enDone), HOME_LINES, "en").gloss, line.ko);
+  // Korean: jamo by jamo, the English underneath
+  const koDone = RETURN_TICKS + typeSteps(line.ko).length - 1;
+  assert.equal(view(s(koDone), HOME_LINES, "ko").typed, line.ko);
+  assert.equal(view(s(koDone), HOME_LINES, "ko").gloss, line.en);
+  // the line lasts as long as the language being typed
+  const enLen = RETURN_TICKS + typeSteps(line.en).length + HOLD_TICKS;
+  assert.equal(advance(s(enLen - 2), 3, Math.random, HOME_LINES, "en").step, enLen - 1);
+  assert.equal(advance({ order: [2, 0], pos: 0, step: enLen - 1 }, 3, Math.random, HOME_LINES, "en").pos, 1);
+  // and the carriage lever clicks when the English is done
+  assert.equal(soundFor(s(enDone), s(enDone + 1), HOME_LINES, "en"), "lever");
+  // the components pass the site language in, and mark each line with its language
+  const b = src("../components/TypedBubble.tsx");
+  assert.match(b, /advance\(s, HOME_LINES\.length, Math\.random, HOME_LINES, lang\.current\)/);
+  assert.match(b, /<p lang=\{ui\}/);
+  assert.match(b, /lang=\{ui === "ko" \? "en" : "ko"\}/);
+  assert.match(src("../components/TypewriterBlueberry.tsx"), /soundFor\(prev, state, HOME_LINES, ui\)/);
 });
 
 test("the box: 원고지 grid, the language hint above the text, Animate in the display font with an arrow", () => {
@@ -176,7 +203,7 @@ test("progress through the line: 0 while returning and at the first keystroke, 1
   assert.equal(at(steps + 10), 1, "stays at the end while the line is held");
 });
 
-test("typing sounds: the carriage return as a line opens, a key click per keystroke, a ding when the line is done", () => {
+test("typing sounds: the carriage return as a line opens, a key click per keystroke, a soft lever click when the line is done", () => {
   const L = typeSteps(HOME_LINES[0].ko).length;
   const R = RETURN_TICKS;
   const s = (pos: number, step: number) => ({ order: [0, 1], pos, step });
@@ -184,7 +211,7 @@ test("typing sounds: the carriage return as a line opens, a key click per keystr
   assert.equal(soundFor(s(0, 1), s(0, 2), HOME_LINES), null, "quiet while the carriage slides");
   assert.equal(soundFor(s(0, R - 1), s(0, R), HOME_LINES), "key", "the first keystroke");
   assert.equal(soundFor(s(0, R + L - 2), s(0, R + L - 1), HOME_LINES), "key", "the last keystroke");
-  assert.equal(soundFor(s(0, R + L - 1), s(0, R + L), HOME_LINES), "ding");
+  assert.equal(soundFor(s(0, R + L - 1), s(0, R + L), HOME_LINES), "lever");
   assert.equal(soundFor(s(0, R + L + 5), s(0, R + L + 6), HOME_LINES), null, "silent while the line is held");
 });
 
@@ -199,15 +226,23 @@ test("the home mascot: Blueberry in round glasses at a typewriter whose carriage
   assert.ok(HANGUL.test(UI.typewriterLabel.ko));
 });
 
-test("typing sounds: made in the browser (Web Audio, no files), quiet once the visitor types or a result shows, and a remembered on/off", () => {
+test("typing sounds: made in the browser (Web Audio, no files); off by default, on until Blueberry is tapped again, typing doesn't stop them", () => {
   const snd = src("./typingSound.ts");
   assert.match(snd, /AudioContext/);
+  // no bell at the end of a line (it got tiring): a quiet carriage-lever ratchet instead
+  assert.ok(!/bell|createOscillator|"ding"/.test(snd), "the bell is gone");
+  assert.match(snd, /function lever\(/);
   const page = src("../app/page.tsx");
-  assert.match(page, /const typingSound = !typed && !shown/);
-  assert.match(page, /typingSound=\{typingSound\}/);
+  // one on/off for both copies of Blueberry (phone + desktop), held by the page, off when the page opens
+  assert.match(page, /const \[typingSound, setTypingSound\] = useState\(false\)/);
+  assert.ok(!/!typed && !shown/.test(page), "typing in the box no longer silences them");
+  assert.match(page, /soundOn=\{typingSound\} onSoundChange=\{setTypingSound\}/);
+  // Home and Animate another both turn them back off
+  const another = page.slice(page.indexOf("function another()"), page.indexOf("function openPractice()"));
+  assert.match(another, /setTypingSound\(false\)/);
   const tw = src("../components/TypewriterBlueberry.tsx");
   assert.match(tw, /aria-pressed/);
-  assert.match(tw, /localStorage/);
+  assert.ok(!/localStorage/.test(tw), "not remembered: every visit starts off");
   for (const k of ["typingSoundOn", "typingSoundOff"] as const) assert.ok(HANGUL.test(UI[k].ko), k);
 });
 
