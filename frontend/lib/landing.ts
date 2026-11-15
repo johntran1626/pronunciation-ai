@@ -1,6 +1,5 @@
 // The type-first landing page (no React here, so node --test can check it).
 import type { Lang, TextLang } from "./api.ts";
-import { pickTranslation, type Translated } from "./translations.ts";
 
 // Hangul syllable blocks, lone jamo (ㅋㅋ), and the old-style jamo block
 const HANGUL = /[가-힣ㄱ-ㆎᄀ-ᇿ]/gu;
@@ -18,14 +17,9 @@ export function detectLang(text: string): TextLang | null {
 
 /** "Practice it yourself" (record + green/red) only for one-language sentences: scoring was never measured on
  * mixed ones, and a wrong red is the worst thing this app can show. */
+// Which languages have a live sound check (green/red). Korean joins when its checks pass their bars.
+export const gradingLive = (lang: Lang): boolean => lang === "en";
 export const practiceOffered = (lang: TextLang): lang is Lang => lang !== "mix";
 
 /** The HTML lang attribute (Korean fonts, screen readers): a mixed sentence has no single one. */
 export const htmlLang = (lang: TextLang | null) => (lang === "mix" || !lang ? undefined : lang);
-
-// ---------- English input -> Korean ----------
-/** "Translate to KR" and "Translate to KR and Animate" are offered for English input only. */
-export const translateOffered = (lang: TextLang | null) => lang === "en";
-
-/** The Korean sentence to animate: whichever form the 존댓말 / 반말 switch shows. */
-export const koreanToAnimate = (t: Translated, casual: boolean) => pickTranslation(t, casual)?.text ?? null;

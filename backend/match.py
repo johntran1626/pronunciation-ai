@@ -90,7 +90,13 @@ def _live_pairs(sound_t, lang):
 def active_checks(lang, sound_t, match_t):
     """Names of the checks that can change a result right now, for the UI's honesty line."""
     rules = _rules(match_t, lang)
-    names = [k for k, key in (("sentence_match", "sentence"), ("word_heard", "word")) if rules[key].get("enabled")]
+    names = []
+    s = rules["sentence"]
+    if s.get("enabled"):
+        # thresholds at 0 only reject a recording with no speech in it: say that, not "you read the sentence"
+        names.append("sentence_match" if s.get("min_heard", 0) > 0 or s.get("min_conf", 0) > 0 else "speech_heard")
+    if rules["word"].get("enabled"):
+        names.append("word_heard")
     return names + sorted(_live_pairs(sound_t, lang))
 
 

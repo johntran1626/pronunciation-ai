@@ -22,6 +22,7 @@ export function summarize(result: AnalyzeResult): { words: number; red: number }
 // The honesty line under every result, built from the backend's list of live checks.
 const CHECK_WORDS: Record<string, string> = {
   sentence_match: "that you read the sentence",
+  speech_heard: "that speech was heard",
   word_heard: "that each word was heard",
   r_as_l: "R (said like L)",
   l_as_r: "L (said like R)",

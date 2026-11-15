@@ -178,6 +178,7 @@ export const PHRASE_KO: Record<string, string> = {
 // The live checks, as listed under every result ("This version checks ...").
 export const CHECK_KO: Record<string, string> = {
   sentence_match: "문장을 읽었는지",
+  speech_heard: "말소리가 들렸는지",
   word_heard: "각 단어가 들렸는지",
   r_as_l: "R (L처럼 발음)",
   l_as_r: "L (R처럼 발음)",

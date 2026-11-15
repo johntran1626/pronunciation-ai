@@ -56,7 +56,6 @@ test("no pack code left in the frontend", () => {
   const api = src("./api.ts");
   assert.ok(!/fetchPack|PackItem|PackSummary/.test(api));
   assert.ok(!existsSync(new URL("./tags.ts", import.meta.url)), "pack tag names");
-  assert.ok(!/bySpeech/.test(src("./translations.ts")));
   assert.ok(!/pickerPacks/.test(src("./devOnly.ts")));
 });
 
@@ -79,4 +78,34 @@ test("a mixed sentence hides Practice and says why, in both site languages", () 
 test("the player looks each sound up in its own language's table", () => {
   assert.match(mouth, /soundsFromTimings\(native\.timings, articulation\.sounds\)/);
   assert.match(mouth, /descText\(ui, shown\[0\]\.lang,/);
+});
+
+test("Korean Practice warns up front that nothing will be marked green or red yet", () => {
+  assert.match(page, /gradingLive\(shown\.lang\) \? "practiceHint" : "practiceHintUngraded"/);
+  for (const key of ["practiceHintUngraded", "nothingGraded"] as const) {
+    assert.ok(UI[key], `${key} exists`);
+    assert.match(tr("ko", key), HANGUL, `${key} has Korean`);
+  }
+  assert.match(tr("en", "practiceHintUngraded"), /Korean grading isn't ready yet/);
+  assert.match(tr("en", "nothingGraded"), /green or red/);
+});
+
+// ---------- one button: Animate ----------
+test("the box has one button, Animate, for English, Korean and mixed text alike", () => {
+  for (const gone of ['data-testid="kr"', 'data-testid="kr-animate"', 'data-testid="kr-result"', "fetchTranslation", "FormalityLine", "casual"])
+    assert.ok(!page.includes(gone), gone);
+  for (const gone of ["translateOffered", "koreanToAnimate"]) assert.ok(!(gone in landing), gone);
+  for (const k of ["translateKr", "translateKrAnimate", "errTranslate", "koreanFor", "casualLabel"]) assert.ok(!(k in UI), k);
+  // Animate sends whatever was typed, in the language its letters show (en, ko or mix)
+  assert.match(page, /fetchCustom\(typed\.trim\(\), lang\)/);
+  assert.match(page, /t\("animate"\)/);
+});
+
+test("no 존댓말 / 반말 switch left (only English -> Korean translations had two forms)", () => {
+  for (const f of ["../components/FormalitySwitch.tsx", "../components/FormalityLine.tsx", "./translations.ts", "./translations.test.ts"])
+    assert.ok(!existsSync(new URL(f, import.meta.url)), f);
+});
+
+test("a typed Korean sentence still shows its English meaning", () => {
+  assert.match(page, /<Translation text=\{shown\.text\} \/>/);
 });

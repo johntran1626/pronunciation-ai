@@ -1,6 +1,6 @@
 "use client";
-// The small Autoplay switch in the type box (same look as the 존댓말 / 반말 switch). On by default: a new
-// animation plays by itself. Off: it loads and waits on Play.
+// The small Autoplay switch in the type box. On by default: a new animation plays by itself.
+// Off: it loads and waits on Play.
 
 import { useUi } from "@/components/UiLang";
 

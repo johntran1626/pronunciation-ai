@@ -76,3 +76,7 @@ test("describeChecks is honest when only the sentence check is live", () => {
 test("describeChecks with nothing live says nothing was graded", () => {
   assert.equal(describeChecks([]), "No checks are switched on yet, so nothing was graded.");
 });
+
+test("a sentence check that only rejects silence is described as such, not as reading the sentence", () => {
+  assert.equal(describeChecks(["speech_heard"]), "This version checks that speech was heard. Plain text = not checked yet.");
+});

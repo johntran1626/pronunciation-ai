@@ -142,3 +142,16 @@ def test_api_says_which_checks_are_live():
     body = post(wav_bytes(0.3 * np.sin(2 * np.pi * 440 * t)), "From now on we're pals.", "en").json()
     assert "r_as_l" in body["checks"]
     assert isinstance(body["checks"], list)
+
+
+# ---------- the honesty line names what the sentence check really does ----------
+def test_a_sentence_check_that_only_rejects_silence_is_called_speech_heard():
+    from backend.match import active_checks
+    lenient = {"ko": {"sentence": {"enabled": True, "min_heard": 0.0, "min_conf": 0.0}, "word": {"enabled": False}}}
+    assert active_checks("ko", {}, lenient) == ["speech_heard"]
+
+
+def test_a_real_sentence_check_is_still_sentence_match():
+    from backend.match import active_checks
+    real = {"en": {"sentence": {"enabled": True, "min_heard": 0.0, "min_conf": 0.44}, "word": {"enabled": True}}}
+    assert active_checks("en", {}, real) == ["sentence_match", "word_heard"]

@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { DEFAULT_UI, UI, describeChecksIn, descText, problemText, say, tipText, tr } from "./i18n.ts";
+import { DEFAULT_UI, UI, describeChecksIn, descText, problemText, say, tipText } from "./i18n.ts";
 import { caption, airflowPhrases } from "./mouthViews.ts";
 import { callout, geometry, VIEW, textWidth } from "./mouth.ts";
 import { seeingSpeech } from "./reference.ts";
@@ -24,8 +24,6 @@ test("every site string has a Korean version with the same {slots}", () => {
     assert.ok(HANGUL.test(v.ko), `${key}: no Hangul in "${v.ko}"`);
     assert.deepEqual(slots(v.ko), slots(v.en), key);
   }
-  assert.equal(tr("en", "koreanFor", { en: "Hi." }), "Korean for: Hi.");
-  assert.match(tr("ko", "koreanFor", { en: "Hi." }), /Hi\./);
 });
 
 test("every tip has Korean labels, a what-happened line with the {word} slot, and a tip", () => {
@@ -84,4 +82,8 @@ test("typing problems in both languages", () => {
   assert.ok(HANGUL.test(problemText("ko", "")!));
   assert.ok(HANGUL.test(problemText("ko", "a".repeat(81))!) && problemText("ko", "a".repeat(81))!.includes("81"));
   assert.equal(problemText("ko", "hello"), null);
+});
+
+test("the Korean honesty line has a Korean name for every check, incl. speech_heard", () => {
+  assert.doesNotMatch(describeChecksIn("ko", ["speech_heard"]), /speech_heard/);
 });
