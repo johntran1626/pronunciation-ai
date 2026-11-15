@@ -51,7 +51,7 @@ function Lines({ typed, big }: { typed: Typed; big: boolean }) {
       <p lang="ko" className={`relative m-0 font-display leading-[1.3] break-keep ${big ? "text-[22px]" : "text-lg"}`}>
         {shown?.line.href ? (
           <a href={shown.line.href} target="_blank" rel="noopener noreferrer"
-            className="underline decoration-blue decoration-2 underline-offset-4 hover:text-blue">{text}</a>
+            className="no-underline hover:text-blue">{text}</a>
         ) : text}
       </p>
       <p lang="en" className={`relative mb-0 font-medium text-neutral-600 ${big ? "mt-1 min-h-[18px] text-sm" : "mt-[3px] min-h-4 text-xs"}`}>
