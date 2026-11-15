@@ -1,0 +1,679 @@
+{
+ "source": "eval/korean_checks.py",
+ "model": "slplab/wav2vec2-xls-r-300m_phone-mfa_korean",
+ "revision": "e26ff9dfb62169acf445d0060ef56863c018b20e",
+ "warning": "Bar 2 counts every red on top-rated learner readings, real mistakes included, so it is an UPPER BOUND on false alarms. Bar 4 uses SIMULATED errors on native speech (optimistic; rule-out only). AI Hub has no per-sound labels: no learner detection rate exists. Natives are Zeroth (other microphones than AI Hub's phones). Counts only.",
+ "settings": {
+  "tune_cap": 0.0025,
+  "bar1": 0.005,
+  "bar2": 0.01,
+  "bar4": 0.25,
+  "min_errors": 30,
+  "min_error_speakers": 5,
+  "min_top_sounds": 200,
+  "per_speaker": 40
+ },
+ "recordings": {
+  "done": 5821,
+  "failed": 0,
+  "natives": 1368,
+  "learners": 4453,
+  "learner_speakers": 151
+ },
+ "checks": {
+  "ㅓ_as_ㅗ": {
+   "cut": 0.9755,
+   "tune_correct": 3830,
+   "bar1": {
+    "k": 7,
+    "n": 1830,
+    "rate": 0.0038,
+    "ci95": [
+     0.0019,
+     0.0079
+    ],
+    "cap": 0.005,
+    "pass": true
+   },
+   "bar2": {
+    "k": 292,
+    "n": 10061,
+    "rate": 0.029,
+    "ci95": [
+     0.0259,
+     0.0325
+    ],
+    "cap": 0.01,
+    "pass": false
+   },
+   "bar3": {
+    "top": {
+     "k": 292,
+     "n": 10061,
+     "rate": 0.029,
+     "ci95": [
+      0.0259,
+      0.0325
+     ]
+    },
+    "lower_rated": {
+     "k": 704,
+     "n": 13970,
+     "rate": 0.0504,
+     "ci95": [
+      0.0469,
+      0.0541
+     ]
+    },
+    "gap": 0.0214,
+    "gap_ci95_by_speaker": [
+     0.0098,
+     0.0356
+    ],
+    "pass": true
+   },
+   "bar4": {
+    "k": 350,
+    "n": 445,
+    "rate": 0.7865,
+    "ci95": [
+     0.7461,
+     0.8221
+    ],
+    "speakers": 10,
+    "bar": 0.25,
+    "pass": true
+   },
+   "live": false
+  },
+  "ㅗ_as_ㅓ": {
+   "cut": 0.8241,
+   "tune_correct": 3552,
+   "bar1": {
+    "k": 5,
+    "n": 1737,
+    "rate": 0.0029,
+    "ci95": [
+     0.0012,
+     0.0067
+    ],
+    "cap": 0.005,
+    "pass": true
+   },
+   "bar2": {
+    "k": 276,
+    "n": 7089,
+    "rate": 0.0389,
+    "ci95": [
+     0.0347,
+     0.0437
+    ],
+    "cap": 0.01,
+    "pass": false
+   },
+   "bar3": {
+    "top": {
+     "k": 276,
+     "n": 7089,
+     "rate": 0.0389,
+     "ci95": [
+      0.0347,
+      0.0437
+     ]
+    },
+    "lower_rated": {
+     "k": 741,
+     "n": 10063,
+     "rate": 0.0736,
+     "ci95": [
+      0.0687,
+      0.0789
+     ]
+    },
+    "gap": 0.0347,
+    "gap_ci95_by_speaker": [
+     0.0217,
+     0.0493
+    ],
+    "pass": true
+   },
+   "bar4": {
+    "k": 365,
+    "n": 443,
+    "rate": 0.8239,
+    "ci95": [
+     0.7857,
+     0.8566
+    ],
+    "speakers": 10,
+    "bar": 0.25,
+    "pass": true
+   },
+   "live": false
+  },
+  "ㅡ_as_ㅜ": {
+   "cut": 0.5358,
+   "tune_correct": 4612,
+   "bar1": {
+    "k": 14,
+    "n": 2404,
+    "rate": 0.0058,
+    "ci95": [
+     0.0035,
+     0.0098
+    ],
+    "cap": 0.005,
+    "pass": false
+   },
+   "bar2": {
+    "k": 87,
+    "n": 9154,
+    "rate": 0.0095,
+    "ci95": [
+     0.0077,
+     0.0117
+    ],
+    "cap": 0.01,
+    "pass": true
+   },
+   "bar3": {
+    "top": {
+     "k": 87,
+     "n": 9154,
+     "rate": 0.0095,
+     "ci95": [
+      0.0077,
+      0.0117
+     ]
+    },
+    "lower_rated": {
+     "k": 185,
+     "n": 12974,
+     "rate": 0.0143,
+     "ci95": [
+      0.0124,
+      0.0164
+     ]
+    },
+    "gap": 0.0048,
+    "gap_ci95_by_speaker": [
+     0.0004,
+     0.0094
+    ],
+    "pass": true
+   },
+   "bar4": {
+    "k": 362,
+    "n": 423,
+    "rate": 0.8558,
+    "ci95": [
+     0.8191,
+     0.8861
+    ],
+    "speakers": 10,
+    "bar": 0.25,
+    "pass": true
+   },
+   "live": false
+  },
+  "ㅜ_as_ㅡ": {
+   "cut": 0.9776,
+   "tune_correct": 2529,
+   "bar1": {
+    "k": 2,
+    "n": 1319,
+    "rate": 0.0015,
+    "ci95": [
+     0.0004,
+     0.0055
+    ],
+    "cap": 0.005,
+    "pass": true
+   },
+   "bar2": {
+    "k": 23,
+    "n": 4168,
+    "rate": 0.0055,
+    "ci95": [
+     0.0037,
+     0.0083
+    ],
+    "cap": 0.01,
+    "pass": true
+   },
+   "bar3": {
+    "top": {
+     "k": 23,
+     "n": 4168,
+     "rate": 0.0055,
+     "ci95": [
+      0.0037,
+      0.0083
+     ]
+    },
+    "lower_rated": {
+     "k": 89,
+     "n": 5810,
+     "rate": 0.0153,
+     "ci95": [
+      0.0125,
+      0.0188
+     ]
+    },
+    "gap": 0.0098,
+    "gap_ci95_by_speaker": [
+     0.0049,
+     0.015
+    ],
+    "pass": true
+   },
+   "bar4": {
+    "k": 358,
+    "n": 456,
+    "rate": 0.7851,
+    "ci95": [
+     0.7451,
+     0.8203
+    ],
+    "speakers": 10,
+    "bar": 0.25,
+    "pass": true
+   },
+   "live": true
+  },
+  "lenis_as_tense": {
+   "cut": 0.8001,
+   "tune_correct": 9173,
+   "bar1": {
+    "k": 14,
+    "n": 4691,
+    "rate": 0.003,
+    "ci95": [
+     0.0018,
+     0.005
+    ],
+    "cap": 0.005,
+    "pass": true
+   },
+   "bar2": {
+    "k": 189,
+    "n": 19657,
+    "rate": 0.0096,
+    "ci95": [
+     0.0083,
+     0.0111
+    ],
+    "cap": 0.01,
+    "pass": true
+   },
+   "bar3": {
+    "top": {
+     "k": 189,
+     "n": 19657,
+     "rate": 0.0096,
+     "ci95": [
+      0.0083,
+      0.0111
+     ]
+    },
+    "lower_rated": {
+     "k": 610,
+     "n": 27019,
+     "rate": 0.0226,
+     "ci95": [
+      0.0209,
+      0.0244
+     ]
+    },
+    "gap": 0.013,
+    "gap_ci95_by_speaker": [
+     0.0083,
+     0.0181
+    ],
+    "pass": true
+   },
+   "bar4": {
+    "k": 170,
+    "n": 213,
+    "rate": 0.7981,
+    "ci95": [
+     0.7392,
+     0.8465
+    ],
+    "speakers": 10,
+    "bar": 0.25,
+    "pass": true
+   },
+   "live": true
+  },
+  "lenis_as_asp": {
+   "cut": 0.2867,
+   "tune_correct": 9173,
+   "bar1": {
+    "k": 17,
+    "n": 4691,
+    "rate": 0.0036,
+    "ci95": [
+     0.0023,
+     0.0058
+    ],
+    "cap": 0.005,
+    "pass": true
+   },
+   "bar2": {
+    "k": 417,
+    "n": 19657,
+    "rate": 0.0212,
+    "ci95": [
+     0.0193,
+     0.0233
+    ],
+    "cap": 0.01,
+    "pass": false
+   },
+   "bar3": {
+    "top": {
+     "k": 417,
+     "n": 19657,
+     "rate": 0.0212,
+     "ci95": [
+      0.0193,
+      0.0233
+     ]
+    },
+    "lower_rated": {
+     "k": 1125,
+     "n": 27019,
+     "rate": 0.0416,
+     "ci95": [
+      0.0393,
+      0.0441
+     ]
+    },
+    "gap": 0.0204,
+    "gap_ci95_by_speaker": [
+     0.0138,
+     0.0272
+    ],
+    "pass": true
+   },
+   "bar4": {
+    "k": 401,
+    "n": 445,
+    "rate": 0.9011,
+    "ci95": [
+     0.8699,
+     0.9255
+    ],
+    "speakers": 10,
+    "bar": 0.25,
+    "pass": true
+   },
+   "live": false
+  },
+  "tense_as_lenis": {
+   "cut": 0.9859,
+   "tune_correct": 504,
+   "bar1": {
+    "k": 3,
+    "n": 296,
+    "rate": 0.0101,
+    "ci95": [
+     0.0035,
+     0.0294
+    ],
+    "cap": 0.005,
+    "pass": false
+   },
+   "bar2": {
+    "k": 89,
+    "n": 2153,
+    "rate": 0.0413,
+    "ci95": [
+     0.0337,
+     0.0506
+    ],
+    "cap": 0.01,
+    "pass": false
+   },
+   "bar3": {
+    "top": {
+     "k": 89,
+     "n": 2153,
+     "rate": 0.0413,
+     "ci95": [
+      0.0337,
+      0.0506
+     ]
+    },
+    "lower_rated": {
+     "k": 299,
+     "n": 3096,
+     "rate": 0.0966,
+     "ci95": [
+      0.0867,
+      0.1075
+     ]
+    },
+    "gap": 0.0552,
+    "gap_ci95_by_speaker": [
+     0.0361,
+     0.0734
+    ],
+    "pass": true
+   },
+   "bar4": {
+    "k": 987,
+    "n": 1255,
+    "rate": 0.7865,
+    "ci95": [
+     0.7629,
+     0.8082
+    ],
+    "speakers": 10,
+    "bar": 0.25,
+    "pass": true
+   },
+   "live": false
+  },
+  "tense_as_asp": {
+   "cut": 0.9936,
+   "tune_correct": 504,
+   "bar1": {
+    "k": 0,
+    "n": 296,
+    "rate": 0.0,
+    "ci95": [
+     0.0,
+     0.0128
+    ],
+    "cap": 0.005,
+    "pass": true
+   },
+   "bar2": {
+    "k": 32,
+    "n": 2153,
+    "rate": 0.0149,
+    "ci95": [
+     0.0105,
+     0.0209
+    ],
+    "cap": 0.01,
+    "pass": false
+   },
+   "bar3": {
+    "top": {
+     "k": 32,
+     "n": 2153,
+     "rate": 0.0149,
+     "ci95": [
+      0.0105,
+      0.0209
+     ]
+    },
+    "lower_rated": {
+     "k": 103,
+     "n": 3096,
+     "rate": 0.0333,
+     "ci95": [
+      0.0275,
+      0.0402
+     ]
+    },
+    "gap": 0.0184,
+    "gap_ci95_by_speaker": [
+     0.008,
+     0.0272
+    ],
+    "pass": true
+   },
+   "bar4": {
+    "k": 286,
+    "n": 468,
+    "rate": 0.6111,
+    "ci95": [
+     0.5662,
+     0.6542
+    ],
+    "speakers": 10,
+    "bar": 0.25,
+    "pass": true
+   },
+   "live": false
+  },
+  "asp_as_lenis": {
+   "cut": 0.9837,
+   "tune_correct": 1405,
+   "bar1": {
+    "k": 4,
+    "n": 697,
+    "rate": 0.0057,
+    "ci95": [
+     0.0022,
+     0.0147
+    ],
+    "cap": 0.005,
+    "pass": false
+   },
+   "bar2": {
+    "k": 121,
+    "n": 2068,
+    "rate": 0.0585,
+    "ci95": [
+     0.0492,
+     0.0695
+    ],
+    "cap": 0.01,
+    "pass": false
+   },
+   "bar3": {
+    "top": {
+     "k": 121,
+     "n": 2068,
+     "rate": 0.0585,
+     "ci95": [
+      0.0492,
+      0.0695
+     ]
+    },
+    "lower_rated": {
+     "k": 305,
+     "n": 3002,
+     "rate": 0.1016,
+     "ci95": [
+      0.0913,
+      0.1129
+     ]
+    },
+    "gap": 0.0431,
+    "gap_ci95_by_speaker": [
+     0.02,
+     0.0656
+    ],
+    "pass": true
+   },
+   "bar4": {
+    "k": 1021,
+    "n": 1255,
+    "rate": 0.8135,
+    "ci95": [
+     0.7911,
+     0.8341
+    ],
+    "speakers": 10,
+    "bar": 0.25,
+    "pass": true
+   },
+   "live": false
+  },
+  "asp_as_tense": {
+   "cut": 0.8753,
+   "tune_correct": 1405,
+   "bar1": {
+    "k": 7,
+    "n": 697,
+    "rate": 0.01,
+    "ci95": [
+     0.0049,
+     0.0206
+    ],
+    "cap": 0.005,
+    "pass": false
+   },
+   "bar2": {
+    "k": 55,
+    "n": 2068,
+    "rate": 0.0266,
+    "ci95": [
+     0.0205,
+     0.0345
+    ],
+    "cap": 0.01,
+    "pass": false
+   },
+   "bar3": {
+    "top": {
+     "k": 55,
+     "n": 2068,
+     "rate": 0.0266,
+     "ci95": [
+      0.0205,
+      0.0345
+     ]
+    },
+    "lower_rated": {
+     "k": 88,
+     "n": 3002,
+     "rate": 0.0293,
+     "ci95": [
+      0.0239,
+      0.036
+     ]
+    },
+    "gap": 0.0027,
+    "gap_ci95_by_speaker": [
+     -0.0101,
+     0.016
+    ],
+    "pass": false
+   },
+   "bar4": {
+    "k": 188,
+    "n": 237,
+    "rate": 0.7932,
+    "ci95": [
+     0.7372,
+     0.8399
+    ],
+    "speakers": 10,
+    "bar": 0.25,
+    "pass": true
+   },
+   "live": false
+  }
+ },
+ "live": [
+  "lenis_as_tense",
+  "ㅜ_as_ㅡ"
+ ]
+}

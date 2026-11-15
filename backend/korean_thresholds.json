@@ -1,0 +1,47 @@
+{
+ "source": "eval/korean_checks.py (see results/korean_checks.json)",
+ "model": "slplab/wav2vec2-xls-r-300m_phone-mfa_korean",
+ "revision": "e26ff9dfb62169acf445d0060ef56863c018b20e",
+ "checks": {
+  "ㅓ_as_ㅗ": {
+   "enabled": false,
+   "cut": 0.9755
+  },
+  "ㅗ_as_ㅓ": {
+   "enabled": false,
+   "cut": 0.8241
+  },
+  "ㅡ_as_ㅜ": {
+   "enabled": false,
+   "cut": 0.5358
+  },
+  "ㅜ_as_ㅡ": {
+   "enabled": true,
+   "cut": 0.9776
+  },
+  "lenis_as_tense": {
+   "enabled": true,
+   "cut": 0.8001
+  },
+  "lenis_as_asp": {
+   "enabled": false,
+   "cut": 0.2867
+  },
+  "tense_as_lenis": {
+   "enabled": false,
+   "cut": 0.9859
+  },
+  "tense_as_asp": {
+   "enabled": false,
+   "cut": 0.9936
+  },
+  "asp_as_lenis": {
+   "enabled": false,
+   "cut": 0.9837
+  },
+  "asp_as_tense": {
+   "enabled": false,
+   "cut": 0.8753
+  }
+ }
+}
