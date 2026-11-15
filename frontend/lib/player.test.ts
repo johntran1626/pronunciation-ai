@@ -1,9 +1,9 @@
-// The native mouth player: speed changes at any moment, a fresh 1x player for every new animation, the autoplay
+// The native mouth player: speed changes at once at any moment, a fresh 1x player for every new animation, the autoplay
 // setting, and Replay kept beside the speed buttons (never over the picture).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { AUTOPLAY_DEFAULT, SPEEDS, changeSpeed, playerKey, readAutoplay, saveAutoplay, type Media } from "./player.ts";
+import { AUTOPLAY_DEFAULT, SPEEDS, applySpeed, playerKey, readAutoplay, saveAutoplay, type Media } from "./player.ts";
 import { DEFAULT_SPEED } from "./animate.ts";
 
 // a stand-in for the <audio> element: the clock moves only while playing
@@ -21,32 +21,43 @@ test("the speeds are 1x and 0.5x, and every player starts at 1x", () => {
   assert.equal(DEFAULT_SPEED, 1);
 });
 
-test("changing speed mid-audio keeps playing from the same spot at the new speed, however often it's changed", async () => {
+test("changing speed mid-audio takes effect at once: no pause, no seek, however fast it's clicked", () => {
   const a = fakeAudio(1.2);
-  for (const s of [0.5, 1, 0.5, 1, 0.5]) {
-    await changeSpeed(a, s);
+  for (const s of [0.5, 1, 0.5, 1, 0.5, 1]) {
+    applySpeed(a, s);
     assert.equal(a.paused, false, `still playing after ${s}x`);
     assert.equal(a.playbackRate, s);
     assert.equal(a.defaultPlaybackRate, s); // some browsers fall back to the default rate on play()
     assert.equal(a.currentTime, 1.2, "no jump");
   }
-  assert.equal(a.log.at(-1), "play@1.2x0.5");
+  assert.deepEqual(a.log, [], "never paused or restarted, so no click is lost to a half-finished restart");
 });
 
-test("changing speed while paused or after the end only sets the speed for the next play", async () => {
+test("changing speed while paused or after the end sets the speed for the next play", () => {
   const a = fakeAudio(0.4);
   a.paused = true;
-  await changeSpeed(a, 0.5);
+  applySpeed(a, 0.5);
   assert.equal(a.paused, true);
   assert.equal(a.playbackRate, 0.5);
+  assert.equal(a.defaultPlaybackRate, 0.5);
   assert.deepEqual(a.log, []);
 });
 
-test("a blocked play() after a speed change doesn't throw", async () => {
+test("if the browser puts back an old speed (on play, replay or the end), the chosen one is restored", () => {
   const a = fakeAudio();
-  a.play = () => Promise.reject(new Error("NotAllowedError"));
-  await changeSpeed(a, 0.5);
-  assert.equal(a.playbackRate, 0.5);
+  applySpeed(a, 1);
+  a.playbackRate = 0.5; // the stale rate a browser kept from before
+  assert.equal(applySpeed(a, 1), true, "reports that it had to fix the rate");
+  assert.equal(a.playbackRate, 1);
+  assert.equal(applySpeed(a, 1), false, "already right: touches nothing (safe to call every frame)");
+});
+
+test("the player keeps the chosen speed on the clip: on every click, before and after play(), and every frame", () => {
+  const src = readFileSync(new URL("../components/NativeMouth.tsx", import.meta.url), "utf8");
+  assert.ok(!src.includes("changeSpeed"), "the old pause / seek / play switch is gone");
+  assert.match(src, /speedNow\.current = s/, "the click updates the speed the clock reads");
+  assert.ok((src.match(/applySpeed\(/g) ?? []).length >= 4, "click, before play, after play, every frame");
+  assert.match(src, /onPlaying=\{/, "re-applied once sound actually starts");
 });
 
 test("every new animation gets its own player, even for the same sentence (so it starts at 1x and plays again)", () => {

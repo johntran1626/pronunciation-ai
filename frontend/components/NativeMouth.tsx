@@ -29,7 +29,7 @@ import {
 import { loadCardData, type TextLang } from "@/lib/api";
 import { side } from "@/lib/mouthViews";
 import { loadNativeClip } from "@/lib/native";
-import { SPEEDS, changeSpeed, scrubFill, speedLabel } from "@/lib/player";
+import { SPEEDS, applySpeed, scrubFill, speedLabel } from "@/lib/player";
 import { playSlice, stopPlayback } from "@/lib/replay";
 import { encodeWav16 } from "@/lib/wav";
 
@@ -64,6 +64,7 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
   const [attempt, setAttempt] = useState(0); // bumped by "Try again"
   const [t, setT] = useState(0);
   const [speed, setSpeed] = useState(DEFAULT_SPEED);
+  const speedNow = useRef(DEFAULT_SPEED); // the same speed, for the clock and the audio events (never a stale copy)
   const [playing, setPlaying] = useState(false);
   const [ended, setEnded] = useState(false);
   const [showKey, setShowKey] = useState(false); // "placement tips", off by default
@@ -89,12 +90,16 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
   // the object URL lives as long as this clip is shown
   useEffect(() => () => { if (clip) URL.revokeObjectURL(clip.url); }, [clip]);
 
-  // while playing, redraw every screen frame from the audio clock (so the picture can't drift from the sound)
+  // while playing, redraw every screen frame from the audio clock (so the picture can't drift from the sound),
+  // and keep the chosen speed on the clip in case the browser put an old one back
   useEffect(() => {
     if (!playing) return;
     let id = 0;
     const loop = () => {
-      if (audio.current) setT(audio.current.currentTime);
+      if (audio.current) {
+        applySpeed(audio.current, speedNow.current);
+        setT(audio.current.currentTime);
+      }
       id = requestAnimationFrame(loop);
     };
     id = requestAnimationFrame(loop);
@@ -136,11 +141,10 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
     if (!a || !clip) return;
     stopPlayback();
     if (fromTop || ended || a.currentTime >= clip.duration - 0.01) a.currentTime = 0;
-    a.defaultPlaybackRate = speed;
-    a.playbackRate = speed;
+    applySpeed(a, speedNow.current);
     setEnded(false);
     a.play().then(
-      () => setPlaying(true),
+      () => { applySpeed(a, speedNow.current); setPlaying(true); }, // some browsers reset the rate on play()
       () => setPlaying(false), // sound blocked until the visitor taps: Play stays on screen
     );
   }
@@ -291,7 +295,7 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
           <div role="group" aria-label={tr("speed")}
             className="flex min-w-[76px] flex-1 overflow-hidden rounded-xl border-[2.5px] border-ink lg:w-[220px] lg:flex-none lg:rounded-[14px] lg:shadow-pop-sm">
             {SPEEDS.map((s, i) => (
-              <button key={s} onClick={() => { setSpeed(s); if (audio.current) void changeSpeed(audio.current, s); }} aria-pressed={s === speed}
+              <button key={s} onClick={() => { setSpeed(s); speedNow.current = s; if (audio.current) applySpeed(audio.current, s); }} aria-pressed={s === speed}
                 className={`h-[41px] flex-1 font-display text-[15px] lg:h-[47px] lg:text-lg ${i ? "border-l-[2.5px] border-ink" : ""} ${s === speed ? "bg-ink text-white" : "bg-white text-ink"}`}>
                 {speedLabel(s)}
               </button>
@@ -304,6 +308,7 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
       <audio ref={audio} src={clip.url} preload="auto" muted={muted}
         // plays once on its own as soon as the clip can play (autoplay on)
         onCanPlay={() => { if (!autoplayed.current) { autoplayed.current = true; if (autoplay) start(); } }}
+        onPlaying={() => { if (audio.current) applySpeed(audio.current, speedNow.current); }}
         onEnded={() => { setPlaying(false); setEnded(true); if (audio.current) setT(audio.current.duration); }} />
     </div>
   );

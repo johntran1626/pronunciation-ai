@@ -20,22 +20,15 @@ export type Media = {
   play(): Promise<void>;
 };
 
-/** Switch speed at any moment. While playing, the clip pauses, takes the new rate and carries on from the same
- * spot: some browsers (Safari among them) ignore a rate change on a clip that's already playing, and some fall
- * back to the default rate on play(), so both rates are set. Paused or ended: just the rate for the next play. */
-export async function changeSpeed(a: Media, s: number): Promise<void> {
+/** Put the chosen speed on the clip, right now, playing or not. It never pauses or seeks, so a click can't be lost
+ * to a restart that's still in progress. Both rates are set because some browsers fall back to the default rate on
+ * play(). Returns true only if something had to change, so the player can call it every frame to undo a browser
+ * that quietly put an old speed back (on play, on replay, after the end). */
+export function applySpeed(a: Media, s: number): boolean {
+  if (a.playbackRate === s && a.defaultPlaybackRate === s) return false;
   a.defaultPlaybackRate = s;
-  if (a.paused || a.ended) {
-    a.playbackRate = s;
-    return;
-  }
-  const at = a.currentTime;
-  a.pause();
   a.playbackRate = s;
-  a.currentTime = at;
-  try {
-    await a.play();
-  } catch {} // sound blocked: Play stays on screen
+  return true;
 }
 
 /** React key for the player. `run` goes up with every new animation, so animating the same sentence again still
