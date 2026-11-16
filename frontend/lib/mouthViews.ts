@@ -30,6 +30,14 @@ export function views(e: Entry): [View, View] {
   return ["front", hidden(e) ? "inside" : "side"];
 }
 
+/** What the mirror view shows in blue (the key part): the lips when they ARE the action (p/b/m, f/v, every vowel,
+ * w and other rounding you can see from the side), the tongue when its tip is the action you can see (l, t, d, n,
+ * TH). English r / sh round the lips a little, but their key action is the tongue (hidden), so nothing is blue. */
+export function keyParts(e: Entry): { lips: boolean; tongue: boolean } {
+  const lips = isVowel(e) || e.lips === "closed" || (e.lips === "rounded" && views(e)[1] === "side");
+  return { lips, tongue: e.svg.tip === "alveolar" || e.svg.tip === "dental" };
+}
+
 // ---------- mirror (front) view ----------
 export type Front = {
   width: number; // mouth width (drawing units, out of a 120-wide picture)

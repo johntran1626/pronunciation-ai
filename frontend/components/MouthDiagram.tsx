@@ -3,10 +3,13 @@ import { useUi } from "@/components/UiLang";
 import { say } from "@/lib/i18n";
 import type { ArticulationEntry } from "@/lib/api";
 import { facePaths, floorPath, geometry, mouthOpening, textWidth, type Callout, OPENING_BACK_X, palateY, PHARYNX_X, POP_VIEW, soundWaves, tonguePath, VELUM_CTRL, VELUM_START, VIEW, type Geometry, type Pt } from "@/lib/mouth";
-import { caption, front, LOWER_TOOTH_SHOWS, side, UPPER_TOOTH_SHOWS, views, type View } from "@/lib/mouthViews";
+import { caption, front, keyParts, LOWER_TOOTH_SHOWS, side, UPPER_TOOTH_SHOWS, views, type View } from "@/lib/mouthViews";
+import type { FrontPose } from "@/lib/animate";
+import { plainDescription } from "@/lib/card";
 
-// Line-art mouth pictures in a line-art style (thin brown lines on a cream background, the key part
-// in an accent colour). Two small pictures per sound, picked by lib/mouthViews.ts from articulation.json:
+// Mouth pictures in the site's look (the same as the native mouth animation): black outlines on the pale tray
+// colour, a pink tongue, white teeth, the key part in blue. Two small pictures per sound, picked by
+// lib/mouthViews.ts from articulation.json:
 //   - "mirror" (front) view for every sound;
 //   - side view (outside profile) when the action is visible from outside, with marks for airflow / voice;
 //   - inside view (simple cut-away, geometry from lib/mouth.ts) when it's hidden (tongue on the ridge, English r,
@@ -15,22 +18,31 @@ import { caption, front, LOWER_TOOTH_SHOWS, side, UPPER_TOOTH_SHOWS, views, type
 
 const p = (pt: Pt) => `${pt.x.toFixed(1)} ${pt.y.toFixed(1)}`;
 
-const BG = "fill-[#f7f3ec] dark:fill-[#211d1a]";
-const INK = "stroke-[#5b4b40] dark:stroke-[#d8cbbd]";
-const ACCENT = "stroke-[#c2410c] dark:stroke-[#fb923c]";
-const ACCENT_FILL = "fill-[#c2410c] dark:fill-[#fb923c]";
-const MOUTH = "fill-[#e9ddd0] dark:fill-[#3a322c]"; // inside of the open mouth
-const TONGUE = "fill-[#f1c6be] dark:fill-[#9c625c]";
-const TEETH = "fill-white dark:fill-[#f3ede4]";
+// the line look (only the dev animation page still draws the cut-away in it)
+const BG = "fill-[#f7f3ec]";
+const INK = "stroke-[#5b4b40]";
+const ACCENT = "stroke-[#c2410c]";
+const ACCENT_FILL = "fill-[#c2410c]";
+const TONGUE = "fill-[#f1c6be]";
+const TEETH = "fill-white";
+// the pop look (the mirror and side views, and every picture on the site)
+const P_BG = "fill-tray";
+const P_INK = "stroke-ink";
+const P_KEY = "stroke-blue"; // the key part (lips for p, the lower lip for f)
+const P_AIR = "stroke-blue"; // a puff of air, air through the nose
+const P_VOICE = "stroke-pink"; // the buzz in the throat (not blue: blue waves mean air)
+const P_MOUTH = "fill-mouth"; // inside of the open mouth: dark, so open and closed differ at a glance
+const P_TONGUE = "fill-[#FFB3D1]";
 const line = { fill: "none", strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
 
 // ---------- 1. mirror (front) view ----------
-function FrontView({ e, focusLips, focusTongue }: { e: ArticulationEntry; focusLips: boolean; focusTongue: boolean }) {
-  const f = front(e);
+// From a FrontPose, so the animation can draw the in-between shapes too (lib/animate.ts frontAt).
+export function FrontView({ f, focusLips = false, focusTongue = false }: { f: FrontPose; focusLips?: boolean; focusTongue?: boolean }) {
+  const BG = P_BG, INK = P_INK, ACCENT = P_KEY, MOUTH = P_MOUTH, TONGUE = P_TONGUE, TEETH = "fill-white";
   const cx = 60, cy = 54;
   const hw = f.width / 2;
   const top = f.height * 0.45, bot = f.height * 0.55; // the opening is a little deeper below the centre line
-  const round = e.svg.lip_round > 0.5;
+  const round = f.round > 0.5;
   const lipInk = focusLips ? ACCENT : INK;
   // the opening between the lips: a lens, or an oval when the lips are rounded
   const opening = round
@@ -38,12 +50,12 @@ function FrontView({ e, focusLips, focusTongue }: { e: ArticulationEntry; focusL
     : `M ${cx - hw + 3} ${cy} Q ${cx} ${cy - 2 * top} ${cx + hw - 3} ${cy} Q ${cx} ${cy + 2 * bot} ${cx - hw + 3} ${cy} Z`;
   const upper = `M ${cx - hw} ${cy} C ${cx - hw * 0.65} ${cy - top - 9} ${cx - 7} ${cy - top - 10} ${cx} ${cy - top - 7} C ${cx + 7} ${cy - top - 10} ${cx + hw * 0.65} ${cy - top - 9} ${cx + hw} ${cy}`;
   const lower = `M ${cx - hw} ${cy} C ${cx - hw * 0.6} ${cy + bot + 12} ${cx + hw * 0.6} ${cy + bot + 12} ${cx + hw} ${cy}`;
-  const clip = `front-${e.svg.tip}-${f.width}-${f.height}-${e.lips}`.replace(/[^a-zA-Z0-9-]/g, "");
+  const clip = `front-${useId().replace(/:/g, "")}`;
   const teethRow = (y: number, h: number) => (
     <g>
-      <rect x={cx - hw} y={y} width={2 * hw} height={h} className={`${TEETH} ${INK}`} strokeWidth={0.8} />
+      <rect x={cx - hw} y={y} width={2 * hw} height={h} className={`${TEETH} ${INK}`} strokeWidth={1.08} />
       {[-21, -15, -9, 0, 9, 15, 21].map((dx) => (
-        <line key={dx} x1={cx + dx} y1={y} x2={cx + dx} y2={y + h} className={INK} strokeWidth={0.6} />
+        <line key={dx} x1={cx + dx} y1={y} x2={cx + dx} y2={y + h} className={INK} strokeWidth={0.81} />
       ))}
     </g>
   );
@@ -52,22 +64,22 @@ function FrontView({ e, focusLips, focusTongue }: { e: ArticulationEntry; focusL
       <rect width={120} height={100} className={BG} />
       <g transform="translate(60 60) scale(1.5) translate(-60 -54)">
       {/* nose */}
-      <path d="M 49 17 Q 45 24 51 26 M 71 17 Q 75 24 69 26 M 53 25 Q 56 29 60 27 Q 64 29 67 25" className={INK} strokeWidth={1.2} {...line} />
+      <path d="M 49 17 Q 45 24 51 26 M 71 17 Q 75 24 69 26 M 53 25 Q 56 29 60 27 Q 64 29 67 25" className={INK} strokeWidth={1.62} {...line} />
       {f.lowerLipUnderTeeth ? (
         <>
           {/* f, v: the upper teeth rest on the lower lip */}
-          <path d={upper} className={INK} strokeWidth={1.4} {...line} />
-          <path d={`M ${cx - hw + 3} ${cy - 1} Q ${cx} ${cy - 3} ${cx + hw - 3} ${cy - 1}`} className={INK} strokeWidth={1} {...line} />
-          <path d={`M ${cx - 14} ${cy - 1.5} L ${cx - 14} ${cy + 3.5} L ${cx + 14} ${cy + 3.5} L ${cx + 14} ${cy - 1.5} Z`} className={`${TEETH} ${INK}`} strokeWidth={0.9} />
-          {[-7, 0, 7].map((dx) => <line key={dx} x1={cx + dx} y1={cy - 1.5} x2={cx + dx} y2={cy + 3.5} className={INK} strokeWidth={0.6} />)}
-          <path d={`M ${cx - hw} ${cy + 1} Q ${cx} ${cy + 3} ${cx + hw} ${cy + 1}`} className={ACCENT} strokeWidth={1.4} {...line} />
-          <path d={`M ${cx - hw} ${cy + 1} C ${cx - hw * 0.6} ${cy + 13} ${cx + hw * 0.6} ${cy + 13} ${cx + hw} ${cy + 1}`} className={ACCENT} strokeWidth={1.6} {...line} />
+          <path d={upper} className={INK} strokeWidth={1.89} {...line} />
+          <path d={`M ${cx - hw + 3} ${cy - 1} Q ${cx} ${cy - 3} ${cx + hw - 3} ${cy - 1}`} className={INK} strokeWidth={1.35} {...line} />
+          <path d={`M ${cx - 14} ${cy - 1.5} L ${cx - 14} ${cy + 3.5} L ${cx + 14} ${cy + 3.5} L ${cx + 14} ${cy - 1.5} Z`} className={`${TEETH} ${INK}`} strokeWidth={1.22} />
+          {[-7, 0, 7].map((dx) => <line key={dx} x1={cx + dx} y1={cy - 1.5} x2={cx + dx} y2={cy + 3.5} className={INK} strokeWidth={0.81} />)}
+          <path d={`M ${cx - hw} ${cy + 1} Q ${cx} ${cy + 3} ${cx + hw} ${cy + 1}`} className={ACCENT} strokeWidth={1.89} {...line} />
+          <path d={`M ${cx - hw} ${cy + 1} C ${cx - hw * 0.6} ${cy + 13} ${cx + hw * 0.6} ${cy + 13} ${cx + hw} ${cy + 1}`} className={ACCENT} strokeWidth={2.16} {...line} />
         </>
       ) : f.closed ? (
         <>
-          <path d={upper} className={lipInk} strokeWidth={1.5} {...line} />
-          <path d={lower} className={lipInk} strokeWidth={1.5} {...line} />
-          <path d={`M ${cx - hw + 2} ${cy} Q ${cx} ${cy + 1.5} ${cx + hw - 2} ${cy}`} className={lipInk} strokeWidth={1.6} {...line} />
+          <path d={upper} className={lipInk} strokeWidth={2.03} {...line} />
+          <path d={lower} className={lipInk} strokeWidth={2.03} {...line} />
+          <path d={`M ${cx - hw + 2} ${cy} Q ${cx} ${cy + 1.5} ${cx + hw - 2} ${cy}`} className={lipInk} strokeWidth={2.16} {...line} />
         </>
       ) : (
         <>
@@ -78,13 +90,13 @@ function FrontView({ e, focusLips, focusTongue }: { e: ArticulationEntry; focusL
           </defs>
           <path d={opening} className={MOUTH} />
           <g clipPath={`url(#${clip})`}>
-            {f.tongue === "low" && <ellipse cx={cx} cy={cy + bot + 1} rx={hw * 0.55} ry={5} className={`${TONGUE} ${INK}`} strokeWidth={0.8} />}
+            {f.tongue === "low" && <ellipse cx={cx} cy={cy + bot + 1} rx={hw * 0.55} ry={5} className={`${TONGUE} ${INK}`} strokeWidth={1.08} />}
             {f.tongue === "tip_up" && (
               // the tongue rises BEHIND the upper teeth: drawn first, so the teeth cover its tip;
               // the centre line is the underside of the raised tongue
               <>
-                <path d={`M ${cx - 12} ${cy + bot + 2} C ${cx - 12} ${cy} ${cx - 7} ${cy - top + 1} ${cx} ${cy - top + 1} C ${cx + 7} ${cy - top + 1} ${cx + 12} ${cy} ${cx + 12} ${cy + bot + 2} Z`} className={`${TONGUE} ${focusTongue ? ACCENT : INK}`} strokeWidth={1.3} />
-                <line x1={cx} y1={cy - top + 7} x2={cx} y2={cy + bot} className={INK} strokeWidth={0.6} />
+                <path d={`M ${cx - 12} ${cy + bot + 2} C ${cx - 12} ${cy} ${cx - 7} ${cy - top + 1} ${cx} ${cy - top + 1} C ${cx + 7} ${cy - top + 1} ${cx + 12} ${cy} ${cx + 12} ${cy + bot + 2} Z`} className={`${TONGUE} ${focusTongue ? ACCENT : INK}`} strokeWidth={1.76} />
+                <line x1={cx} y1={cy - top + 7} x2={cx} y2={cy + bot} className={INK} strokeWidth={0.81} />
               </>
             )}
             {f.upperTeeth && teethRow(cy - top - 1, 5.5)}
@@ -92,13 +104,13 @@ function FrontView({ e, focusLips, focusTongue }: { e: ArticulationEntry; focusL
           </g>
           {f.tongue === "out" && (
             <>
-              <path d={`M ${cx - 11} ${cy - 1} C ${cx - 11} ${cy + bot + 8} ${cx + 11} ${cy + bot + 8} ${cx + 11} ${cy - 1}`} className={`${TONGUE} ${ACCENT}`} strokeWidth={1.4} />
-              <line x1={cx} y1={cy + 1} x2={cx} y2={cy + bot + 3} className={INK} strokeWidth={0.6} />
+              <path d={`M ${cx - 11} ${cy - 1} C ${cx - 11} ${cy + bot + 8} ${cx + 11} ${cy + bot + 8} ${cx + 11} ${cy - 1}`} className={`${TONGUE} ${ACCENT}`} strokeWidth={1.89} />
+              <line x1={cx} y1={cy + 1} x2={cx} y2={cy + bot + 3} className={INK} strokeWidth={0.81} />
             </>
           )}
-          <path d={opening} className={lipInk} strokeWidth={1.1} {...line} />
-          <path d={upper} className={lipInk} strokeWidth={1.4} {...line} />
-          <path d={lower} className={lipInk} strokeWidth={1.4} {...line} />
+          <path d={opening} className={lipInk} strokeWidth={1.49} {...line} />
+          <path d={upper} className={lipInk} strokeWidth={1.89} {...line} />
+          <path d={lower} className={lipInk} strokeWidth={1.89} {...line} />
         </>
       )}
       </g>
@@ -108,6 +120,7 @@ function FrontView({ e, focusLips, focusTongue }: { e: ArticulationEntry; focusL
 
 // ---------- 2. side (outside profile) view: face looks LEFT ----------
 function SideView({ e, focusLips }: { e: ArticulationEntry; focusLips: boolean }) {
+  const BG = P_BG, INK = P_INK, ACCENT = P_KEY, TONGUE = P_TONGUE, TEETH = "fill-white";
   const s = side(e);
   const pr = s.protrude;
   const o = s.open;
@@ -124,43 +137,43 @@ function SideView({ e, focusLips }: { e: ArticulationEntry; focusLips: boolean }
   return (
     <svg viewBox="2 4 96 80" className="w-full" aria-hidden>
       <rect width={120} height={100} className={BG} />
-      <path d={nose} className={INK} strokeWidth={1.3} {...line} />
-      <path d="M 26 27 Q 29 26 30 28" className={INK} strokeWidth={0.9} {...line} />
+      <path d={nose} className={INK} strokeWidth={1.76} {...line} />
+      <path d="M 26 27 Q 29 26 30 28" className={INK} strokeWidth={1.22} {...line} />
       {/* teeth showing between the lips: each shows only a little past its own lip (see UPPER/LOWER_TOOTH_SHOWS),
           so an open mouth has a visible gap between them */}
       {s.lowerLipTucked ? (
-        <path d={`M 31 ${lipY - 2} L 34.5 ${lipY - 2} L 34 ${lipY + 1.5} Q 32 ${lipY + 2} 31 ${lipY + 1} Z`} className={`${TEETH} ${INK}`} strokeWidth={0.8} />
+        <path d={`M 31 ${lipY - 2} L 34.5 ${lipY - 2} L 34 ${lipY + 1.5} Q 32 ${lipY + 2} 31 ${lipY + 1} Z`} className={`${TEETH} ${INK}`} strokeWidth={1.08} />
       ) : (
         o >= 2 && (
-          <path d={`M 31 ${lipY - o / 2 - 2} L 34.5 ${lipY - o / 2 - 2} L 34 ${lipY - o / 2 + UPPER_TOOTH_SHOWS} Q 32 ${lipY - o / 2 + UPPER_TOOTH_SHOWS + 0.8} 31 ${lipY - o / 2 + UPPER_TOOTH_SHOWS} Z`} className={`${TEETH} ${INK}`} strokeWidth={0.8} />
+          <path d={`M 31 ${lipY - o / 2 - 2} L 34.5 ${lipY - o / 2 - 2} L 34 ${lipY - o / 2 + UPPER_TOOTH_SHOWS} Q 32 ${lipY - o / 2 + UPPER_TOOTH_SHOWS + 0.8} 31 ${lipY - o / 2 + UPPER_TOOTH_SHOWS} Z`} className={`${TEETH} ${INK}`} strokeWidth={1.08} />
         )
       )}
       {o >= 3 && !s.lowerLipTucked && (
-        <path d={`M 32 ${lipY + o / 2 - LOWER_TOOTH_SHOWS} Q 33.5 ${lipY + o / 2 - LOWER_TOOTH_SHOWS - 0.8} 35 ${lipY + o / 2 - LOWER_TOOTH_SHOWS} L 35 ${lipY + o / 2 + 2} L 32.5 ${lipY + o / 2 + 2} Z`} className={`${TEETH} ${INK}`} strokeWidth={0.8} />
+        <path d={`M 32 ${lipY + o / 2 - LOWER_TOOTH_SHOWS} Q 33.5 ${lipY + o / 2 - LOWER_TOOTH_SHOWS - 0.8} 35 ${lipY + o / 2 - LOWER_TOOTH_SHOWS} L 35 ${lipY + o / 2 + 2} L 32.5 ${lipY + o / 2 + 2} Z`} className={`${TEETH} ${INK}`} strokeWidth={1.08} />
       )}
       {s.tongueOut && (
-        <path d={`M 34 ${lipY - 1} Q 26 ${lipY - 1} 26 ${lipY + 1.5} Q 27 ${lipY + 3.5} 34 ${lipY + 2.5}`} className={`${TONGUE} ${ACCENT}`} strokeWidth={1.3} />
+        <path d={`M 34 ${lipY - 1} Q 26 ${lipY - 1} 26 ${lipY + 1.5} Q 27 ${lipY + 3.5} 34 ${lipY + 2.5}`} className={`${TONGUE} ${ACCENT}`} strokeWidth={1.76} />
       )}
-      <path d={upperLip} className={lipInk} strokeWidth={1.4} {...line} />
+      <path d={upperLip} className={lipInk} strokeWidth={1.89} {...line} />
       <path d={lowerLip} className={s.lowerLipTucked ? ACCENT : lipInk} strokeWidth={s.lowerLipTucked ? 1.7 : 1.4} {...line} />
-      <path d={chin} className={INK} strokeWidth={1.3} {...line} />
-      <path d={`M 74 ${lowerTop + 33} Q 76 ${lowerTop + 40} 78 100`} className={INK} strokeWidth={1.1} {...line} />
+      <path d={chin} className={INK} strokeWidth={1.76} {...line} />
+      <path d={`M 74 ${lowerTop + 33} Q 76 ${lowerTop + 40} 78 100`} className={INK} strokeWidth={1.49} {...line} />
       {/* airflow: puff marks in front of the lips */}
       {Array.from({ length: s.puff }, (_, i) => (
-        <path key={i} d={`M ${20 - pr - i * 4.5} ${lipY - 4} Q ${17 - pr - i * 4.5} ${lipY} ${20 - pr - i * 4.5} ${lipY + 4}`} className={ACCENT} strokeWidth={1.2} {...line} />
+        <path key={i} d={`M ${20 - pr - i * 4.5} ${lipY - 4} Q ${17 - pr - i * 4.5} ${lipY} ${20 - pr - i * 4.5} ${lipY + 4}`} className={P_AIR} strokeWidth={1.6} {...line} />
       ))}
       {/* air through the nose */}
-      {s.nose && [0, 1].map((i) => <path key={i} d={`M ${18 - i * 4} 30 Q ${15 - i * 4} 33 ${18 - i * 4} 36`} className={ACCENT} strokeWidth={1.1} {...line} />)}
+      {s.nose && [0, 1].map((i) => <path key={i} d={`M ${18 - i * 4} 30 Q ${15 - i * 4} 33 ${18 - i * 4} 36`} className={P_AIR} strokeWidth={1.5} {...line} />)}
       {/* voice on: a buzz in the throat; tense: throat squeezed */}
-      {s.voice && <path d={`M 77 ${throatY - 4} q 2 -2 4 0 t 4 0 t 4 0 t 4 0`} className={ACCENT} strokeWidth={1.1} {...line} />}
-      {s.tight && <path d={`M 76 ${throatY - 9} l 4 4 l -4 4 M 92 ${throatY - 9} l -4 4 l 4 4`} className={ACCENT} strokeWidth={1.2} {...line} />}
+      {s.voice && <path d={`M 77 ${throatY - 4} q 2 -2 4 0 t 4 0 t 4 0 t 4 0`} className={P_VOICE} strokeWidth={1.6} {...line} />}
+      {s.tight && <path d={`M 76 ${throatY - 9} l 4 4 l -4 4 M 92 ${throatY - 9} l -4 4 l 4 4`} className={INK} strokeWidth={1.5} {...line} />}
     </svg>
   );
 }
 
 // ---------- 3. inside view (simple cut-away, line art) ----------
 function InsideView({ e }: { e: ArticulationEntry }) {
-  return <CutAway g={geometry(e.svg, e.kind, e.lips)} e={e} />;
+  return <CutAway g={geometry(e.svg, e.kind, e.lips)} e={e} look="pop" puff={side(e).puff} />;
 }
 
 // Two looks for the same drawing. "line" = the cream line art of the detail card (with its other views);
@@ -168,7 +181,7 @@ function InsideView({ e }: { e: ArticulationEntry }) {
 // sits on the card's tray colour), no dark mouth opening, and blue waves in front of the lips for a puff of air.
 type Look = "line" | "pop";
 const LOOK = {
-  line: { bg: BG, ink: INK, tongue: `${TONGUE} ${ACCENT}`, teeth: TEETH, accent: "text-[#c2410c] dark:text-[#fb923c]", dot: `${ACCENT_FILL} stroke-white`, w: 1 },
+  line: { bg: BG, ink: INK, tongue: `${TONGUE} ${ACCENT}`, teeth: TEETH, accent: "text-[#c2410c]", dot: `${ACCENT_FILL} stroke-white`, w: 1 },
   pop: { bg: "fill-tray", ink: "stroke-ink", tongue: "fill-[#FFB3D1] stroke-ink", teeth: "fill-white", accent: "text-blue", dot: "fill-blue stroke-ink", w: 1.3 },
 } as const;
 // The cut-away drawing from a Geometry alone, so the native animation (lib/animate.ts) can draw any
@@ -228,8 +241,8 @@ export function CutAway({ g, e, mark, look = "line", puff = 0 }: { g: Geometry; 
         <>
           <defs>
             <linearGradient id={fade} gradientUnits="userSpaceOnUse" x1={Math.min(...opening.map((q) => q.x))} y1={0} x2={OPENING_BACK_X} y2={0}>
-              <stop offset="0" className="[stop-color:#3b2a22] dark:[stop-color:#0b0908]" stopOpacity={0.85} />
-              <stop offset="1" className="[stop-color:#3b2a22] dark:[stop-color:#0b0908]" stopOpacity={0} />
+              <stop offset="0" className="[stop-color:#3b2a22]" stopOpacity={0.85} />
+              <stop offset="1" className="[stop-color:#3b2a22]" stopOpacity={0} />
             </linearGradient>
           </defs>
           <path d={`M ${opening.map(p).join(" L ")} Z`} fill={`url(#${fade})`} />
@@ -293,15 +306,6 @@ export function CutAway({ g, e, mark, look = "line", puff = 0 }: { g: Geometry; 
   );
 }
 
-function badges(e: ArticulationEntry): string[] {
-  const out = [e.voicing === "voiced" ? "Voice on" : "Voice off"];
-  if (e.manner === "nasal") out.push("Air through the nose");
-  if (e.laryngeal === "aspirated") out.push("Big puff of air");
-  if (e.laryngeal === "tense") out.push("Throat tight, no puff");
-  if (e.laryngeal === "plain" && e.manner === "stop") out.push("Light puff");
-  return out;
-}
-
 const VIEW_NAME: Record<View, string> = { front: "Mirror view", side: "Side view", inside: "Inside the mouth" };
 
 export default function MouthDiagram({
@@ -320,12 +324,9 @@ export default function MouthDiagram({
   const { ui } = useUi();
   const sayIt = say(ui);
   const [, second] = views(entry);
-  const vowel = entry.kind === "vowel" || entry.kind === "diphthong";
-  // highlight the lips only when they ARE the key action (p/b/m, f/v via the side view, rounded vowels and w);
-  // for English r / sh the lips round a little, but the key action is the tongue (inside view)
-  const focusLips = vowel || entry.lips === "closed" || (entry.lips === "rounded" && second === "side");
-  const focusTongue = entry.svg.tip === "alveolar" || entry.svg.tip === "dental";
-  const ring = tone === "target" ? "border-green-600" : "border-amber-500";
+  const { lips: focusLips, tongue: focusTongue } = keyParts(entry); // the key part, in blue
+  // green = the target, amber = what you probably did: a coloured tag on a site-style card
+  const tag = tone === "target" ? "bg-[#C9F2D4]" : "bg-[#FFE2A8]";
   const s = side(entry);
   const marks: string[] = [];
   if (second === "side") {
@@ -335,32 +336,25 @@ export default function MouthDiagram({
     if (s.tight) marks.push(sayIt("> <  throat tight"));
   }
   return (
-    <figure className={`flex flex-col gap-2 rounded-lg border-2 ${ring} p-3`} aria-label={`${title}: ${entry.description}`}>
-      <figcaption className="flex flex-col">
-        <span className="font-medium">{title}</span>
-        <span className="text-base font-semibold text-[#c2410c] dark:text-[#fb923c]">{caption(entry, sayIt)}</span>
+    <figure className="m-0 flex flex-col gap-2 rounded-2xl border-[2.5px] border-ink bg-white p-3 shadow-pop-xs" aria-label={`${title}: ${entry.description}`}>
+      <figcaption className="flex flex-col items-start gap-1">
+        <span className={`rounded-xl border-[2.5px] border-ink px-3 py-1 font-display text-lg tracking-wide shadow-pop-xs lg:text-xl ${tag}`}>{title}</span>
+        <span className="text-base font-semibold text-ink">{caption(entry, sayIt)}</span>
       </figcaption>
       <div className="grid grid-cols-2 gap-2">
         {(["front", second] as View[]).map((v) => (
-          <div key={v} className="flex flex-col gap-0.5 overflow-hidden rounded-md border border-[#e5dccf] dark:border-[#3a322c]">
-            {v === "front" && <FrontView e={entry} focusLips={focusLips} focusTongue={focusTongue} />}
+          <div key={v} className="flex flex-col gap-0.5 overflow-hidden rounded-xl border-2 border-ink bg-tray">
+            {v === "front" && <FrontView f={{ ...front(entry), round: entry.svg.lip_round }} focusLips={focusLips} focusTongue={focusTongue} />}
             {v === "side" && <SideView e={entry} focusLips={focusLips} />}
             {v === "inside" && <InsideView e={entry} />}
-            <span className="px-1.5 pb-1 text-[11px] text-neutral-500">{sayIt(VIEW_NAME[v])}</span>
+            <span className="px-1.5 pb-1 text-[11px] font-semibold text-neutral-600">{sayIt(VIEW_NAME[v])}</span>
           </div>
         ))}
       </div>
       {!compact && (
         <>
-          {marks.length > 0 && <p className="text-[11px] text-neutral-500">{marks.join("   ·   ")}</p>}
-          <ul className="flex flex-wrap gap-1.5 text-xs">
-            {badges(entry).map((x) => (
-              <li key={x} className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
-                {sayIt(x)}
-              </li>
-            ))}
-          </ul>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">{description ?? entry.description}</p>
+          {marks.length > 0 && <p className="m-0 text-[11px] text-neutral-600">{marks.join("   ·   ")}</p>}
+          <p className="m-0 text-sm text-neutral-700">{plainDescription(description ?? entry.description)}</p>
         </>
       )}
     </figure>

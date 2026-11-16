@@ -1,13 +1,13 @@
-"use client"; // Tapping a word plays it. Tapping a RED word opens its detail card instead; hovering it previews the mouth
+"use client"; // Tapping a word plays it. Every red word's detail card is open under the sentence; hovering a red word previews the mouth
 
 import { useEffect, useState } from "react";
 import DetailCard from "@/components/DetailCard";
 import MouthDiagram from "@/components/MouthDiagram";
 import { useUi } from "@/components/UiLang";
-import { loadCardData, type AnalyzeResult, type ArticulationTable, type DisplayPiece, type TipsTable, type WordResult } from "@/lib/api";
-import { buildCard, hoverCards, issuesOf, tapAction } from "@/lib/card";
-import { loadNativeClip, nativePart, type NativeClip } from "@/lib/native";
-import { playSlice, stopPlayback } from "@/lib/replay";
+import { loadCardData, type AnalyzeResult, type ArticulationTable, type DisplayPiece, type Lang, type TipsTable, type WordResult } from "@/lib/api";
+import { allCards, hoverCards, issuesOf } from "@/lib/card";
+import { loadNativeAudio, wordToSay } from "@/lib/native";
+import { compareEnd, playSlice, stopPlayback } from "@/lib/replay";
 import { GREEN_STYLE, jamoParts, pieceStyle, RED_STYLE, summarize } from "@/lib/results";
 
 const RED = RED_STYLE;
@@ -41,24 +41,11 @@ function Piece({ piece }: { piece: DisplayPiece }) {
 export default function ResultSentence({ result, audio }: { result: AnalyzeResult; audio?: Audio }) {
   const { ui, t } = useUi();
   const [playing, setPlaying] = useState<string | null>(null); // which part is playing ("3" or "3-1")
-  const [open, setOpen] = useState<number | null>(null); // which word's detail card is open
   const [data, setData] = useState<{ tips: TipsTable; articulation: ArticulationTable } | null>(null);
   const [dataError, setDataError] = useState<string | null>(null);
-  const [native, setNative] = useState<NativeClip | null>(null); // The native clip, loaded when a card opens
-  const [nativeError, setNativeError] = useState<string | null>(null);
+  const [sayError, setSayError] = useState<{ card: string; message: string } | null>(null); // a native clip that failed
   const [hover, setHover] = useState<{ i: number; right: boolean } | null>(null); // the red word under the mouse
   useEffect(() => stopPlayback, []); // leaving the result (new recording, new sentence) stops the sound
-  useEffect(() => {
-    if (open === null || native) return;
-    let ignore = false; // a failed load is retried when a card is opened again (the clip loads -> "ready" wins)
-    loadNativeClip(result.text, result.lang).then(
-      (c) => !ignore && setNative(c),
-      (e: Error) => !ignore && setNativeError(e.message),
-    );
-    return () => {
-      ignore = true;
-    };
-  }, [open, native, result.text, result.lang]);
   const anyRed = result.words.some((w) => issuesOf(w).length > 0);
   useEffect(() => {
     if (!anyRed) return;
@@ -87,22 +74,21 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
     }
   }
 
-  // The native version of word i (soundIndex null) or of one of its sounds; undefined = nothing to offer.
-  function nativePlayer(i: number, key: string, soundIndex: number | null, ipa?: string) {
-    if (!native) return undefined;
-    const part = nativePart(native.timings, i, result.words[i].word, soundIndex, ipa);
-    return part ? () => play(key, part.start, part.end, native) : undefined;
+  // The whole of a clip (a native word said on its own)
+  const playAll = (key: string, clip: Audio) => play(key, 0, clip.samples.length / clip.rate, clip);
+
+  // The native voice saying a word on its own (the card's word or a practice word): fetched on the first tap, then
+  // kept, so it plays at once after that. Fetching on tap (not when the cards appear) keeps a sentence with many red
+  // words under the limit for new audio.
+  function sayNative(text: string, lang: Lang, key: string, card: string) {
+    setSayError(null);
+    loadNativeAudio(text, lang).then((clip) => playAll(key, clip), (e: Error) => setSayError({ card, message: e.message }));
   }
 
-  // Tap = hear your audio for that part; on a red word it ONLY opens (or closes) the card.
-  function tap(i: number, key: string, start?: number | null, end?: number | null) {
+  // Tap = hear your audio for that part (red words too: their cards are already open below).
+  function tap(key: string, start?: number | null, end?: number | null) {
     setHover(null);
-    const action = tapAction(result.words[i]);
-    if (action.play) play(key, start, end);
-    if (action.toggleCard) {
-      stopPlayback();
-      setOpen((o) => (o === i ? null : i));
-    }
+    play(key, start, end);
   }
 
   // English: one button per word. Korean: one button per syllable block (falls back to the word's times).
@@ -114,9 +100,8 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
       return (
         <button
           type="button"
-          onClick={() => tap(i, `${i}`, w.start, w.end)}
-          aria-label={t(hasCard ? "showFix" : "playYour", { w: w.word })}
-          aria-expanded={hasCard ? open === i : undefined}
+          onClick={() => tap(`${i}`, w.start, w.end)}
+          aria-label={t("playYour", { w: w.word })}
           className={`${TAP} ${playing === `${i}` ? PLAYING : ""}`}
         >
           {w.display.map((piece, j) => (
@@ -129,8 +114,8 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
       <button
         key={j}
         type="button"
-        onClick={() => tap(i, `${i}-${j}`, piece.start ?? w.start, piece.end ?? w.end)}
-        aria-label={t(hasCard ? "showFix" : "playYour", { w: piece.text })}
+        onClick={() => tap(`${i}-${j}`, piece.start ?? w.start, piece.end ?? w.end)}
+        aria-label={t("playYour", { w: piece.text })}
         className={`${TAP} ${playing === `${i}-${j}` ? PLAYING : ""}`}
       >
         <Piece piece={piece} />
@@ -153,7 +138,7 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
   // Hovering a red word with a mouse: a snapshot of the correct mouth for its red sound(s), opening toward the
   // side with room. Touch screens skip it (a tap opens the full card); it hides while that word's card is open.
   function previewOf(w: WordResult, i: number) {
-    if (!data || hover?.i !== i || open === i) return null;
+    if (!data || hover?.i !== i) return null;
     const cards = hoverCards(w, data.tips, result.lang, ui);
     if (!cards.length) return null;
     return (
@@ -162,7 +147,7 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
         style={{ width: PREVIEW_W }}>
         {cards.map((c) => {
           const entry = data.articulation.sounds[c.target!.lang][c.target!.sym];
-          return entry ? <MouthDiagram key={c.pair} compact entry={entry} title={t("targetIs", { x: c.targetLabel })} /> : null;
+          return entry ? <MouthDiagram key={c.pair} compact entry={entry} title={t("targetTag")} /> : null;
         })}
         <span className="px-1 text-xs font-medium text-neutral-600">{t("hoverHint")}</span>
       </div>
@@ -192,8 +177,7 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
         <div className="flex flex-col gap-1 rounded-b-[17.5px] border-t-[2.5px] border-ink bg-tray px-4 py-2.5 text-sm font-medium text-neutral-700 lg:rounded-b-[21.5px] lg:px-6 lg:py-3">
           {audio && (
             <p className="m-0">
-              {t(result.lang === "ko" ? "tapSyllable" : "tapWord")}
-              {anyRed ? t("tapRed") : "."}
+              {t(result.lang === "ko" ? "tapSyllable" : "tapWord")}.
             </p>
           )}
           <p className="m-0 text-neutral-600">
@@ -202,26 +186,21 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
           </p>
         </div>
       </div>
-      {open !== null && dataError && <p className="m-0 rounded-2xl border-[2.5px] border-ink bg-[#FFE4EF] px-4 py-3 text-sm font-medium shadow-pop-xs">{t("tipsError", { e: dataError })}</p>}
-      {open !== null &&
-        data &&
-        issuesOf(result.words[open]).map((issue) => {
-          const w = result.words[open];
-          const card = buildCard(issue, w, data.tips, result.lang, ui);
-          if (!card) return null;
+      {anyRed && dataError && <p className="m-0 rounded-2xl border-[2.5px] border-ink bg-[#FFE4EF] px-4 py-3 text-sm font-medium shadow-pop-xs">{t("tipsError", { e: dataError })}</p>}
+      {data &&
+        allCards(result.words, data.tips, result.lang, ui, data.articulation.sounds).map(({ wordIndex: i, issue, card }) => {
+          const w = result.words[i];
+          const id = `${i}-${issue.pair}-${issue.ipa}-${issue.produced ?? ""}`;
           return (
             <DetailCard
-              key={issue.pair}
+              key={id}
               card={card}
               articulation={data.articulation}
-              onPlaySound={audio && card.sound ? () => play(`${open}-sound`, card.sound!.start, card.sound!.end) : undefined}
-              onPlayWord={audio && !w.not_heard ? () => play(`${open}`, w.start, w.end) : undefined}
-              onPlayNativeSound={
-                card.soundIndex !== null ? nativePlayer(open, `${open}-native-sound`, card.soundIndex, issue.ipa) : undefined
-              }
-              onPlayNativeWord={nativePlayer(open, `${open}-native`, null)}
-              nativeStatus={native ? "ready" : nativeError ? nativeError : "loading"}
-              onClose={() => setOpen(null)}
+              onPlayWord={audio && !w.not_heard && w.start != null && w.end != null ? () => play(`${id}-yours`, w.start, compareEnd(w.start!, w.end!)) : undefined}
+              onPlayNativeWord={() => sayNative(wordToSay(w.word), result.lang, `${id}-native`, id)}
+              onPlayPractice={(p) => sayNative(p, card.target?.lang ?? result.lang, `practice:${p}`, id)}
+              playing={playing?.startsWith("practice:") ? playing.slice(9) : null}
+              error={sayError?.card === id ? sayError.message : undefined}
             />
           );
         })}

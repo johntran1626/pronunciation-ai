@@ -19,6 +19,7 @@
 // What this is NOT: a measurement of any speaker. It is the TARGET articulation from phonetics tables, timed to a
 // native recording. Diphthongs show one pose (their "to" glide is not animated yet).
 import { callout, geometry, type Callout, type Geometry, type Svg } from "./mouth.ts";
+import { front, type Front } from "./mouthViews.ts";
 import type { ArticulationEntry, Lang, NativeTimings } from "./api.ts";
 
 // lang: which language's table the entry came from (a mixed sentence has both)
@@ -198,9 +199,9 @@ export function frameIndexAt(frames: Frame[], t: number): number {
   return k;
 }
 
-/** The picture at time t: a frame's still pose, or an eased change between two frames near their boundary. */
-export function poseAt(frames: Frame[], t: number, ease = EASE): Geometry {
-  if (!frames.length) return geometry(REST, "vowel", "neutral");
+/** Which frames make the picture at time t: frame a alone (w = 0), or an eased change from a to b (w = 0..1)
+ * near their boundary. Shared by the side view (poseAt) and the front view (frontAt), so they always change together. */
+function blendAt(frames: Frame[], t: number, ease: number): { a: number; b: number; w: number } {
   const k = frameIndexAt(frames, t);
   // the boundary nearest t: into frame k (at its start) or out of it (at the next frame's start)
   for (const j of [k, k + 1]) {
@@ -208,12 +209,50 @@ export function poseAt(frames: Frame[], t: number, ease = EASE): Geometry {
     const prev = frames[j - 1], next = frames[j], b = next.start;
     // prev's time runs on through any pause until next starts
     const e = Math.min(ease, 0.5 * (b - prev.start), 0.5 * (next.end - next.start));
-    if (e > 0 && Math.abs(t - b) < e / 2) {
-      const w = smooth((t - (b - e / 2)) / e);
-      return lerp(prev.pose as unknown as Val, next.pose as unknown as Val, w) as unknown as Geometry;
-    }
+    if (e > 0 && Math.abs(t - b) < e / 2) return { a: j - 1, b: j, w: smooth((t - (b - e / 2)) / e) };
   }
-  return frames[k].pose;
+  return { a: k, b: k, w: 0 };
+}
+
+/** The picture at time t: a frame's still pose, or an eased change between two frames near their boundary. */
+export function poseAt(frames: Frame[], t: number, ease = EASE): Geometry {
+  if (!frames.length) return geometry(REST, "vowel", "neutral");
+  const { a, b, w } = blendAt(frames, t, ease);
+  if (a === b) return frames[a].pose;
+  return lerp(frames[a].pose as unknown as Val, frames[b].pose as unknown as Val, w) as unknown as Geometry;
+}
+
+// ---------- the front (mirror) view ----------
+// The same stop-motion frames, seen from the front: each frame shows the mirror view of its first sound (the same
+// rules as the detail card's picture, lib/mouthViews.ts front()), and changes with the same easing as the side view.
+// Limit: the side view's poses blend neighbours (lips rounding during the s of "soon"); the front view shows each
+// sound's own textbook shape.
+export type FrontPose = Front & { round: number }; // round = how rounded the lips are (0..1), for the lip outline
+
+const frontPose = (e: ArticulationEntry): FrontPose => ({ ...front(e), round: e.svg.lip_round });
+const REST_FRONT = frontPose({ kind: "vowel", lips: "neutral", svg: REST } as ArticulationEntry);
+
+/** One front view per frame (frames from framesFor on the same sounds). */
+export function frontsFor(frames: Frame[], sounds: Sound[]): FrontPose[] {
+  return frames.map((f) => frontPose(sounds[f.sounds[0]].entry!)); // framesFor only makes frames for sounds with entries
+}
+
+/** The front view at time t. Sizes blend; parts that are there or not (teeth, tongue) switch halfway; the lips
+ * only shut once the opening has nearly closed, so p after a vowel shrinks the mouth and then closes it. */
+export function frontAt(frames: Frame[], fronts: FrontPose[], t: number, ease = EASE): FrontPose {
+  if (!frames.length || !fronts.length) return REST_FRONT;
+  const { a, b, w } = blendAt(frames, t, ease);
+  const A = fronts[a], B = fronts[b];
+  if (a === b) return A;
+  const near = w < 0.5 ? A : B;
+  const height = A.height + (B.height - A.height) * w;
+  return {
+    ...near,
+    width: A.width + (B.width - A.width) * w,
+    height,
+    round: A.round + (B.round - A.round) * w,
+    closed: (A.closed || B.closed) && height < 1,
+  };
 }
 
 /** For each word, the first and last frame whose middle falls inside it (null if none: a word with no sounds). */

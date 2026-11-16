@@ -129,3 +129,13 @@ def test_a_swapped_vowel_is_red_and_names_what_was_said():
     assert vowel["status"] == "red" and vowel["pair"] == SWAP
     assert vowel["produced"] in {"ɔː", "ɑː"}            # "balls" (many US speakers say it like "father")
     assert {w["word"] for w in body["words"] if w["status"] == "red"} == {"bells"}
+
+
+# ---------- per-pair cut-offs ----------
+def test_a_pair_cut_overrides_the_global_cut_for_that_pair_only():
+    t = {**T, "pair_margin": {"ɪ ʌ": 0.25, "ɪ *": 0.6}}
+    assert verdict(row("ɪ", "ʌ", margin=0.3, right=0.18), t) == (SWAP, "ʌ")     # "drunking": a pair natives never blur
+    assert verdict(row("ɪ", "ʌ", margin=0.2, right=0.18), t) is None
+    assert verdict(row("ɪ", "æ", margin=0.7, right=0.18), t) == (SWAP, "æ")     # the target's own fallback
+    assert verdict(row("ɪ", "æ", margin=0.5, right=0.18), t) is None
+    assert verdict(row("ɛ", "eɪ", margin=0.80), t) is None                       # other targets keep the global cut

@@ -158,14 +158,13 @@ def emissions(audio, sr):
         return model(inputs.input_values).logits.log_softmax(-1)[0]
 
 
-def align_ko(lp, words):
-    """Forced alignment with THIS model. -> (frame window per (wi, pi), symbol index per (wi, pi), symbols)."""
+def _force(lp, words):
+    """Forced alignment with THIS model. -> (pairs from to_mfa, one merged span per symbol, with .score 0..1)."""
     import torch
     import torchaudio.functional as F
     _, model, vocab = _model()
     pairs = to_mfa(words)
-    toks = [t for t, _ in pairs]
-    ids = [vocab[t] for t in toks]
+    ids = [vocab[t] for t, _ in pairs]
     if not ids:
         raise ValueError("no Korean sounds in this sentence")
     if lp.shape[0] < len(ids) + sum(a == b for a, b in zip(ids, ids[1:])):
@@ -175,6 +174,13 @@ def align_ko(lp, words):
     # blank= matters: merge_tokens assumes blank id 0, but in THIS model id 0 is the vowel A (blank is 42).
     spans = F.merge_tokens(labels[0], scores[0].exp(), blank=blank)
     assert len(spans) == len(ids), (len(spans), len(ids))
+    return pairs, spans
+
+
+def align_ko(lp, words):
+    """Forced alignment with THIS model. -> (frame window per (wi, pi), symbol index per (wi, pi), symbols)."""
+    pairs, spans = _force(lp, words)
+    toks = [t for t, _ in pairs]
     # Window = the gap between the neighbours' spans (capped at ~0.15 s each side), not just this symbol's own
     # frames: when the target is wrong, the aligner parks it on a frame NEXT TO the real sound (spike e).
     win, tok_of = {}, {}
@@ -233,3 +239,40 @@ def measure_lp(lp, words):
 
 def measure(audio, sr, words):
     return measure_lp(emissions(audio, sr), words)
+
+
+# ---------- 4. "did you say it?" evidence from this model ----------
+# The same two numbers backend/match.py uses with the main listener, per word:
+#   heard = share of the word's symbols the free transcription has in their place (exactly that symbol)
+#   conf  = the aligner's average confidence for those symbols (0..1)
+# plus missing = share with nothing in their place. A symbol that covers a glide + vowel (iA) counts once.
+def pool_evidence(pairs, scores, in_place, n_words):
+    """pairs = to_mfa(words); scores = each symbol's alignment score; in_place = heard_per_token(). -> one dict per word."""
+    per = [dict(n=0, heard=0.0, missing=0.0, conf=0.0) for _ in range(n_words)]
+    for (tok, cover), sc, h in zip(pairs, scores, in_place):
+        f = per[cover[0][0]]
+        f["n"] += 1
+        f["heard"] += h == tok
+        f["missing"] += h is None
+        f["conf"] += float(sc)
+    for f in per:
+        if f["n"]:
+            for k in ("heard", "missing", "conf"):
+                f[k] /= f["n"]
+    return per
+
+
+def sentence_evidence(per):
+    """The whole sentence: every symbol counts the same (words weighted by their number of symbols)."""
+    n = sum(f["n"] for f in per)
+    if not n:
+        return dict(n=0, heard=0.0, missing=0.0, conf=0.0)
+    return dict(n=n, **{k: sum(f[k] * f["n"] for f in per) / n for k in ("heard", "missing", "conf")})
+
+
+def word_evidence(lp, words, heard=None):
+    """-> (pool_evidence per word, how many symbols the free transcription has). heard: greedy(lp), if already known."""
+    pairs, spans = _force(lp, words)
+    heard = greedy(lp) if heard is None else heard
+    in_place = heard_per_token([t for t, _ in pairs], heard)
+    return pool_evidence(pairs, [sp.score for sp in spans], in_place, len(words)), len(heard)

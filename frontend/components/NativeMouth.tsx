@@ -1,6 +1,7 @@
 "use client";
-// The native mouth: a side view of a native speaker's tongue, lips, jaw and soft palate, animated in sync with the
-// native reference clip, for any typed sentence. It shows the TARGET articulation (phonetics tables,
+// The native mouth: a side view of a native speaker's tongue, lips, jaw and soft palate (or, with the Side / Front
+// switch, a front "mirror" view of the lips, teeth and tongue tip), animated in sync with the native reference clip,
+// for any typed sentence. It shows the TARGET articulation (phonetics tables,
 // timed by the aligner), never the learner's own mouth.
 //
 // Loads as soon as it appears: the clip + its timings (lib/native.ts, the same copy the detail card's "Native"
@@ -20,14 +21,14 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Blueberry from "@/components/Blueberry";
 import InfoTip from "@/components/InfoTip";
-import { CutAway } from "@/components/MouthDiagram";
+import { CutAway, FrontView } from "@/components/MouthDiagram";
 import { useUi } from "@/components/UiLang";
 import { descText, say } from "@/lib/i18n";
 import {
-  DEFAULT_SPEED, EASE, frameIndexAt, frameMark, framesFor, poseAt, soundsFromTimings, wordFrames, type Frame, type Sound,
+  DEFAULT_SPEED, EASE, frameIndexAt, frameMark, framesFor, frontAt, frontsFor, poseAt, soundsFromTimings, wordFrames, type Frame, type Sound,
 } from "@/lib/animate";
 import { loadCardData, type TextLang } from "@/lib/api";
-import { side } from "@/lib/mouthViews";
+import { keyParts, side } from "@/lib/mouthViews";
 import { loadNativeClip } from "@/lib/native";
 import { SPEEDS, applySpeed, scrubFill, speedLabel } from "@/lib/player";
 import { playSlice, stopPlayback } from "@/lib/replay";
@@ -52,12 +53,13 @@ type Props = {
   muted?: boolean;
   onMuted?: (m: boolean) => void;
   actions?: ReactNode; // the page's buttons (Animate another, Practice), placed by the layout below
+  notice?: { id: number; text: string } | null; // Blueberry says this instead of the sound tip, until the next play / tap
 };
 
 // the chunky buttons of the look: black outline, offset shadow that presses in
 const POP = "border-[2.5px] border-ink shadow-pop-sm transition-[transform,box-shadow] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none";
 
-export default function NativeMouth({ text, lang, autoplay = true, muted = false, onMuted, actions }: Props) {
+export default function NativeMouth({ text, lang, autoplay = true, muted = false, onMuted, actions, notice }: Props) {
   const { ui, t: tr } = useUi();
   const [clip, setClip] = useState<Clip | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -68,6 +70,10 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
   const [playing, setPlaying] = useState(false);
   const [ended, setEnded] = useState(false);
   const [showKey, setShowKey] = useState(false); // "placement tips", off by default
+  const [view, setView] = useState<"side" | "front">("side"); // which picture: side view by default
+  const [dismissed, setDismissed] = useState(-1); // the notice id Blueberry is done saying (playing or tapping ends it)
+  const saying = notice && notice.id !== dismissed ? notice : null;
+  const dismiss = () => notice && setDismissed(notice.id);
   const audio = useRef<HTMLAudioElement | null>(null);
   const strip = useRef<HTMLDivElement | null>(null); // the timeline's sideways scroller
   const autoplayed = useRef(false);
@@ -110,6 +116,7 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
   useEffect(() => { if (audio.current) audio.current.muted = muted; }, [muted, clip]);
 
   const frames = useMemo(() => (clip ? framesFor(clip.sounds) : []), [clip]);
+  const fronts = useMemo(() => (clip ? frontsFor(frames, clip.sounds) : []), [clip, frames]);
   const spans = useMemo(() => (clip ? wordFrames(clip.words, frames) : []), [clip, frames]);
   const k = frameIndexAt(frames, t);
   // every different tip this clip can show (one per set of sounds), so the bubble is sized for the longest
@@ -139,6 +146,7 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
   function start(fromTop = false) {
     const a = audio.current;
     if (!a || !clip) return;
+    dismiss();
     stopPlayback();
     if (fromTop || ended || a.currentTime >= clip.duration - 0.01) a.currentTime = 0;
     applySpeed(a, speedNow.current);
@@ -173,6 +181,7 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
   const land = (i: number) => {
     const f = frames[i];
     if (!f) return;
+    dismiss();
     pause();
     setEnded(false);
     setT(holdTime(f));
@@ -187,6 +196,8 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
   const mark = showKey ? frameMark(shown, pose, say(ui)) : null;
   // blue air waves only for a sound that pushes out a gust of air (ㅋ, English p); a merged frame takes its biggest
   const puff = Math.max(0, ...shown.map((s) => (s.entry ? side(s.entry).puff : 0)));
+  // front view: Placement tips paints the frame's key part blue (the lips for p and vowels, the tongue tip for t, TH)
+  const key = showKey && shown[0]?.entry ? keyParts(shown[0].entry) : { lips: false, tongue: false };
 
   // what Blueberry says for a set of sounds: the IPA in blue, then the plain-words description
   const tip = (s: Sound[]) => s[0]?.entry ? (
@@ -201,7 +212,7 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
     <div data-testid="native-mouth"
       className="grid grid-cols-1 gap-3.5 [grid-template-areas:'mouth'_'side'_'timeline'_'actions'] lg:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)] lg:gap-x-7 lg:gap-y-[18px] lg:[grid-template-areas:'mouth_side'_'mouth_actions'_'timeline_timeline']">
       {/* the picture, in its card, with the sound button in the corner */}
-      <div className="relative flex items-center justify-center rounded-[20px] border-[2.5px] border-ink bg-tray px-4 py-3 shadow-pop [grid-area:mouth] lg:min-h-[420px] lg:rounded-3xl lg:px-20 lg:py-6 lg:shadow-pop-lg">
+      <div className="relative flex items-center justify-center rounded-[20px] border-[2.5px] border-ink bg-tray px-4 pt-3 pb-16 shadow-pop [grid-area:mouth] lg:min-h-[420px] lg:rounded-3xl lg:px-20 lg:pt-6 lg:pb-20 lg:shadow-pop-lg">
         <button type="button" onClick={() => onMuted?.(!muted)} aria-pressed={muted} aria-label={tr(muted ? "soundOn" : "soundOff")}
           title={tr(muted ? "soundOn" : "soundOff")} data-testid="sound"
           className={`absolute right-3 top-3 grid size-11 place-items-center rounded-xl bg-white text-ink lg:right-3.5 lg:top-3.5 lg:size-12 lg:rounded-[14px] ${POP}`}>
@@ -210,9 +221,24 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
             {muted ? <path d="m16 9 5 6m0-6-5 6" /> : <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />}
           </svg>
         </button>
-        <div className="w-full max-w-[460px]" data-testid="mouth">
-          <CutAway g={pose} mark={mark} look="pop" puff={puff} />
+        <div role="group" aria-label={tr("mouthView")} data-testid="view"
+          className="absolute bottom-3 left-3 flex overflow-hidden rounded-xl border-[2.5px] border-ink bg-white shadow-pop-xs lg:bottom-3.5 lg:left-3.5">
+          {(["side", "front"] as const).map((v, i) => (
+            <button key={v} type="button" onClick={() => setView(v)} aria-pressed={view === v}
+              className={`h-[39px] px-3 font-display text-[15px] lg:h-[43px] lg:px-4 lg:text-[17px] ${i ? "border-l-[2.5px] border-ink" : ""} ${view === v ? "bg-ink text-white" : "bg-white text-ink"}`}>
+              {tr(v === "side" ? "viewSide" : "viewFront")}
+            </button>
+          ))}
         </div>
+        {view === "side" ? (
+          <div className="w-full max-w-[460px]" data-testid="mouth">
+            <CutAway g={pose} mark={mark} look="pop" puff={puff} />
+          </div>
+        ) : (
+          <div className="w-full max-w-[360px]" data-testid="mouth">
+            <FrontView f={frontAt(frames, fronts, t, EASE * speed)} focusLips={key.lips} focusTongue={key.tongue} />
+          </div>
+        )}
       </div>
 
       {/* Blueberry's tip for the sound on screen, then Placement tips */}
@@ -224,7 +250,11 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
           <p className="m-0 grid min-w-0 flex-1 rounded-[16px_16px_16px_4px] border-[2.5px] border-ink bg-white px-3 py-2 text-[15px] leading-[1.35] font-medium lg:rounded-[18px_18px_18px_4px] lg:px-4 lg:py-3 lg:text-[17px] lg:leading-[1.4] lg:shadow-pop-sm">
             {/* invisible copies of every tip hold the bubble at its biggest size */}
             {tips.map((s, i) => <span key={i} aria-hidden="true" className="invisible [grid-area:1/1]">{tip(s)}</span>)}
-            <span className="[grid-area:1/1]" data-testid="now">{tip(shown)}</span>
+            {saying ? (
+              <span className="[grid-area:1/1] font-semibold" data-testid="now" role="status">{saying.text}</span>
+            ) : (
+              <span className="[grid-area:1/1]" data-testid="now">{tip(shown)}</span>
+            )}
           </p>
         </div>
         <div className="flex items-center gap-2 lg:gap-2.5">

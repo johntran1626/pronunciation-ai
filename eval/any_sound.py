@@ -1,7 +1,7 @@
 """Eval of the every-sound English check (backend/any_sound.py): does it catch ANY English sound said as another
 sound, or left out, without marking correct speech red?
 
-    python -m eval.any_sound --limit 1132    # all CMU ARCTIC sentences of 4 voices + 150 per Korean voice (~30 min)
+    python -m eval.any_sound --limit 1132    # all CMU ARCTIC sentences of 9 voices + 566 per Korean voice (~1 h)
     python -m eval.any_sound                 # re-read data/cache/any_sound.csv and print the table
     python -m eval.any_sound --write         # also write backend/any_sound_thresholds.json + results/any_sound.json
 
@@ -12,7 +12,8 @@ the target per try gives thousands of real "said X instead of Y" cases with a kn
 with no hand labelling. Adding a sound to the target that the speaker never said gives a "sound left out" case.
 
 Who is used for what (by speaker, never by recording):
-    tune = CMU ARCTIC bdl (male) + slt (female);  test = rms (male) + clb (female);
+    tune = CMU ARCTIC bdl, aew, jmk (Canadian) (male) + slt, ljm (female);  test = rms (male) + clb, eey, lnh (female);
+    (until 2026-11-16 only bdl + slt / rms + clb: 2 tune voices proved too few for per-pair cut-offs);
     korean = L2-ARCTIC HJK HKK YDCK YKWK, only sounds the human annotators marked CORRECT (false alarms on learners).
 None of these voices were in the listener's fine-tune data (eval/ft_data.py).
 
@@ -33,7 +34,7 @@ import numpy as np
 import soundfile as sf
 
 from backend.align import align, emissions
-from backend.any_sound import CLASSES, NAMES, THRESHOLDS_FILE, VOWELS, accepted, context, dropped_ok, evidence
+from backend.any_sound import CLASSES, NAMES, THRESHOLDS_FILE, VOWELS, accepted, context, dropped_ok, evidence, margin_cut
 from backend.compare import attach_heard
 from backend.g2p import expected_phonemes
 from backend.listener import listener_id, live_listener
@@ -45,11 +46,20 @@ CMU = ROOT / "data" / "cmu_arctic"
 L2 = ROOT / "data" / "l2arctic"
 OUT = ROOT / "data" / "cache" / "any_sound.csv"
 RESULTS = ROOT / "results" / "any_sound.json"
-TUNE, TEST = ("bdl", "slt"), ("rms", "clb")
+# 9 native US / Canadian voices (CMU ARCTIC; the 5 added later have no license file in their archives: used on this
+# machine for evaluation only, never redistributed). None were in the listener's fine-tune data.
+TUNE, TEST = ("bdl", "slt", "aew", "ljm", "jmk"), ("rms", "clb", "eey", "lnh")
 CAPS, LIVE_CAP = (0.02, 0.05, 0.10), 0.05
 M_GRID = np.round(np.concatenate([np.arange(-1.0, 0.9, 0.02), np.arange(0.9, 1.0001, 0.0025)]), 4)
 R_GRID = [0.0005, 0.001, 0.002, 0.005, 0.01, 0.02, 0.05]
 RS_GRID = [0.0, 0.0001, 0.0002, 0.0005, 0.001, 0.002, 0.005, 0.01]
+# Per-pair cut-offs (python -m eval.any_sound --pairs), all fixed BEFORE looking at the held-out voices:
+FLOOR = 0.25            # never gentler than this: another sound must win by at least 0.25
+MIN_N = 100             # a target needs this many correct tune examples before it gets its own cut-offs
+SAFETY_GRID = [0.0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]
+ADD_CAP = 0.005         # leave-one-voice-out on tune: the pair cuts may add at most 0.5 points of false-red sentences
+PAIR_BARS = {"test_false_red_max": 0.05, "korean_false_red_max_rise": 0.01}   # held out; plus: catches must go up
+PAIRS_RESULTS = ROOT / "results" / "any_sound_pairs.json"
 
 
 # ---------- making the mistakes ----------
@@ -134,12 +144,13 @@ def run(limit, n_sub, n_del, seed=0):
 
 
 # ---------- the numbers ----------
-def flag(r, m, rc, rs=0.0):
+def flag(r, m, rc, rs=0.0, cuts=None):
     """The live rule (backend/any_sound.verdict) with these cut-offs: m = margin, rc = right for a dropped sound,
-    rs = right for a sound the recognizer replaced."""
+    rs = right for a sound the recognizer replaced, cuts = per-pair margin cut-offs (pair_cuts)."""
     if r["skip"]:
         return False
-    swapped = (r["margin"] > m or (r["op"] == "sub" and r["right"] < rs)) and not accepted(r)
+    swapped = (r["margin"] > margin_cut(r, {"margin": m, "pair_margin": cuts}) or (r["op"] == "sub" and r["right"] < rs)) \
+        and not accepted(r)
     return swapped or (r["op"] == "del" and r["right"] < rc and not dropped_ok(r))
 
 
@@ -243,6 +254,122 @@ def evaluate(rows):
     return out
 
 
+# ---------- per-pair cut-offs ----------
+# The one global margin cut-off is set by the pairs natives blur on their own, so a pair natives never blur (stressed
+# ɪ heard as ʌ: "drinking" said "drunking") can be missed at margin 0.3. Here each (target, other sound) pair with
+# enough correct tune examples gets its own cut-off: the worst margin any CORRECT tune sound of that target showed
+# toward that other sound, plus a safety gap, never below FLOOR and only if it is gentler than the global cut.
+# "target *" = the target's fallback for other sounds never seen as its best rival: a correct sound's margin toward
+# any other sound is at most its margin toward its best rival, so the worst best-rival margin bounds them all.
+def pair_cuts(correct, global_m, safety, floor=FLOOR, min_n=MIN_N):
+    """correct = correct tune rows (with context). -> {"t o": cut, "t *": cut} (only cuts below global_m)."""
+    by_target = defaultdict(list)
+    for r in correct:
+        if not r["skip"]:
+            by_target[r["target"]].append(r)
+    cuts = {}
+    for t, rs in by_target.items():
+        if len(rs) < min_n:
+            continue
+        worst = defaultdict(lambda: -1.0)
+        for r in rs:
+            if not accepted(r):          # a native variant is never red, so it must not push a cut up
+                worst[r["other"]] = max(worst[r["other"]], r["margin"])
+        for key, m in [(f"{t} {o}", m) for o, m in worst.items()] + [(f"{t} *", max(worst.values(), default=-1.0))]:
+            cut = round(max(floor, m + safety), 4)
+            if cut < global_m:
+                cuts[key] = cut
+    return cuts
+
+
+def _false_red(rows, m, rc, rs, cuts=None):
+    """Share of correct sentences with at least one false red (swap or left-out sound)."""
+    hit = defaultdict(bool)
+    for r in rows:
+        k = (r["speaker"], r["utt"])
+        hit[k] |= flag(r, m, rc, rs, cuts) or (r["op"] == "del" and r["right"] < rc and not dropped_ok(r))
+    return sum(hit.values()) / len(hit) if hit else float("nan")
+
+
+def choose_safety(correct_tune, m, rc, rs, grid=SAFETY_GRID, add_cap=ADD_CAP):
+    """The smallest safety gap whose pair cuts, made from the OTHER tune voices, add at most add_cap false-red
+    sentences on the one left out (each tune voice left out once, averaged). -> (safety, {safety: added})."""
+    voices = sorted({r["speaker"] for r in correct_tune})
+    added = {}
+    for s in grid:
+        diffs = []
+        for v in voices:
+            made = [r for r in correct_tune if r["speaker"] != v]
+            held = [r for r in correct_tune if r["speaker"] == v]
+            cuts = pair_cuts(made, m, s)
+            diffs.append(_false_red(held, m, rc, rs, cuts) - _false_red(held, m, rc, rs))
+        added[s] = round(float(np.mean(diffs)), 4)
+        if added[s] <= add_cap:
+            return s, added
+    return None, added
+
+
+def evaluate_pairs(rows, live):
+    """Today's live cut-offs vs the same plus per-pair cut-offs, on the held-out voices."""
+    rows = [r for r in rows if not r["skip"]]
+    m, rc, rs = live["margin"], live["right"], live["sub_right"]
+    correct = {g: [r for r in rows if r["cond"] == "correct" and r["group"] == g
+                   and (g != "korean" or r["human"] == "correct")] for g in ("tune", "test", "korean")}
+    safety, added = choose_safety(correct["tune"], m, rc, rs)
+    out = {"settings": {"floor": FLOOR, "min_n": MIN_N, "add_cap": ADD_CAP, "bars": PAIR_BARS},
+           "leave_one_voice_out_added": {str(k): v for k, v in added.items()}, "safety": safety}
+    if safety is None:
+        out["adopt"] = False
+        return out
+    cuts = pair_cuts(correct["tune"], m, safety)
+    subs = [r for r in rows if r["cond"] == "sub" and r["group"] == "test"]
+    strong = [r for r in subs if not r["weak"] and not accepted(dict(r, other=r["said"]))]
+    lax = {"ɪ", "ʌ", "æ", "ɛ", "ʊ"}
+    sets = {"swaps_all": subs, "swaps_stressed": strong,
+            "swaps_stressed_vowels": [r for r in strong if r["target"] in VOWELS],
+            "swaps_stressed_consonants": [r for r in strong if r["target"] not in VOWELS],
+            "swaps_stressed_lax_vowels": [r for r in strong if r["target"] in lax and r["said"] in lax],
+            "left_out": [r for r in rows if r["cond"] == "del" and r["group"] == "test"]}
+
+    def measure(c):
+        return {"false_red_sentences": {g: round(_false_red(correct[g], m, rc, rs, c), 4) for g in correct},
+                **{k: {"caught": sum(flag(r, m, rc, rs, c) for r in v), "n": len(v)} for k, v in sets.items()}}
+    today, pairs = measure(None), measure(cuts)
+    fr = pairs["false_red_sentences"]
+    out.update(n_pair_cuts=len(cuts), pair_margin=dict(sorted(cuts.items())), today=today, with_pairs=pairs)
+    out["adopt"] = bool(fr["test"] <= PAIR_BARS["test_false_red_max"]
+                        and fr["korean"] <= today["false_red_sentences"]["korean"] + PAIR_BARS["korean_false_red_max_rise"]
+                        and pairs["swaps_stressed"]["caught"] > today["swaps_stressed"]["caught"])
+    return out
+
+
+def show_pairs(p):
+    print(f"leave-one-voice-out, false-red sentences added by the pair cuts: {p['leave_one_voice_out_added']}")
+    if p["safety"] is None:
+        print("no safety gap kept the added false reds under the cap: per-pair cut-offs NOT adopted")
+        return
+    pct = lambda d: f"{100 * d['caught'] / d['n']:5.1f}% ({d['caught']}/{d['n']})" if d["n"] else "n/a"
+    print(f"safety {p['safety']}: {p['n_pair_cuts']} pair cut-offs below the global one")
+    for name in ("today", "with_pairs"):
+        c = p[name]
+        fr = c["false_red_sentences"]
+        print(f"{name:10s} false-red sentences: tune {100 * fr['tune']:.1f}%, test {100 * fr['test']:.1f}%, "
+              f"korean {100 * fr['korean']:.1f}% | stressed swaps {pct(c['swaps_stressed'])}, vowels "
+              f"{pct(c['swaps_stressed_vowels'])}, lax vowels {pct(c['swaps_stressed_lax_vowels'])}, consonants "
+              f"{pct(c['swaps_stressed_consonants'])}, all swaps {pct(c['swaps_all'])}, left out {pct(c['left_out'])}")
+    print(f"adopt (bars fixed before the run): {p['adopt']}")
+
+
+def write_pairs(p):
+    PAIRS_RESULTS.write_text(json.dumps(p, indent=1, ensure_ascii=False) + "\n")
+    print("wrote", PAIRS_RESULTS.relative_to(ROOT))
+    if p.get("adopt"):
+        t = json.loads(THRESHOLDS_FILE.read_text())
+        t.update(pair_margin=p["pair_margin"], pair_source="eval/any_sound.py --pairs (see results/any_sound_pairs.json)")
+        THRESHOLDS_FILE.write_text(json.dumps(t, indent=1, ensure_ascii=False) + "\n")
+        print("wrote the pair cut-offs into", THRESHOLDS_FILE.relative_to(ROOT))
+
+
 def show(res):
     pct = lambda d: f"{100 * d['caught'] / d['n']:5.1f}% ({d['caught']}/{d['n']})" if d["n"] else "n/a"
     print(f"correct sentences: {res['sentences']}; rows not graded (word not in the dictionary): {res['not_graded_rows']}")
@@ -271,9 +398,16 @@ if __name__ == "__main__":
     ap.add_argument("--subs", type=int, default=4)
     ap.add_argument("--dels", type=int, default=2)
     ap.add_argument("--write", action="store_true")
+    ap.add_argument("--pairs", action="store_true", help="per-pair cut-offs on top of the live ones")
     a = ap.parse_args()
     if a.limit:
         run(a.limit, a.subs, a.dels)
+    if a.pairs:
+        p = evaluate_pairs(load_rows(), json.loads(THRESHOLDS_FILE.read_text()))
+        show_pairs(p)
+        if a.write:
+            write_pairs(p)
+        raise SystemExit
     res = evaluate(load_rows())
     show(res)
     if a.write:

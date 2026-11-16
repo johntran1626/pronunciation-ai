@@ -91,11 +91,19 @@ def dropped_ok(r):
     return r["target"] == "ə" or r["func"] or (r["target"] in ("t", "d") and r.get("between_consonants"))
 
 
+def margin_cut(r, t):
+    """How far another sound must win for this sound to count as swapped. One global cut-off is set by the pairs
+    natives blur on their own (weak vowels, cot/caught), so it is high (~0.95). Pairs natives never blur get their own,
+    gentler cut-off (t["pair_margin"], "target other", e.g. "ɪ ʌ"); "target *" covers that target's other pairs."""
+    cuts = t.get("pair_margin") or {}
+    return cuts.get(f"{r['target']} {r['other']}", cuts.get(f"{r['target']} *", t["margin"]))
+
+
 def verdict(r, t):
     """-> (SWAP, the sound probably said) | (MISSING, None) | None (green). t = the tuned thresholds."""
     if not t.get("enabled") or r.get("skip"):
         return None
-    replaced = r["margin"] > t["margin"] or (r["op"] == "sub" and r["right"] < t.get("sub_right", 0.0))
+    replaced = r["margin"] > margin_cut(r, t) or (r["op"] == "sub" and r["right"] < t.get("sub_right", 0.0))
     if replaced and not accepted(r):
         return SWAP, r["other"]
     if r["op"] == "del" and r["right"] < t["right"] and not dropped_ok(r):

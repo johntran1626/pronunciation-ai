@@ -3,9 +3,11 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import type { PhonemeResult, TipsTable, WordResult } from "./api.ts";
-import { buildCard, hoverCards, issuesOf, tapAction } from "./card.ts";
+import { allCards, buildCard, hoverCards, issuesOf, plainDescription } from "./card.ts";
+import type { ArticulationTable } from "./api.ts";
 
 const TIPS: TipsTable = JSON.parse(readFileSync(new URL("../../content/tips.json", import.meta.url), "utf-8"));
+const ART: ArticulationTable = JSON.parse(readFileSync(new URL("../../content/articulation.json", import.meta.url), "utf-8"));
 
 const ph = (ipa: string, status: PhonemeResult["status"], pair?: string, start = 0.1, end = 0.2): PhonemeResult => ({
   ipa, status, pair, start, end,
@@ -35,8 +37,6 @@ test("buildCard fills in the word and uses the right table for each side", () =>
   assert.equal(c.whatHappened, "In “From”, the R probably sounded like an L.");
   assert.deepEqual([c.target, c.produced], [{ lang: "en", sym: "ɹ" }, { lang: "en", sym: "l" }]);
   assert.equal(c.simple, false);
-  assert.deepEqual(c.sound, { start: 0.12, end: 0.2 });
-  assert.equal(c.soundIndex, 1); // The 2nd sound of the word, to find the same sound in the native clip
   assert.equal(c.practice.length, 3);
 
   const k = word("나라", [ph("n", "green"), ph("a", "green"), ph("ɾ", "red", "tap_as_r"), ph("a", "green")]);
@@ -55,8 +55,6 @@ test("not-heard and extra-vowel cards are simple (no mouth diagrams)", () => {
   const c = buildCard(issuesOf(nh)[0], nh, TIPS, "en")!;
   assert.equal(c.simple, true);
   assert.equal(c.whatHappened, "We couldn't hear “now” in your recording.");
-  assert.equal(c.sound, null); // nothing of "now" was heard, so there's no sound to replay
-  assert.equal(c.soundIndex, null); // ...and no single native sound to compare with (the native WORD still plays)
   const ev = word("bus", [ph("b", "green"), ph("ʌ", "green"), ph("s", "red", "extra_vowel")]);
   assert.equal(buildCard(issuesOf(ev)[0], ev, TIPS, "en")!.simple, true);
 });
@@ -78,16 +76,6 @@ test("every tip in tips.json builds a card", () => {
 
 // Tapping a red word opens its card ONLY; it no longer also plays the audio.
 // The card's own buttons replay. Green / plain words have no card, so a tap still plays them.
-test("tapAction: a red word opens the card and does not play", () => {
-  const red = word("from", [ph("f", "green"), ph("ɹ", "red", "r_as_l")]);
-  assert.deepEqual(tapAction(red), { play: false, toggleCard: true });
-});
-
-test("tapAction: a word without issues plays and has no card", () => {
-  const green = word("now", [ph("n", "green"), ph("aʊ", "green")]);
-  assert.deepEqual(tapAction(green), { play: true, toggleCard: false });
-});
-
 test("hovering a red word previews the correct mouth for each red sound that has one", () => {
   const w = word("From", [ph("f", "green"), ph("ɹ", "red", "r_as_l")]);
   assert.deepEqual(hoverCards(w, TIPS, "en").map((c) => c.target), [{ lang: "en", sym: "ɹ" }]);
@@ -105,7 +93,8 @@ test("a swapped sound gets a card with both mouths, plain labels and practice wo
   const [issue] = issuesOf(w);
   assert.equal(issue.produced, "eɪ");
   const c = buildCard(issue, w, TIPS, "en")!;
-  assert.equal(c.whatHappened, "In “Testing”, the “bed” vowel probably sounded like the “day” vowel.");
+  // the sounds as IPA, then a familiar word that has the sound it came out as
+  assert.equal(c.whatHappened, "In “Testing”, your [ɛ] sounded like [eɪ], as in “day”.");
   assert.deepEqual([c.target, c.produced], [{ lang: "en", sym: "ɛ" }, { lang: "en", sym: "eɪ" }]);
   assert.equal(c.simple, false);
   assert.equal(c.practice.length, 3);
@@ -117,7 +106,7 @@ test("a swapped sound gets a card with both mouths, plain labels and practice wo
 test("a left-out sound gets a card with the correct mouth only", () => {
   const w = word("acts", [ph("æ", "green"), { ...ph("k", "red", "sound_missing"), produced: null }]);
   const c = buildCard(issuesOf(w)[0], w, TIPS, "en")!;
-  assert.equal(c.whatHappened, "In “acts”, the K seems to be missing.");
+  assert.equal(c.whatHappened, "In “acts”, the [k] sound (as in “key”) seems to be missing.");
   assert.deepEqual(c.target, { lang: "en", sym: "k" });
   assert.equal(c.produced, null);
   assert.equal(c.simple, false); // the correct mouth is still drawn
@@ -128,4 +117,40 @@ test("two different swaps in one word give two cards", () => {
     { ...ph("s", "red", "sound_swap"), produced: "d" }, { ...ph("t", "red", "sound_swap"), produced: "ɹ" },
   ]);
   assert.deepEqual(issuesOf(w).map((i) => i.ipa), ["s", "t"]);
+});
+
+test("how to fix a swap: make the target sound like the green picture, in the picture's own words", () => {
+  const w = word("soup", [ph("s", "green"), { ...ph("uː", "red", "sound_swap"), produced: "æ" }, ph("p", "green")]);
+  const c = buildCard(issuesOf(w)[0], w, TIPS, "en", "en", ART.sounds)!;
+  assert.equal(c.whatHappened, "In “soup”, your [uː] sounded like [æ], as in “cat”.");
+  assert.equal(c.tip, "Make [uː] like the green picture: lips rounded and pushed forward, mouth almost closed. "
+    + "Say the practice words slowly, then “soup”.");
+  const ko = buildCard(issuesOf(w)[0], w, TIPS, "en", "ko", ART.sounds)!;
+  assert.match(ko.whatHappened, /\[uː\].*\[æ\]/);
+  assert.match(ko.tip, /입술을 둥글게 앞으로/); // the picture's line in Korean
+  // without the sound table (hover preview): still a readable tip, just without the picture's line
+  assert.equal(buildCard(issuesOf(w)[0], w, TIPS, "en")!.tip, "Make [uː] like the green picture. Say the practice words slowly, then “soup”.");
+});
+
+test("how to fix a left-out sound names it and the picture's line", () => {
+  const w = word("acts", [ph("æ", "green"), { ...ph("k", "red", "sound_missing"), produced: null }]);
+  const c = buildCard(issuesOf(w)[0], w, TIPS, "en", "en", ART.sounds)!;
+  assert.match(c.tip, /^Don't skip \[k\]: .+\. Say “acts” slowly so every sound is there, then speed up\.$/);
+});
+
+// ---------- the results page: every card open at once, the pictures' text kept short ----------
+test("allCards: every red word's cards, in sentence order, with the word's position", () => {
+  const a = word("Testing", [ph("t", "green"), { ...ph("ɛ", "red", "sound_swap"), produced: "eɪ" }]);
+  const b = word("the", [ph("ð", "green"), ph("ə", "green")]);
+  const c = word("From", [ph("f", "green"), ph("ɹ", "red", "r_as_l")]);
+  const cards = allCards([a, b, c], TIPS, "en");
+  assert.deepEqual(cards.map((x) => [x.wordIndex, x.card.pair]), [[0, "sound_swap"], [2, "r_as_l"]]);
+});
+
+test("plainDescription drops the example-word label in front of a sound's description", () => {
+  assert.equal(plainDescription("ship: tongue a little lower and further back than in sheep, relaxed and short."),
+    "Tongue a little lower and further back than in sheep, relaxed and short.");
+  assert.equal(plainDescription("cat: jaw quite open, tongue low and forward."), "Jaw quite open, tongue low and forward.");
+  assert.equal(plainDescription("ㅓ: 혀를 낮추고"), "혀를 낮추고");
+  assert.equal(plainDescription("Both lips close, air builds up: lips pop open."), "Both lips close, air builds up: lips pop open.");
 });

@@ -4,6 +4,13 @@
 export const PAD_SECONDS = 0.06; // extra audio each side: forced-alignment edges are ~tens of ms off (spikes/d_align.py)
 
 // start/end (seconds, from the aligner) -> which stretch to play, padded and kept inside the recording.
+// "Your [word]" in the detail card stops this much early: the aligner's word end runs a little into the next word,
+// which is distracting next to the native voice saying the word on its own. A short word keeps at least 50 ms.
+export const COMPARE_TRIM = 0.1;
+export function compareEnd(start: number, end: number): number {
+  return Math.max(start + 0.05, end - COMPARE_TRIM);
+}
+
 export function sliceBounds(
   start: number | null | undefined,
   end: number | null | undefined,

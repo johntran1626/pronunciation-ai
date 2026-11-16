@@ -106,3 +106,13 @@ test("mirror view: s/z show both rows of teeth close together", () => {
   const s = front(en("s"));
   assert.equal(s.upperTeeth && s.lowerTeeth, true);
 });
+
+import { keyParts } from "./mouthViews.ts";
+test("key parts for the mirror view: lips for p and vowels, tongue for t and TH, nothing for k; English r's slight rounding isn't key", () => {
+  assert.deepEqual(keyParts(en("p")), { lips: true, tongue: false });
+  assert.deepEqual(keyParts(en("uː")), { lips: true, tongue: false });
+  assert.deepEqual(keyParts(en("t")), { lips: false, tongue: true });
+  assert.deepEqual(keyParts(en("θ")), { lips: false, tongue: true });
+  assert.deepEqual(keyParts(en("k")), { lips: false, tongue: false });
+  assert.equal(keyParts(en("ɹ")).lips, false);
+});

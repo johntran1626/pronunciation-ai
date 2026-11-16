@@ -84,9 +84,10 @@ test("a Home button (both site languages) sits just left of ENG/한 and does wha
   assert.match(page, /if \(id !== request\.current\) return/);
 });
 
-test("the playing screen replaces the home (like the loading screen), and the recorder opens full width under the player", () => {
+test("the playing screen replaces the home (like the loading screen), and the practice results come full width under the player", () => {
   assert.match(page, /hidden=\{busy \|\| shown !== null\}/);
   const player = page.indexOf("<NativeMouth");
-  const recorder = page.indexOf("<Recorder");
-  assert.ok(player > 0 && recorder > player, "the recorder comes after the player, not inside its button column");
+  const results = page.indexOf("<ResultSentence");
+  assert.ok(player > 0 && results > player, "the results come after the player, not inside its button column");
+  assert.match(page, /onClick=\{press\}/, "the Practice button is the record button itself");
 });

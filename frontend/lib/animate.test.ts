@@ -312,3 +312,37 @@ test("show what matters: a merged frame uses the first sound with something to p
   assert.match(markFor(real("en", "h"), real("en", "p")).m!.text, /lips/i);
   assert.equal(frameMark([{ ipa: "?", lang: "en", start: 0, end: 0.1, entry: null }], geometry(svg({}), "consonant", "neutral")), null);
 });
+
+// ---------- the front (mirror) view of the animation ----------
+import { frontAt, frontsFor } from "./animate.ts";
+import { front } from "./mouthViews.ts";
+const slow = (...es: E[]): Sound[] => es.map((entry, i) => ({ ipa: String(i), lang: "en", start: i * 0.4, end: i * 0.4 + 0.4, entry }));
+
+test("front view: each frame shows its own sound's mirror view (same rules as the detail card's)", () => {
+  const ss = slow(A, P, U);
+  const fr = framesFor(ss);
+  const fronts = frontsFor(fr, ss);
+  assert.equal(fronts.length, fr.length);
+  assert.deepEqual(fronts.map((f) => f.closed), [false, true, false]); // a, then p shuts the lips, then u
+  assert.deepEqual({ ...fronts[0], round: undefined }, { ...front(A), round: undefined });
+  assert.equal(fronts[2].round, 1); // u: rounded lips
+  assert.deepEqual(frontAt(fr, fronts, 0.2), fronts[0]); // a hold shows the frame's own front exactly
+  assert.deepEqual(frontAt(fr, fronts, 1.0), fronts[2]);
+});
+
+test("front view: a change is eased like the side view, and the lips only shut once the opening is nearly gone", () => {
+  const ss = slow(A, P);
+  const fr = framesFor(ss);
+  const fronts = frontsFor(fr, ss);
+  const b = fr[1].start;
+  const half = frontAt(fr, fronts, b);
+  assert.ok(half.height > 0 && half.height < fronts[0].height, `${half.height}`); // halfway closed
+  assert.equal(half.closed, false); // still a (smaller) opening, not a jump to shut lips
+  assert.equal(frontAt(fr, fronts, b + EASE / 2 + 1e-6).closed, true); // after the change: shut
+  assert.equal(frontAt(fr, fronts, b - EASE / 2 - 1e-6).height, fronts[0].height);
+});
+
+test("front view with no sounds: a relaxed, finite mouth", () => {
+  const f = frontAt([], [], 0.3);
+  assert.ok(Number.isFinite(f.width) && Number.isFinite(f.height));
+});

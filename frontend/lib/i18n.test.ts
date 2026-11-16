@@ -6,7 +6,6 @@ import { readFileSync } from "node:fs";
 import { DEFAULT_UI, UI, descText, problemText, say, tipText } from "./i18n.ts";
 import { caption, airflowPhrases } from "./mouthViews.ts";
 import { callout, geometry, VIEW, textWidth } from "./mouth.ts";
-import { seeingSpeech } from "./reference.ts";
 
 const read = (p: string) => JSON.parse(readFileSync(new URL(p, import.meta.url), "utf8"));
 const tips = read("../../content/tips.json").tips;
@@ -48,16 +47,14 @@ test("every sound has a Korean description, and none repeats an unverified claim
     }
 });
 
-test("every phrase the mouth pictures can show (captions, callouts, puffs, MRI notes) has a Korean version", () => {
+test("every phrase the mouth pictures can show (captions, callouts, puffs) has a Korean version", () => {
   const strict = (p: string) => { const k = say("ko")(p); assert.ok(HANGUL.test(k), `missing Korean for "${p}"`); return k; };
   for (const p of airflowPhrases) strict(p.trim().replace(/^, /, ""));
   for (const lang of ["en", "ko"] as const)
-    for (const [sym, e] of Object.entries<{ svg: never; kind: string; lips: string }>(sounds[lang])) {
+    for (const e of Object.values<{ svg: never; kind: string; lips: string }>(sounds[lang])) {
       caption(e as never, strict);
       const c = callout(e as never, geometry(e.svg, e.kind, e.lips));
       if (c) strict(c.text);
-      const ref = seeingSpeech(lang, sym, e.kind);
-      if (ref?.note) strict(ref.note);
     }
 });
 

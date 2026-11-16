@@ -176,10 +176,5 @@ export const PHRASE_KO: Record<string, string> = {
   "Side view": "옆모습",
   "Inside the mouth": "입 안",
   gap: "틈",
-  "Korean tense sounds aren't on the chart. Watch the lips and tongue; the difference is a tight throat and no puff of air, which an MRI of the mouth doesn't show.":
-    "한국어 된소리는 차트에 없어요. 입술과 혀를 보세요. 차이는 목의 긴장과 바람이 없다는 점인데, 입 MRI에는 이게 보이지 않아요.",
-  "Watch the lips and tongue; the difference from the plain sound is the big puff of air, which an MRI of the mouth doesn't show.":
-    "입술과 혀를 보세요. 예사소리와 다른 점은 세게 나오는 바람인데, 입 MRI에는 이게 보이지 않아요.",
-  "This sound glides; the chart shows where it starts.": "이 소리는 미끄러지듯 바뀌어요. 차트는 시작 위치를 보여 줘요.",
 };
 

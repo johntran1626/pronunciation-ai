@@ -203,10 +203,22 @@ body {
 .scrub:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px #2F6BFF; }
 .scrub:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px #2F6BFF; }
 
+/* The Practice button's countdown: each digit (3, 2, 1) pops in; the dot pulses while recording. */
+@keyframes count-pop {
+  0% { transform: scale(1.7); opacity: 0; }
+  35% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.92); opacity: 0.75; }
+}
+.count-pop { display: inline-block; animation: count-pop 0.77s ease-out both; }
+@keyframes rec-dot {
+  50% { opacity: 0.25; }
+}
+.rec-dot { animation: rec-dot 1s ease-in-out infinite; }
+
 /* Visitors who ask for less motion: no loops at all (the bubble shows one finished line, see TypedBubble.tsx).
    The loading poses then show their finished picture: ㅎㅇ written, 한들 painted, pencil and brush at rest. */
 @media (prefers-reduced-motion: reduce) {
-  .bob, .blink, .talk, .caret, .ground, .bob-body, .tap, .keys, .nod { animation: none; }
+  .bob, .blink, .talk, .caret, .ground, .bob-body, .tap, .keys, .nod, .count-pop, .rec-dot { animation: none; }
   .ground { opacity: 0.2; }
   .ld-bob, .ld-shadow, .ld-tap, .ld-search, .ld-pen, .ld-h1, .ld-h2, .ld-h3, .ld-o1, .ld-brush, .ld-reveal, .ld-float,
   .ld-read, .ld-flip, .ld-sway, .ld-swing, .ld-dust { animation: none; }

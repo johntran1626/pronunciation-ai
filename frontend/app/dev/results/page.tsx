@@ -129,8 +129,8 @@ export default function DevResults() {
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-10 px-4 py-12">
       <p className="rounded bg-amber-100 p-3 text-amber-900 dark:bg-amber-900 dark:text-amber-100">
-        DEV ONLY: fake, hand-made results to check the colors. Not real analysis. Tap the red &quot;From&quot; or
-        &quot;now&quot; to open a detail card (all cards: /dev/cards).
+        DEV ONLY: fake, hand-made results to check the colors. Not real analysis. Every red word&apos;s detail
+        card shows under its result (all cards: /dev/cards).
       </p>
       <ResultSentence result={SWAPPED} />
       <ResultSentence result={ENGLISH} />

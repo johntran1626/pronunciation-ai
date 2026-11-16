@@ -1,6 +1,7 @@
 // Turning a red word into what its detail card shows. Pure functions, tested in card.test.ts.
-import type { Lang, TipsTable, WordResult } from "./api.ts";
-import { tipText, tr, type Ui } from "./i18n.ts";
+import type { ArticulationTable, Lang, TipsTable, WordResult } from "./api.ts";
+import { say, tipText, tr, type Ui } from "./i18n.ts";
+import { caption } from "./mouthViews.ts";
 import { practiceFor, soundLabel } from "./sounds.ts";
 
 // The every-sound English check (backend/any_sound.py): any sound swapped for another, or left out.
@@ -28,13 +29,6 @@ export function issuesOf(word: WordResult): Issue[] {
   return out;
 }
 
-// What a tap on a word does. A word with a card opens / closes it and stays quiet (the card has
-// its own replay buttons); any other word plays your audio for that part.
-export function tapAction(word: WordResult): { play: boolean; toggleCard: boolean } {
-  const hasCard = issuesOf(word).length > 0;
-  return { play: !hasCard, toggleCard: hasCard };
-}
-
 export type Sound = { lang: Lang; sym: string }; // a key into articulation.json
 export type Card = {
   pair: string;
@@ -47,45 +41,49 @@ export type Card = {
   target: Sound | null;
   produced: Sound | null;
   simple: boolean; // no mouth diagrams (word not heard, extra vowel): there's no single target sound to draw
-  sound: { start: number; end: number } | null; // just the bad sound in YOUR recording (null: nothing to play)
-  soundIndex: number | null; // Which sound of the word it is (null: no single sound, e.g. word not heard)
   reviewed: boolean;
   needsNativeReview: boolean;
 };
 
-// A card for any English sound swapped or left out: both mouths from the sound table, plain names, practice words.
-function anySoundCard(issue: Issue, word: WordResult, ui: Ui): Card | null {
+// A card for any English sound swapped or left out: both mouths from the sound table, the sounds as IPA with a
+// familiar word for each, and practice words. With the sound table (`sounds`), the tip repeats the green picture's
+// one-line caption ("lips rounded and pushed forward, mouth almost closed"), so it says what to DO.
+function anySoundCard(issue: Issue, word: WordResult, ui: Ui, sounds?: ArticulationTable["sounds"]): Card | null {
   const missing = issue.pair === MISSING;
   if (!missing && !issue.produced) return null;
-  const x = soundLabel(ui, issue.ipa);
-  const y = missing ? null : soundLabel(ui, issue.produced!);
+  const x = issue.ipa, y = issue.produced ?? "";
+  const example = practiceFor(missing ? x : y)[0]; // "cat" for [æ]: a word that has the sound it came out as
+  const happened = missing ? (example ? "missingHappened" : "missingHappenedPlain") : example ? "swapHappened" : "swapHappenedPlain";
+  const entry = sounds?.en[x];
+  const line = entry ? caption(entry, say(ui)) : null;
+  const how = line && ui === "en" ? line[0].toLowerCase() + line.slice(1) : line; // mid-sentence in English
+  const tip = missing ? (how ? "missingTip" : "missingTipPlain") : how ? "swapTip" : "swapTipPlain";
   return {
     pair: issue.pair,
     word: word.word,
-    targetLabel: x,
-    producedLabel: y,
-    whatHappened: tr(ui, missing ? "missingHappened" : "swapHappened", { w: word.word, x, y: y ?? "" }),
-    tip: tr(ui, missing ? "missingTip" : "swapTip", { x, y: y ?? "" }),
-    practice: practiceFor(issue.ipa),
-    target: { lang: "en", sym: issue.ipa },
-    produced: missing ? null : { lang: "en", sym: issue.produced! },
+    targetLabel: soundLabel(ui, x),
+    producedLabel: missing ? null : soundLabel(ui, y),
+    whatHappened: tr(ui, happened, { w: word.word, x, y, ex: example ?? "" }),
+    tip: tr(ui, tip, { w: word.word, x, how: how ?? "" }),
+    practice: practiceFor(x),
+    target: { lang: "en", sym: x },
+    produced: missing ? null : { lang: "en", sym: y },
     simple: false, // the correct mouth is always drawn (and what you probably said, for a swap)
-    sound: issue.start != null && issue.end != null ? { start: issue.start, end: issue.end } : null,
-    soundIndex: issue.index,
     reviewed: true, // no phonetic claim of its own: the pictures and descriptions come from the sound table
     needsNativeReview: false,
   };
 }
 
 // Issue + its word + tips.json -> the card. null when we have no tip for this mistake (never show a broken card).
-export function buildCard(issue: Issue, word: WordResult, tips: TipsTable, lang: Lang, ui: Ui = "en"): Card | null {
-  if (issue.pair === SWAP || issue.pair === MISSING) return anySoundCard(issue, word, ui);
+// `sounds` (articulation.json) lets the every-sound cards quote the picture's caption in their tip.
+export function buildCard(issue: Issue, word: WordResult, tips: TipsTable, lang: Lang, ui: Ui = "en",
+  sounds?: ArticulationTable["sounds"]): Card | null {
+  if (issue.pair === SWAP || issue.pair === MISSING) return anySoundCard(issue, word, ui, sounds);
   const raw = tips.tips[lang]?.[issue.pair];
   if (!raw) return null;
   const t = tipText(ui, lang, issue.pair, raw); // the words in the site language; sounds and flags unchanged
   const target = t.target ? { lang: t.target_lang, sym: t.target } : null;
   const produced = t.produced ? { lang: t.produced_lang, sym: t.produced } : null;
-  const notHeard = issue.pair === "word_not_heard";
   return {
     pair: issue.pair,
     word: word.word,
@@ -97,8 +95,6 @@ export function buildCard(issue: Issue, word: WordResult, tips: TipsTable, lang:
     target,
     produced,
     simple: !target || !produced,
-    sound: !notHeard && issue.start != null && issue.end != null ? { start: issue.start, end: issue.end } : null,
-    soundIndex: notHeard ? null : issue.index,
     reviewed: t.reviewed,
     needsNativeReview: t.needs_native_review ?? false,
   };
@@ -110,4 +106,22 @@ export function hoverCards(word: WordResult, tips: TipsTable, lang: Lang, ui: Ui
   return issuesOf(word)
     .map((issue) => buildCard(issue, word, tips, lang, ui))
     .filter((c): c is Card => c !== null && c.target !== null);
+}
+
+// Every red word's cards, in sentence order: the results show them all at once, top to bottom (no tapping needed).
+export function allCards(words: WordResult[], tips: TipsTable, lang: Lang, ui: Ui = "en",
+  sounds?: ArticulationTable["sounds"]): { wordIndex: number; issue: Issue; card: Card }[] {
+  return words.flatMap((w, wordIndex) =>
+    issuesOf(w).flatMap((issue) => {
+      const card = buildCard(issue, w, tips, lang, ui, sounds);
+      return card ? [{ wordIndex, issue, card }] : [];
+    }));
+}
+
+// A sound's description without the example-word label in front ("ship: tongue a little lower..." -> "Tongue a little
+// lower..."): the card already names the sound, so the label only repeats it.
+export function plainDescription(text: string): string {
+  const m = text.match(/^\S{1,12}\s?:\s+([\s\S]*)$/);
+  if (!m) return text;
+  return m[1].charAt(0).toUpperCase() + m[1].slice(1);
 }

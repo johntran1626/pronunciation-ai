@@ -39,10 +39,7 @@ export default function DebugPanel({ sent, result }: { sent: Sent; result?: Anal
   return (
     <details open className="rounded-2xl border-[2.5px] border-ink bg-tray px-4 py-3 text-sm shadow-pop-xs">
       <summary className="cursor-pointer font-display text-lg">
-        Debug: what was sent and heard{" "}
-        <span className="ml-1 rounded-md border-2 border-ink bg-kakao px-1.5 py-0.5 align-middle font-sans text-[11px] font-semibold">
-          local only
-        </span>
+        Debug
       </summary>
       <div className="mt-3 flex flex-col gap-3">
         {warnings.map((w) => (
@@ -62,7 +59,6 @@ export default function DebugPanel({ sent, result }: { sent: Sent; result?: Anal
           </button>
           <span className="font-medium tabular-nums">{seconds.toFixed(1)} s</span>
         </div>
-        <p className="m-0 text-neutral-600">The player is volume-boosted for listening; the analysis used the original level.</p>
         <a href={sent.sentUrl} download="my-recording.wav" className={`${BTN} self-start`}>
           ⤓ Download the exact recording that was analyzed
           <span className="font-sans text-xs font-medium text-neutral-600">(WAV, stays on your computer)</span>

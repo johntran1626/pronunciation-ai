@@ -11,7 +11,9 @@
 import { useEffect, useRef, useState } from "react";
 import AutoplaySwitch from "@/components/AutoplaySwitch";
 import NativeMouth from "@/components/NativeMouth";
-import Recorder from "@/components/Recorder";
+import DebugPanel from "@/components/DebugPanel";
+import ResultSentence from "@/components/ResultSentence";
+import { usePractice } from "@/components/usePractice";
 import Translation from "@/components/Translation";
 import InfoTip from "@/components/InfoTip";
 import LoadingScreen from "@/components/LoadingScreen";
@@ -19,9 +21,11 @@ import SiteHeader from "@/components/SiteHeader";
 import TypedBubble, { useTypedLines } from "@/components/TypedBubble";
 import TypewriterBlueberry from "@/components/TypewriterBlueberry";
 import { UiLangProvider, useUi } from "@/components/UiLang";
-import { checkHealth, fetchCustom, loadCardData, type TextLang } from "@/lib/api";
+import { checkHealth, fetchCustom, loadCardData, type Lang, type TextLang } from "@/lib/api";
 import { MAX_CUSTOM_CHARS, checkLine } from "@/lib/custom";
 import { problemText, type Key } from "@/lib/i18n";
+import { SHOW_DEV } from "@/lib/devOnly";
+import { MAX_SECONDS, TARGET_RATE } from "@/lib/recorder";
 import { detectLang, htmlLang, practiceHintKey, practiceOffered } from "@/lib/landing";
 import { loadNativeClip } from "@/lib/native";
 import { AUTOPLAY_DEFAULT, playerKey, readAutoplay, saveAutoplay } from "@/lib/player";
@@ -47,7 +51,6 @@ function Coach() {
   const [busy, setBusy] = useState(false); // the loading screen is up
   const [ready, setReady] = useState<Omit<Shown, "run"> | null>(null); // the answer, once everything is in
   const [error, setError] = useState<string | null>(null);
-  const [practice, setPractice] = useState(false);
   const [muted, setMuted] = useState(false); // the sound button on the animation; kept for the visit
   const [autoplay, setAutoplayState] = useState(AUTOPLAY_DEFAULT);
   // Blueberry's typewriter sounds: off when the page opens; a tap on Blueberry turns them on until the next tap
@@ -55,7 +58,6 @@ function Coach() {
   const runs = useRef(0);
   const request = useRef(0); // counts Animate presses, so an answer that arrives after Home is pressed is dropped
   const box = useRef<HTMLTextAreaElement | null>(null);
-  const recorder = useRef<HTMLElement | null>(null);
   const typedLines = useTypedLines(); // Blueberry's bubble (the same lines on phone and desktop)
 
   const lang = detectLang(typed);
@@ -77,7 +79,6 @@ function Coach() {
 
   function show(s: Omit<Shown, "run">) {
     setShown({ ...s, run: ++runs.current });
-    setPractice(false);
     setError(null);
     window.scrollTo({ top: 0 });
   }
@@ -90,17 +91,10 @@ function Coach() {
     setReady(null);
     setTypingSound(false);
     setShown(null);
-    setPractice(false);
     setTyped("");
     setError(null);
     window.scrollTo({ top: 0 });
     requestAnimationFrame(() => box.current?.focus()); // after the home is shown again
-  }
-
-  // open the recorder (under the player, full width) and bring it into view
-  function openPractice() {
-    setPractice(true);
-    requestAnimationFrame(() => recorder.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
 
   async function submit() {
@@ -239,40 +233,85 @@ function Coach() {
               {t("numbersNote")} {t("youTyped")} <span lang={htmlLang(shown.lang)}>{shown.typed}</span>
             </p>
           )}
-          <div className="mt-3 lg:mt-5">
-            {/* key: every new animation gets a fresh player (1x; it loads, and plays on its own if Autoplay is on) */}
-            <NativeMouth key={playerKey(shown)} text={shown.text} lang={shown.lang} autoplay={autoplay} muted={muted} onMuted={setMuted}
-              actions={
-                <>
-                  <button type="button" onClick={another} data-testid="another"
-                    className="flex h-[50px] items-center justify-center gap-2 rounded-2xl border-[2.5px] border-ink bg-white font-display text-xl text-ink shadow-[4px_4px_0_#111111] transition-[transform,box-shadow] active:translate-x-[3px] active:translate-y-[3px] active:shadow-pop-xs lg:h-[54px] lg:text-[21px]">
-                    <svg className="size-[18px] lg:size-[19px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8"
-                      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                    </svg>
-                    {t("animateAnother")}
-                  </button>
-                  {!practiceOffered(shown.lang) ? (
-                    <p className="m-0 text-sm font-medium text-neutral-600" data-testid="practice-mixed">{t("practiceMixed")}</p>
-                  ) : (
-                    <div className="flex flex-col gap-1.5">
-                      <button type="button" onClick={openPractice} aria-expanded={practice} data-testid="practice"
-                        className="h-14 rounded-2xl border-[2.5px] border-ink bg-pink font-display text-[22px] text-ink shadow-pop transition-[transform,box-shadow] active:translate-x-[3px] active:translate-y-[3px] active:shadow-pop-xs lg:h-[62px] lg:text-2xl">
-                        {t("practice")}
-                      </button>
-                      <p className="m-0 text-xs font-medium text-neutral-600 lg:text-sm">{t(practiceHintKey(shown.lang))}</p>
-                    </div>
-                  )}
-                </>
-              } />
-          </div>
-          {practice && practiceOffered(shown.lang) && (
-            <section ref={recorder} className="mt-8 scroll-mt-4" data-testid="practice-panel">
-              <Recorder key={`rec:${shown.lang}:${shown.text}`} text={shown.text} lang={shown.lang} />
-            </section>
-          )}
+          {/* key: every new animation gets a fresh player + practice (1x; it loads, and plays on its own if Autoplay is on) */}
+          <Playing key={playerKey(shown)} shown={shown} autoplay={autoplay} muted={muted} onMuted={setMuted} onAnother={another} />
         </section>
       )}
     </main>
+  );
+}
+
+// The player and, under it, the practice results. The Practice button (in the player's layout) IS the record button:
+// blue "Practice it yourself!" -> pink 3, 2, 1 -> pink "Recording… Press to STOP" -> "Analyzing…" -> the results, which
+// scroll into view. A too-short or silent recording isn't analyzed: Blueberry says so and the button is ready again.
+function Playing({ shown, autoplay, muted, onMuted, onAnother }: {
+  shown: Shown; autoplay: boolean; muted: boolean; onMuted: (m: boolean) => void; onAnother: () => void;
+}) {
+  const { ui, t } = useUi();
+  const learned: Lang = shown.lang === "ko" ? "ko" : "en"; // a mixed sentence offers no practice (practiceOffered)
+  const { phase, outcome, press } = usePractice(shown.text, learned, ui);
+  const results = useRef<HTMLElement | null>(null);
+  // a new result (or error) slides into view: the results card at the top of the screen
+  useEffect(() => {
+    if (outcome && outcome.kind !== "empty") results.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [outcome]);
+  const notice = outcome?.kind === "empty" ? { id: outcome.id, text: t(outcome.why === "short" ? "emptyShort" : "emptySilent") } : null;
+  const live = phase.kind === "countdown" || phase.kind === "recording";
+  return (
+    <>
+      <div className="mt-3 lg:mt-5">
+        <NativeMouth text={shown.text} lang={shown.lang} autoplay={autoplay} muted={muted} onMuted={onMuted} notice={notice}
+          actions={
+            <>
+              <button type="button" onClick={onAnother} data-testid="another"
+                className="flex h-[50px] items-center justify-center gap-2 rounded-2xl border-[2.5px] border-ink bg-white font-display text-xl text-ink shadow-[4px_4px_0_#111111] transition-[transform,box-shadow] active:translate-x-[3px] active:translate-y-[3px] active:shadow-pop-xs lg:h-[54px] lg:text-[21px]">
+                <svg className="size-[18px] lg:size-[19px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8"
+                  strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                </svg>
+                {t("animateAnother")}
+              </button>
+              {!practiceOffered(shown.lang) ? (
+                <p className="m-0 text-sm font-medium text-neutral-600" data-testid="practice-mixed">{t("practiceMixed")}</p>
+              ) : (
+                <div className="flex flex-col gap-1.5">
+                  <button type="button" onClick={press} disabled={phase.kind === "analyzing"} data-testid="practice"
+                    aria-label={phase.kind === "countdown" ? t("countdownLabel", { n: phase.digit }) : undefined}
+                    className={`flex h-14 items-center justify-center gap-2.5 rounded-2xl border-[2.5px] border-ink font-display text-[22px] shadow-pop transition-[transform,box-shadow] active:translate-x-[3px] active:translate-y-[3px] active:shadow-pop-xs disabled:opacity-70 lg:h-[62px] lg:text-2xl ${live ? "bg-pink text-ink" : "bg-blue text-white"}`}>
+                    {phase.kind === "countdown" ? (
+                      <span key={phase.digit} className="count-pop text-[30px] leading-none lg:text-[34px]" aria-hidden="true">{phase.digit}</span>
+                    ) : phase.kind === "recording" ? (
+                      <>
+                        <span className="rec-dot size-3 rounded-full bg-[#E0245E]" aria-hidden="true" />
+                        {t("recordingStop")}
+                        <span className="size-4 rounded-[3px] bg-ink" aria-hidden="true" />
+                      </>
+                    ) : phase.kind === "analyzing" ? (
+                      t("analyzing")
+                    ) : (
+                      t("practice")
+                    )}
+                  </button>
+                  <p className="m-0 text-xs font-medium text-neutral-600 tabular-nums lg:text-sm">
+                    {phase.kind === "recording" ? `${phase.elapsed.toFixed(1)} s / ${MAX_SECONDS} s` : t(practiceHintKey(shown.lang))}
+                  </p>
+                </div>
+              )}
+            </>
+          } />
+      </div>
+      {outcome && outcome.kind !== "empty" && (
+        <section ref={results} className="mt-8 flex scroll-mt-4 flex-col gap-4" data-testid="practice-panel">
+          {outcome.kind === "error" && (
+            <p className="m-0 rounded-2xl border-[2.5px] border-ink bg-[#FFE4EF] px-4 py-3 font-medium text-ink shadow-pop-xs" role="alert">{outcome.message}</p>
+          )}
+          {outcome.kind === "done" && (
+            <ResultSentence key={outcome.id} result={outcome.result} audio={{ samples: outcome.sent.playSamples, rate: TARGET_RATE }} />
+          )}
+          {/* developer output: local `next dev` only, never on the public site; under all the cards */}
+          {SHOW_DEV && outcome.sent && <DebugPanel sent={outcome.sent} result={outcome.kind === "done" ? outcome.result : undefined} />}
+        </section>
+      )}
+    </>
   );
 }
