@@ -21,7 +21,7 @@ from backend import any_sound, native, translate, tts
 from backend.g2p import expected_phonemes
 from backend.korean_scoring import check_names, load_korean_thresholds, score_korean
 from backend.limits import TTSLimiter
-from backend.match import active_checks, finalize, load_match_thresholds, mark_unchecked, sentence_check
+from backend.match import active_checks, finalize, korean_listener_on, load_match_thresholds, mark_unchecked, sentence_check
 from backend.recognize import recognize
 from backend.scoring import load_thresholds, score_words
 from backend.text_map import attach_display
@@ -275,6 +275,15 @@ async def analyze(request: Request,
             "words": words, "heard": heard, "extra_at_start": extra_at_start}
 
 
+def _korean_evidence(samples, sr, expected):
+    """The Korean-trained listener's "did you say it?" evidence, or None if it can't align this recording."""
+    from backend.korean_listener import match_evidence   # torch + the model load only when needed
+    try:
+        return match_evidence(samples, sr, expected)
+    except ValueError:
+        return None
+
+
 def _run_pipeline(samples, sr, text, lang):
     expected = expected_phonemes(text, lang)  # 1. what should be said
     em = emissions(samples, sr, lang)         #    the model runs ONCE (this language's listener)...
@@ -284,14 +293,16 @@ def _run_pipeline(samples, sr, text, lang):
     sound_t, match_t = load_thresholds(em.model), load_match_thresholds(em.model)  # tuned for THAT listener
     korean_t = load_korean_thresholds()       #    tuned for the Korean-trained listener
     any_t = any_sound.live_for(em.model) if lang == "en" else {"enabled": False}   # the every-sound English check
+    ko_ev = _korean_evidence(samples, sr, expected) if korean_listener_on(match_t, lang) else None  # Korean: its own listener
     rules = match_t.get(lang, {}).get("sentence", {"enabled": False})
-    matched, reason = sentence_check(words, len(heard), rules)  # 5. did they say THIS sentence?
+    matched, reason = sentence_check(words, len(heard), rules, ko_ev)  # 5. did they say THIS sentence?
     if matched:
         words = score_words(em, words, lang, thresholds=sound_t, audio=samples, sr=sr)  # 6. sound checks
         words = any_sound.apply(em, words, any_t)  #    ...and every other English sound swapped or left out
-        words = finalize(words, lang, sound_t, match_t, any_sound.checked(words, any_t))  # 7. word heard? + honest colors
+        words = finalize(words, lang, sound_t, match_t, any_sound.checked(words, any_t),
+                         ko_ev and ko_ev["per"])  # 7. word heard? + honest colors
         if lang == "ko":                      #    Korean: the Korean-trained listener's live checks
-            words = score_korean(samples, sr, expected, words, korean_t)
+            words = score_korean(samples, sr, expected, words, korean_t, ko_ev and ko_ev["lp"])
     else:
         words = mark_unchecked(words)         #    no verdict on a recording that isn't this sentence
     words = attach_display(words, lang)       # 8. which letters / syllable blocks to paint

@@ -276,3 +276,12 @@ def word_evidence(lp, words, heard=None):
     heard = greedy(lp) if heard is None else heard
     in_place = heard_per_token([t for t, _ in pairs], heard)
     return pool_evidence(pairs, [sp.score for sp in spans], in_place, len(words)), len(heard)
+
+
+def match_evidence(audio, sr, words):
+    """For backend/match.py's Korean "did you say it?" rules: the model runs once here, and lp is passed on to
+    korean_scoring so the sound checks reuse it. -> {"lp", "per": one evidence dict per word, "n_heard"}.
+    ValueError: this recording can't be aligned with this model (too short, no Korean sounds)."""
+    lp = emissions(audio, sr)
+    per, n_heard = word_evidence(lp, words)
+    return {"lp": lp, "per": per, "n_heard": n_heard}

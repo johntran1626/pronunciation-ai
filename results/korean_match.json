@@ -1,0 +1,517 @@
+{
+ "source": "eval/korean_match.py",
+ "bars": {
+  "natives_rejected": 0.01,
+  "other_caught": 0.5,
+  "learners_rejected": 0.02,
+  "natives_false_word": 0.005,
+  "caught_word": 0.25,
+  "learners_false_word": 0.01
+ },
+ "caps": {
+  "sentence": 0.01,
+  "word": 0.002
+ },
+ "recordings": {
+  "done": 2229,
+  "failed": 0,
+  "natives_tune": 320,
+  "natives_test": 457,
+  "learners": 635,
+  "learner_speakers": 127
+ },
+ "warning": "Learner flags are an upper bound on false alarms (a real skipped sound counts against us); cut times come from the main aligner. Aggregate counts only.",
+ "listeners": {
+  "orig": {
+   "learners_by_rating": {
+    "learners": {
+     "sentence_rejected": {
+      "k": 0,
+      "n": 635,
+      "rate": 0.0,
+      "ci95": [
+       0.0,
+       0.006
+      ]
+     },
+     "words_flagged": {
+      "k": 1,
+      "n": 9850,
+      "rate": 0.0001,
+      "ci95": [
+       0.0,
+       0.0006
+      ]
+     }
+    },
+    "learners_1": {
+     "sentence_rejected": {
+      "k": 0,
+      "n": 44,
+      "rate": 0.0,
+      "ci95": [
+       0.0,
+       0.0803
+      ]
+     },
+     "words_flagged": {
+      "k": 0,
+      "n": 719,
+      "rate": 0.0,
+      "ci95": [
+       -0.0,
+       0.0053
+      ]
+     }
+    },
+    "learners_2": {
+     "sentence_rejected": {
+      "k": 0,
+      "n": 772,
+      "rate": 0.0,
+      "ci95": [
+       0.0,
+       0.005
+      ]
+     },
+     "words_flagged": {
+      "k": 0,
+      "n": 12107,
+      "rate": 0.0,
+      "ci95": [
+       0.0,
+       0.0003
+      ]
+     }
+    }
+   },
+   "sentence": {
+    "thresholds": {
+     "min_heard": 0.0,
+     "min_conf": 0.22
+    },
+    "test_natives": {
+     "orig": {
+      "k": 2,
+      "n": 457,
+      "rate": 0.0044,
+      "ci95": [
+       0.0012,
+       0.0158
+      ]
+     },
+     "other": {
+      "k": 406,
+      "n": 457,
+      "rate": 0.8884,
+      "ci95": [
+       0.8562,
+       0.9141
+      ]
+     },
+     "swap": {
+      "k": 8,
+      "n": 457,
+      "rate": 0.0175,
+      "ci95": [
+       0.0089,
+       0.0342
+      ]
+     },
+     "cut": {
+      "k": 16,
+      "n": 457,
+      "rate": 0.035,
+      "ci95": [
+       0.0217,
+       0.0561
+      ]
+     }
+    },
+    "noise": {
+     "k": 24,
+     "n": 24,
+     "rate": 1.0,
+     "ci95": [
+      0.862,
+      1.0
+     ]
+    },
+    "tune_natives_rejected": {
+     "k": 3,
+     "n": 320,
+     "rate": 0.0094,
+     "ci95": [
+      0.0032,
+      0.0272
+     ]
+    },
+    "learners_rejected": {
+     "k": 0,
+     "n": 635,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.006
+     ]
+    }
+   },
+   "word": {
+    "thresholds": {
+     "min_sounds": 2,
+     "max_heard": 0.34,
+     "max_conf": 0.0
+    },
+    "test_natives": {
+     "false_not_heard_all_words": {
+      "k": 1,
+      "n": 6614,
+      "rate": 0.0002,
+      "ci95": [
+       0.0,
+       0.0009
+      ]
+     },
+     "false_not_heard_human_correct": {
+      "k": 0,
+      "n": 0,
+      "rate": null,
+      "ci95": null
+     },
+     "false_not_heard_human_error": {
+      "k": 0,
+      "n": 0,
+      "rate": null,
+      "ci95": null
+     },
+     "caught_cut": {
+      "k": 14,
+      "n": 457,
+      "rate": 0.0306,
+      "ci95": [
+       0.0183,
+       0.0508
+      ]
+     },
+     "caught_swap": {
+      "k": 0,
+      "n": 457,
+      "rate": 0.0,
+      "ci95": [
+       0.0,
+       0.0083
+      ]
+     },
+     "cut_neighbour_flagged": {
+      "k": 3,
+      "n": 806,
+      "rate": 0.0037,
+      "ci95": [
+       0.0013,
+       0.0109
+      ]
+     },
+     "cut_far_word_flagged": {
+      "k": 1,
+      "n": 5207,
+      "rate": 0.0002,
+      "ci95": [
+       0.0,
+       0.0011
+      ]
+     },
+     "sentences_with_a_false_not_heard": {
+      "k": 1,
+      "n": 455,
+      "rate": 0.0022,
+      "ci95": [
+       0.0004,
+       0.0123
+      ]
+     }
+    },
+    "learners_flagged": {
+     "k": 1,
+     "n": 9850,
+     "rate": 0.0001,
+     "ci95": [
+      0.0,
+      0.0006
+     ]
+    }
+   },
+   "measured": {
+    "sentence": {
+     "natives_rejected": 0.0044,
+     "noise_all_rejected": true,
+     "other_caught": 0.8884,
+     "learners_rejected": 0.0
+    },
+    "word": {
+     "natives_false": 0.0002,
+     "caught": 0.0306,
+     "learners_false": 0.0001
+    }
+   },
+   "verdict": {
+    "sentence": "grade",
+    "word": "off"
+   }
+  },
+  "ko": {
+   "learners_by_rating": {
+    "learners": {
+     "sentence_rejected": {
+      "k": 0,
+      "n": 635,
+      "rate": 0.0,
+      "ci95": [
+       0.0,
+       0.006
+      ]
+     },
+     "words_flagged": {
+      "k": 6,
+      "n": 9850,
+      "rate": 0.0006,
+      "ci95": [
+       0.0003,
+       0.0013
+      ]
+     }
+    },
+    "learners_1": {
+     "sentence_rejected": {
+      "k": 3,
+      "n": 44,
+      "rate": 0.0682,
+      "ci95": [
+       0.0235,
+       0.1823
+      ]
+     },
+     "words_flagged": {
+      "k": 1,
+      "n": 672,
+      "rate": 0.0015,
+      "ci95": [
+       0.0003,
+       0.0084
+      ]
+     }
+    },
+    "learners_2": {
+     "sentence_rejected": {
+      "k": 0,
+      "n": 772,
+      "rate": 0.0,
+      "ci95": [
+       0.0,
+       0.005
+      ]
+     },
+     "words_flagged": {
+      "k": 14,
+      "n": 12107,
+      "rate": 0.0012,
+      "ci95": [
+       0.0007,
+       0.0019
+      ]
+     }
+    }
+   },
+   "sentence": {
+    "thresholds": {
+     "min_heard": 0.58,
+     "min_conf": 0.0
+    },
+    "test_natives": {
+     "orig": {
+      "k": 1,
+      "n": 457,
+      "rate": 0.0022,
+      "ci95": [
+       0.0004,
+       0.0123
+      ]
+     },
+     "other": {
+      "k": 456,
+      "n": 457,
+      "rate": 0.9978,
+      "ci95": [
+       0.9877,
+       0.9996
+      ]
+     },
+     "swap": {
+      "k": 2,
+      "n": 457,
+      "rate": 0.0044,
+      "ci95": [
+       0.0012,
+       0.0158
+      ]
+     },
+     "cut": {
+      "k": 2,
+      "n": 457,
+      "rate": 0.0044,
+      "ci95": [
+       0.0012,
+       0.0158
+      ]
+     }
+    },
+    "noise": {
+     "k": 24,
+     "n": 24,
+     "rate": 1.0,
+     "ci95": [
+      0.862,
+      1.0
+     ]
+    },
+    "tune_natives_rejected": {
+     "k": 1,
+     "n": 320,
+     "rate": 0.0031,
+     "ci95": [
+      0.0006,
+      0.0175
+     ]
+    },
+    "learners_rejected": {
+     "k": 0,
+     "n": 635,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.006
+     ]
+    }
+   },
+   "word": {
+    "thresholds": {
+     "min_sounds": 3,
+     "max_heard": 0.2,
+     "max_conf": 0.14
+    },
+    "test_natives": {
+     "false_not_heard_all_words": {
+      "k": 15,
+      "n": 6623,
+      "rate": 0.0023,
+      "ci95": [
+       0.0014,
+       0.0037
+      ]
+     },
+     "false_not_heard_human_correct": {
+      "k": 0,
+      "n": 0,
+      "rate": null,
+      "ci95": null
+     },
+     "false_not_heard_human_error": {
+      "k": 0,
+      "n": 0,
+      "rate": null,
+      "ci95": null
+     },
+     "caught_cut": {
+      "k": 282,
+      "n": 457,
+      "rate": 0.6171,
+      "ci95": [
+       0.5717,
+       0.6605
+      ]
+     },
+     "caught_swap": {
+      "k": 230,
+      "n": 457,
+      "rate": 0.5033,
+      "ci95": [
+       0.4576,
+       0.5489
+      ]
+     },
+     "cut_neighbour_flagged": {
+      "k": 10,
+      "n": 830,
+      "rate": 0.012,
+      "ci95": [
+       0.0066,
+       0.022
+      ]
+     },
+     "cut_far_word_flagged": {
+      "k": 8,
+      "n": 5319,
+      "rate": 0.0015,
+      "ci95": [
+       0.0008,
+       0.003
+      ]
+     },
+     "sentences_with_a_false_not_heard": {
+      "k": 11,
+      "n": 456,
+      "rate": 0.0241,
+      "ci95": [
+       0.0135,
+       0.0427
+      ]
+     }
+    },
+    "learners_flagged": {
+     "k": 6,
+     "n": 9850,
+     "rate": 0.0006,
+     "ci95": [
+      0.0003,
+      0.0013
+     ]
+    }
+   },
+   "measured": {
+    "sentence": {
+     "natives_rejected": 0.0022,
+     "noise_all_rejected": true,
+     "other_caught": 0.9978,
+     "learners_rejected": 0.0
+    },
+    "word": {
+     "natives_false": 0.0023,
+     "caught": 0.6171,
+     "learners_false": 0.0006
+    }
+   },
+   "verdict": {
+    "sentence": "grade",
+    "word": "grade"
+   }
+  }
+ },
+ "proposal": {
+  "sentence": {
+   "listener": "ko",
+   "mode": "grade",
+   "thresholds": {
+    "min_heard": 0.58,
+    "min_conf": 0.0
+   }
+  },
+  "word": {
+   "listener": "ko",
+   "mode": "grade",
+   "thresholds": {
+    "min_sounds": 3,
+    "max_heard": 0.2,
+    "max_conf": 0.14
+   }
+  }
+ }
+}

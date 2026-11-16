@@ -20,11 +20,17 @@ Two evidence numbers, from what the pipeline already computes:
 Thresholds: backend/match_thresholds.json, written by eval/match_tune.py (tuned on non-Korean L2-ARCTIC
 speakers, tested on the Korean ones). No file = both checks off (everything passes, nothing claims green
 beyond the sound checks).
+
+Korean: a rule with "listener": "ko" reads the Korean-trained listener's evidence (korean_listener.match_evidence:
+the same heard / conf numbers, per word), not the main listener's. Its thresholds come from eval/korean_match.py
+(results/korean_match.json): the main listener's Korean word check caught almost nothing, the Korean one did.
+No Korean evidence (the model couldn't align this recording) = no verdict against the learner.
 """
 import copy
 import json
 from pathlib import Path
 
+from backend.korean_listener import sentence_evidence
 from backend.listener import thresholds_file
 from backend.scoring import PAIR_OF_TARGET
 
@@ -41,6 +47,15 @@ def load_match_thresholds(name=None):
 
 def _rules(match_t, lang):
     return (match_t or {}).get(lang, OFF)
+
+
+def _uses_ko(rule):
+    return bool(rule.get("enabled")) and rule.get("listener") == "ko"
+
+
+def korean_listener_on(match_t, lang):
+    """True when a live Korean rule reads the Korean-trained listener (so the pipeline must run it)."""
+    return lang == "ko" and any(_uses_ko(r) for r in _rules(match_t, lang).values())
 
 
 # ---------- evidence ----------
@@ -62,13 +77,19 @@ def sentence_features(words):
 
 
 # ---------- 1. the sentence ----------
-def sentence_check(words, n_heard, t):
-    """-> (matched, reason). n_heard = how many sounds the free recognizer heard in the whole recording."""
+def sentence_check(words, n_heard, t, evidence=None):
+    """-> (matched, reason). n_heard = how many sounds the free recognizer heard in the whole recording.
+    evidence = korean_listener.match_evidence() output, read instead when the rule says "listener": "ko"."""
     if not t.get("enabled"):
         return True, None
+    if _uses_ko(t):
+        if evidence is None:
+            return True, None
+        n_heard, f = evidence["n_heard"], sentence_evidence(evidence["per"])
+    else:
+        f = sentence_features(words)
     if n_heard == 0:
         return False, "no_speech"
-    f = sentence_features(words)
     if f["heard"] < t["min_heard"] or f["conf"] < t["min_conf"]:
         return False, "mismatch"
     return True, None
@@ -100,15 +121,27 @@ def active_checks(lang, sound_t, match_t):
     return names + sorted(_live_pairs(sound_t, lang))
 
 
-def finalize(words, lang, sound_t, match_t, also_checked=frozenset()):
+def _word_flags(words, rule, word_evidence):
+    """not_heard per word. A Korean-listener rule reads word_evidence (one dict per word); without it, or when it
+    doesn't line up with the words, no word is flagged."""
+    if not _uses_ko(rule):
+        return [is_not_heard(word_features(w), rule) for w in words]
+    if word_evidence is None or len(word_evidence) != len(words):
+        return [False] * len(words)
+    return [is_not_heard(f, rule) for f in word_evidence]
+
+
+def finalize(words, lang, sound_t, match_t, also_checked=frozenset(), word_evidence=None):
     """After scoring.score_words(): apply the word check, mark what was checked, set honest statuses.
     -> a copy; every phoneme gets `checked`, every word gets `not_heard`.
-    also_checked = (word_index, phoneme_index) of sounds another live check graded (backend/any_sound.checked)."""
+    also_checked = (word_index, phoneme_index) of sounds another live check graded (backend/any_sound.checked).
+    word_evidence = korean_listener.match_evidence()["per"], for a Korean-listener word rule."""
     words = copy.deepcopy(words)
     word_rule = _rules(match_t, lang)["word"]
     pairs = _live_pairs(sound_t, lang)
+    flags = _word_flags(words, word_rule, word_evidence)
     for wi, w in enumerate(words):
-        w["not_heard"] = is_not_heard(word_features(w), word_rule)
+        w["not_heard"] = flags[wi]
         for pi, p in enumerate(w["phonemes"]):
             # Only a SOUND check counts. The word check can turn a word red ("not heard"), but passing it
             # only means "we heard the word", not "it sounded right", so it never makes a sound green.

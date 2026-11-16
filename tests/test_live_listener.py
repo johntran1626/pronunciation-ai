@@ -141,7 +141,7 @@ def test_pipeline_reads_the_thresholds_of_the_listener_it_ran(monkeypatch):
     monkeypatch.setattr(app, "attach_heard", lambda w, h, lang: (w, []))
     monkeypatch.setattr(app, "load_thresholds", lambda name: asked.append(("sound", name)) or {"pairs": {}})
     monkeypatch.setattr(app, "load_match_thresholds", lambda name: asked.append(("match", name)) or {})
-    monkeypatch.setattr(app, "sentence_check", lambda w, n, rules: (False, "no_speech"))
+    monkeypatch.setattr(app, "sentence_check", lambda w, n, rules, ev=None: (False, "no_speech"))
     monkeypatch.setattr(app, "mark_unchecked", lambda w: w)
     monkeypatch.setattr(app, "attach_display", lambda w, lang: w)
     monkeypatch.setattr(app, "active_checks", lambda lang, s, m: [])

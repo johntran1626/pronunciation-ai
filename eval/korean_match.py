@@ -31,7 +31,7 @@ Thresholds are picked on the tune natives (eval/match_tune.py pickers and caps: 
   word check:     test natives' words flagged <= 0.5%, >= 25% of cut or swapped words caught
   then each check GRADES (red) if the learners also pass (sentence rejected <= 2%, words flagged <= 1%),
   else it may only show a soft "check this" HINT. A check that fails a natives bar is OFF.
-Nothing in the app changes here: the report proposes, John decides, a later step wires it in.
+Nothing in the app changes here: the report proposes; the chosen rules are copied into backend/match_thresholds.json "ko".
 """
 import argparse
 import csv

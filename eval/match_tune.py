@@ -52,6 +52,17 @@ def may_go_live(thresholds):
 
 
 # ---------- the rules (same logic as backend/match.py, on plain rows) ----------
+def keep_korean_listener_rules(old, new):
+    """The Korean rules that read the Korean-trained listener come from eval/korean_match.py, not from here:
+    re-tuning the main listener must not overwrite them."""
+    ko = old.get("ko", {})
+    if any(r.get("listener") == "ko" for r in ko.values() if isinstance(r, dict)):
+        new = {**new, "ko": ko}
+        if "ko_source" in old:
+            new["ko_source"] = old["ko_source"]
+    return new
+
+
 def gate_rejects(r, t):
     return r["n_heard"] == 0 or r["heard"] < t["min_heard"] or r["conf"] < t["min_conf"]
 
@@ -217,6 +228,8 @@ def main():
     P["results"].write_text(json.dumps(results, indent=1, ensure_ascii=False) + "\n")
     print(json.dumps(results, indent=1, ensure_ascii=False))
     if may_go_live(thresholds):
+        old = json.loads(P["thresholds"].read_text()) if P["thresholds"].exists() else {}
+        thresholds = keep_korean_listener_rules(old, thresholds)
         P["thresholds"].write_text(json.dumps(thresholds, indent=1) + "\n")
         print(f"wrote {P['thresholds']}")
     else:

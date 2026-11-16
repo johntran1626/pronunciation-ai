@@ -82,15 +82,16 @@ def apply_korean(words, rows, kt):
     return words
 
 
-def score_korean(samples, sr, expected, words, kt=None):
+def score_korean(samples, sr, expected, words, kt=None, lp=None):
     """Run the Korean listener (only if a check is live) and color the words.
-    expected = g2p.expected_phonemes(text, "ko"); words = the same sentence after match.finalize()."""
+    expected = g2p.expected_phonemes(text, "ko"); words = the same sentence after match.finalize().
+    lp = the Korean listener's output if the "did you say it?" check already ran it (the model then runs once)."""
     kt = load_korean_thresholds() if kt is None else kt
     if not live_checks(kt):
         return words
-    from backend.korean_listener import measure   # torch + the 1.3 GB model load only when needed
+    from backend.korean_listener import measure, measure_lp   # torch + the 1.3 GB model load only when needed
     try:
-        rows = measure(samples, sr, expected)
+        rows = measure(samples, sr, expected) if lp is None else measure_lp(lp, expected)
     except ValueError:      # e.g. too short for this model's alignment: no Korean verdict, everything stays plain
         return words
     return apply_korean(words, rows, kt)
