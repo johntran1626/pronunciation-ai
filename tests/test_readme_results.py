@@ -179,3 +179,75 @@ def test_render_with_korean_has_the_table_and_its_caveats():
 def test_render_without_korean_says_so():
     md = render(LISTENERS, MATCH)
     assert "English speakers learning Korean" in md and "not run yet" in md
+
+
+# ---------- the every-sound checks and the Korean "did you say it?" checks ----------
+from eval.readme_results import count_of, any_sound_block, korean_any_sound_block, korean_match_block  # noqa: E402
+
+ANY_EN = {"live_cap": 0.05, "sentences": {"tune": 5097, "test": 3984, "korean": 600}, "caps": {"0.05": {
+    "false_red_sentences": {"tune": 0.0494, "test": 0.0419, "korean": 0.0567},
+    "swaps_stressed": {"caught": 9438, "n": 9891}, "swaps_stressed_vowels": {"caught": 2283, "n": 2576},
+    "swaps_stressed_consonants": {"caught": 7155, "n": 7315}, "said_sound_named_right": {"caught": 9195, "n": 9438},
+    "left_out": {"caught": 4173, "n": 7918}}}}
+
+KO_ANY = {"live_cap": 0.05, "bars": {"test_false_red_max": 0.075, "swaps_caught_min": 0.5, "left_out_min": 0.25,
+                                      "top_false_red_grade": 0.2}, "caps": {"0.05": {
+    "left_out_rule_on": False, "verdict": "grade",
+    "readings": {"tune": 320, "test": 457, "learners": 635, "learners_2": 806, "learners_1": 195},
+    "false_red_readings": {"tune": 0.0469, "test": 0.035, "learners": 0.1039, "learners_2": 0.1377, "learners_1": 0.2051},
+    "swaps": {"caught": 1106, "n": 1805, "said_named_right": 1044}, "swaps_vowel": {"caught": 470, "n": 787},
+    "swaps_consonant": {"caught": 630, "n": 972}, "swaps_final": {"caught": 6, "n": 46},
+    "left_out": {"caught": 38, "n": 914}, "lower_rated_gap_ci": [0.0091, 0.0857],
+    "swaps_green": {"green": 11, "n": 1805}, "test_sounds_green": {"green": 40121, "n": 43161}}}}
+
+KO_MATCH = {"recordings": {"natives_test": 457}, "bars": {"natives_rejected": 0.01, "learners_rejected": 0.02,
+                                                          "natives_false_word": 0.005, "learners_false_word": 0.01},
+            "listeners": {"ko": {
+    "sentence": {"test_natives": {"orig": _k(1, 457, 0.0004, 0.0123), "other": _k(456, 457, 0.9877, 0.9996)},
+                 "noise": _k(24, 24, 0.862, 1.0)},
+    "word": {"test_natives": {"false_not_heard_all_words": _k(15, 6623, 0.0014, 0.0037),
+                              "caught_cut": _k(282, 457, 0.5717, 0.6605), "caught_swap": _k(230, 457, 0.4576, 0.5489)}},
+    "learners_by_rating": {
+        "learners": {"sentence_rejected": _k(0, 635, 0.0, 0.006), "words_flagged": _k(6, 9850, 0.0003, 0.0013)},
+        "learners_2": {"sentence_rejected": _k(0, 772, 0.0, 0.005), "words_flagged": _k(14, 12107, 0.0007, 0.0019)},
+        "learners_1": {"sentence_rejected": _k(3, 44, 0.0235, 0.1823), "words_flagged": _k(1, 672, 0.0003, 0.0084)}}}}}
+
+
+def test_count_of_recovers_the_exact_count_from_a_rounded_rate():
+    assert count_of(0.0419, 3984) == 167 and count_of(0.0567, 600) == 34 and count_of(0.2051, 195) == 40
+    with pytest.raises(ValueError):
+        count_of(0.0419, 10)          # no whole count gives that rate: the file and the n don't belong together
+
+
+def test_english_every_sound_block_counts_and_caveats():
+    md = "\n".join(any_sound_block(ANY_EN))
+    assert "167/3,984 (4.2%" in md                 # native test sentences with a wrong red
+    assert "34/600 (5.7%" in md                    # Korean speakers' sentences, only annotator-correct sounds
+    assert "9,438/9,891 (95.4%" in md and "4,173/7,918 (53%" in md
+    assert "5%" in md and "text" in md.lower()     # the cap, and how the mistakes are made
+
+
+def test_korean_every_sound_block_counts_bars_and_greens():
+    md = "\n".join(korean_any_sound_block(KO_ANY))
+    assert "16/457 (3.5%" in md
+    assert "66/635 (10%" in md and "111/806 (14%" in md and "40/195 (21%" in md
+    assert "+0.91 to +8.6 points" in md
+    assert "1,106/1,805 (61%" in md and "6/46 (13%" in md
+    assert "11/1,805" in md                        # missed swaps that would show green
+    assert "38/914" in md and "off" in md          # the left-out rule failed its bar
+    assert "upper bound" in md.lower()
+    assert "passed every bar, so it marks sounds red" in md and "grade" not in md
+
+
+def test_korean_match_block_reads_the_korean_listener():
+    md = "\n".join(korean_match_block(KO_MATCH))
+    assert "1/457 (0.22%" in md and "456/457 (99.8%" in md and "24/24" in md
+    assert "0/635" in md and "3/44 (6.8%" in md
+    assert "15/6,623 (0.23%" in md and "282/457 (62%" in md and "230/457 (50%" in md
+
+
+def test_render_puts_each_new_block_in_its_language_section():
+    md = render(LISTENERS, MATCH, korean=KOREAN, any_en=ANY_EN, ko_match=KO_MATCH, ko_any=KO_ANY)
+    en, ko = md.split("## Results: English speakers learning Korean")
+    assert "167/3,984" in en and "16/457 (3.5%" in ko and "456/457" in ko
+    assert md.rstrip().endswith(END)
