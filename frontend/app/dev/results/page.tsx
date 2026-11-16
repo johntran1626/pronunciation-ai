@@ -100,7 +100,37 @@ const KOREAN: AnalyzeResult = {
   ],
 };
 
-const ALL_GREEN: AnalyzeResult = { ...ENGLISH, words: ENGLISH.words.map((w) => englishWord([[w.word, "green"]])) };
+// The Korean every-sound check: 멀을 said 말을 (ㅓ heard as ㅏ) and 여자 said 요자 (ㅕ heard as ㅛ, one glide + vowel).
+const KOREAN_SWAPPED: AnalyzeResult = {
+  ...BASE,
+  checks: ["sentence_match", "word_heard", "any_sound"],
+  text: "멀을 여자",
+  lang: "ko",
+  duration_s: 2,
+  words: [
+    {
+      ...koreanWord("멀을", { 0: { red_jamo: ["ㅓ"], red_slots: ["vowel"] } }),
+      phonemes: [
+        { ipa: "m", status: "green", start: 0, end: 0.1 },
+        { ipa: "ʌ", status: "red", pair: "sound_swap", produced: "a", start: 0.1, end: 0.2 },
+        { ipa: "ɾ", status: "green", start: 0.2, end: 0.3 },
+        { ipa: "ɯ", status: "green", start: 0.3, end: 0.4 },
+        { ipa: "l", status: "green", start: 0.4, end: 0.5 },
+      ],
+    },
+    {
+      ...koreanWord("여자", { 0: { red_jamo: ["ㅕ"], red_slots: ["vowel"] } }),
+      phonemes: [
+        { ipa: "j", status: "red", pair: "sound_swap", produced: "jo", unit: "jʌ", start: 0.6, end: 0.65 },
+        { ipa: "ʌ", status: "red", pair: "sound_swap", produced: "jo", unit: "jʌ", start: 0.65, end: 0.75 },
+        { ipa: "tɕ", status: "green", start: 0.75, end: 0.85 },
+        { ipa: "a", status: "green", start: 0.85, end: 0.95 },
+      ],
+    },
+  ],
+};
+
+const ALL_GREEN: AnalyzeResult ={ ...ENGLISH, words: ENGLISH.words.map((w) => englishWord([[w.word, "green"]])) };
 
 // States: a skipped word, a recording that didn't match, and nothing checked (Korean today).
 const SKIPPED: AnalyzeResult = {
@@ -132,6 +162,7 @@ export default function DevResults() {
         DEV ONLY: fake, hand-made results to check the colors. Not real analysis. Every red word&apos;s detail
         card shows under its result (all cards: /dev/cards).
       </p>
+      <ResultSentence result={KOREAN_SWAPPED} />
       <ResultSentence result={SWAPPED} />
       <ResultSentence result={ENGLISH} />
       <ResultSentence result={KOREAN} />

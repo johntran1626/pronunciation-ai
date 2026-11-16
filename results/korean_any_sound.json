@@ -1,0 +1,245 @@
+{
+ "source": "eval/korean_any_sound.py",
+ "bars": {
+  "test_false_red_max": 0.075,
+  "swaps_caught_min": 0.5,
+  "left_out_min": 0.25,
+  "top_false_red_grade": 0.2
+ },
+ "live_cap": 0.05,
+ "recordings": {
+  "done": 2413,
+  "failed": 0
+ },
+ "warning": "Swaps and left-out sounds are made up on native speech (clean sounds: catches look better than on learners). Learner reds include real mistakes: an UPPER bound on false alarms. Counts only.",
+ "caps": {
+  "0.02": {
+   "thresholds": {
+    "margin": 1.0,
+    "right": 0.0,
+    "sub_right": 0.0
+   },
+   "left_out_rule_on": false,
+   "readings": {
+    "tune": 320,
+    "test": 457,
+    "learners": 635,
+    "learners_2": 806,
+    "learners_1": 195
+   },
+   "false_red_readings": {
+    "tune": 0.0,
+    "test": 0.0,
+    "learners": 0.0,
+    "learners_2": 0.0,
+    "learners_1": 0.0
+   },
+   "swaps": {
+    "caught": 0,
+    "n": 1805,
+    "rate": 0.0,
+    "said_named_right": 0
+   },
+   "swaps_vowel": {
+    "caught": 0,
+    "n": 787,
+    "rate": 0.0,
+    "said_named_right": 0
+   },
+   "swaps_consonant": {
+    "caught": 0,
+    "n": 972,
+    "rate": 0.0,
+    "said_named_right": 0
+   },
+   "swaps_final": {
+    "caught": 0,
+    "n": 46,
+    "rate": 0.0,
+    "said_named_right": 0
+   },
+   "left_out": {
+    "caught": 0,
+    "n": 914,
+    "rate": 0.0
+   },
+   "lower_rated_gap": 0.0,
+   "lower_rated_gap_ci": [
+    0.0,
+    0.0
+   ],
+   "swaps_green": {
+    "green": 11,
+    "n": 1805,
+    "rate": 0.0061
+   },
+   "test_sounds_green": {
+    "green": 40121,
+    "n": 43161,
+    "rate": 0.9296
+   },
+   "measured": {
+    "test_false_red": 0.0,
+    "swaps_caught": 0,
+    "lower_rated_gap_ci": [
+     0.0,
+     0.0
+    ],
+    "top_false_red": 0.0
+   },
+   "verdict": "off"
+  },
+  "0.05": {
+   "thresholds": {
+    "margin": 1.0,
+    "right": 0.0,
+    "sub_right": 0.0001
+   },
+   "left_out_rule_on": false,
+   "readings": {
+    "tune": 320,
+    "test": 457,
+    "learners": 635,
+    "learners_2": 806,
+    "learners_1": 195
+   },
+   "false_red_readings": {
+    "tune": 0.0469,
+    "test": 0.035,
+    "learners": 0.1039,
+    "learners_2": 0.1377,
+    "learners_1": 0.2051
+   },
+   "swaps": {
+    "caught": 1106,
+    "n": 1805,
+    "rate": 0.6127,
+    "said_named_right": 1044
+   },
+   "swaps_vowel": {
+    "caught": 470,
+    "n": 787,
+    "rate": 0.5972,
+    "said_named_right": 449
+   },
+   "swaps_consonant": {
+    "caught": 630,
+    "n": 972,
+    "rate": 0.6481,
+    "said_named_right": 590
+   },
+   "swaps_final": {
+    "caught": 6,
+    "n": 46,
+    "rate": 0.1304,
+    "said_named_right": 5
+   },
+   "left_out": {
+    "caught": 38,
+    "n": 914,
+    "rate": 0.0416
+   },
+   "lower_rated_gap": 0.0469,
+   "lower_rated_gap_ci": [
+    0.0091,
+    0.0857
+   ],
+   "swaps_green": {
+    "green": 11,
+    "n": 1805,
+    "rate": 0.0061
+   },
+   "test_sounds_green": {
+    "green": 40121,
+    "n": 43161,
+    "rate": 0.9296
+   },
+   "measured": {
+    "test_false_red": 0.035,
+    "swaps_caught": 0.6127,
+    "lower_rated_gap_ci": [
+     0.0091,
+     0.0857
+    ],
+    "top_false_red": 0.1039
+   },
+   "verdict": "grade"
+  },
+  "0.10": {
+   "thresholds": {
+    "margin": 1.0,
+    "right": 0.0,
+    "sub_right": 0.0002
+   },
+   "left_out_rule_on": false,
+   "readings": {
+    "tune": 320,
+    "test": 457,
+    "learners": 635,
+    "learners_2": 806,
+    "learners_1": 195
+   },
+   "false_red_readings": {
+    "tune": 0.0688,
+    "test": 0.0722,
+    "learners": 0.274,
+    "learners_2": 0.335,
+    "learners_1": 0.4513
+   },
+   "swaps": {
+    "caught": 1387,
+    "n": 1805,
+    "rate": 0.7684,
+    "said_named_right": 1299
+   },
+   "swaps_vowel": {
+    "caught": 586,
+    "n": 787,
+    "rate": 0.7446,
+    "said_named_right": 556
+   },
+   "swaps_consonant": {
+    "caught": 786,
+    "n": 972,
+    "rate": 0.8086,
+    "said_named_right": 729
+   },
+   "swaps_final": {
+    "caught": 15,
+    "n": 46,
+    "rate": 0.3261,
+    "said_named_right": 14
+   },
+   "left_out": {
+    "caught": 47,
+    "n": 914,
+    "rate": 0.0514
+   },
+   "lower_rated_gap": 0.0836,
+   "lower_rated_gap_ci": [
+    0.0332,
+    0.1327
+   ],
+   "swaps_green": {
+    "green": 11,
+    "n": 1805,
+    "rate": 0.0061
+   },
+   "test_sounds_green": {
+    "green": 40121,
+    "n": 43161,
+    "rate": 0.9296
+   },
+   "measured": {
+    "test_false_red": 0.0722,
+    "swaps_caught": 0.7684,
+    "lower_rated_gap_ci": [
+     0.0332,
+     0.1327
+    ],
+    "top_false_red": 0.274
+   },
+   "verdict": "hint"
+  }
+ }
+}

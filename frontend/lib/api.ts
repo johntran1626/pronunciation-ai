@@ -43,6 +43,7 @@ export type PhonemeResult = {
   status: Status;
   pair?: string; // e.g. "r_as_l", "extra_vowel", "word_not_heard" (keys of content/tips.json)
   produced?: string | null;
+  unit?: string; // Korean: a glide + vowel judged as one sound ("jʌ" = ㅕ); both of its phonemes carry it
   start: number | null;
   end: number | null;
 };

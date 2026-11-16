@@ -163,10 +163,15 @@ def emissions(audio, sr):
 
 def _force(lp, words):
     """Forced alignment with THIS model. -> (pairs from to_mfa, one merged span per symbol, with .score 0..1)."""
+    pairs = to_mfa(words)
+    return pairs, force_pairs(lp, pairs)
+
+
+def force_pairs(lp, pairs):
+    """Forced alignment of any symbol list [(symbol, cover), ...] -> one merged span per symbol."""
     import torch
     import torchaudio.functional as F
     _, model, vocab = _model()
-    pairs = to_mfa(words)
     ids = [vocab[t] for t, _ in pairs]
     if not ids:
         raise ValueError("no Korean sounds in this sentence")
@@ -177,24 +182,30 @@ def _force(lp, words):
     # blank= matters: merge_tokens assumes blank id 0, but in THIS model id 0 is the vowel A (blank is 42).
     spans = F.merge_tokens(labels[0], scores[0].exp(), blank=blank)
     assert len(spans) == len(ids), (len(spans), len(ids))
-    return pairs, spans
+    return spans
+
+
+def windows(spans, n_frames):
+    """One frame window (f0, f1) per symbol: the gap between the neighbours' spans (capped at ~0.15 s each side),
+    not just this symbol's own frames: when the target is wrong, the aligner parks it on a frame NEXT TO the real
+    sound (spike e)."""
+    out = []
+    for i, sp in enumerate(spans):
+        prev = spans[i - 1].end if i else 0
+        nxt = spans[i + 1].start if i + 1 < len(spans) else n_frames
+        f0 = max(prev, sp.start - MAX_EXTEND_FRAMES)
+        out.append((f0, max(f0 + 1, min(nxt, sp.end + MAX_EXTEND_FRAMES))))
+    return out
 
 
 def align_ko(lp, words):
     """Forced alignment with THIS model. -> (frame window per (wi, pi), symbol index per (wi, pi), symbols)."""
     pairs, spans = _force(lp, words)
-    toks = [t for t, _ in pairs]
-    # Window = the gap between the neighbours' spans (capped at ~0.15 s each side), not just this symbol's own
-    # frames: when the target is wrong, the aligner parks it on a frame NEXT TO the real sound (spike e).
     win, tok_of = {}, {}
-    for i, ((_, cover), sp) in enumerate(zip(pairs, spans)):
-        prev = spans[i - 1].end if i else 0
-        nxt = spans[i + 1].start if i + 1 < len(spans) else lp.shape[0]
-        f0 = max(prev, sp.start - MAX_EXTEND_FRAMES)
-        f1 = max(f0 + 1, min(nxt, sp.end + MAX_EXTEND_FRAMES))
+    for i, ((_, cover), w) in enumerate(zip(pairs, windows(spans, lp.shape[0]))):
         for key in cover:
-            win[key], tok_of[key] = (f0, f1), i
-    return win, tok_of, toks
+            win[key], tok_of[key] = w, i
+    return win, tok_of, [t for t, _ in pairs]
 
 
 def greedy(lp):

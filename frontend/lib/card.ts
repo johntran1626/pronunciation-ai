@@ -4,7 +4,7 @@ import { say, tipText, tr, type Ui } from "./i18n.ts";
 import { caption } from "./mouthViews.ts";
 import { practiceFor, soundLabel } from "./sounds.ts";
 
-// The every-sound English check (backend/any_sound.py): any sound swapped for another, or left out.
+// The every-sound checks (backend/any_sound.py, backend/korean_any_sound.py): any sound swapped for another, or left out.
 const SWAP = "sound_swap", MISSING = "sound_missing";
 
 // One thing wrong in a word: which mistake, on which sound, and when that sound was (for replay).
@@ -12,6 +12,7 @@ const SWAP = "sound_swap", MISSING = "sound_missing";
 export type Issue = {
   pair: string; ipa: string; index: number; start: number | null; end: number | null;
   produced?: string | null; // what was probably said (the every-sound check names it)
+  unit?: string | null; // Korean: a glide + vowel judged as one sound ("jʌ" = ㅕ); both of its phonemes carry it
 };
 
 // The red sounds of a word, one Issue per mistake type (a word with two bad R's gets one R card), in order.
@@ -21,10 +22,11 @@ export function issuesOf(word: WordResult): Issue[] {
   const out: Issue[] = [];
   (word.phonemes ?? []).forEach((p, index) => {
     if (p.status !== "red" || !p.pair) return;
-    const key = p.pair === SWAP || p.pair === MISSING ? `${p.pair}:${p.ipa}:${p.produced ?? ""}` : p.pair;
+    const key = p.pair === SWAP || p.pair === MISSING ? `${p.pair}:${p.unit ?? p.ipa}:${p.produced ?? ""}` : p.pair;
     if (seen.has(key)) return;
     seen.add(key);
-    out.push({ pair: p.pair, ipa: p.ipa, index, start: p.start ?? null, end: p.end ?? null, produced: p.produced ?? null });
+    out.push({ pair: p.pair, ipa: p.ipa, index, start: p.start ?? null, end: p.end ?? null, produced: p.produced ?? null,
+      ...(p.unit ? { unit: p.unit } : {}) });
   });
   return out;
 }
@@ -45,29 +47,33 @@ export type Card = {
   needsNativeReview: boolean;
 };
 
-// A card for any English sound swapped or left out: both mouths from the sound table, the sounds as IPA with a
-// familiar word for each, and practice words. With the sound table (`sounds`), the tip repeats the green picture's
-// one-line caption ("lips rounded and pushed forward, mouth almost closed"), so it says what to DO.
-function anySoundCard(issue: Issue, word: WordResult, ui: Ui, sounds?: ArticulationTable["sounds"]): Card | null {
+// The sound the mouth picture draws: a Korean glide + vowel ("jʌ" = ㅕ) is drawn with its vowel.
+const drawn = (sym: string, lang: Lang) => (lang === "ko" && /^[jwɰ]./u.test(sym) ? sym.slice(1) : sym);
+
+// A card for any sound swapped or left out: both mouths from the sound table, the sounds named (English: IPA with a
+// familiar word for each; Korean: the jamo), and practice words. With the sound table (`sounds`), the tip repeats
+// the green picture's one-line caption ("lips rounded and pushed forward, mouth almost closed"), so it says what to DO.
+function anySoundCard(issue: Issue, word: WordResult, ui: Ui, lang: Lang, sounds?: ArticulationTable["sounds"]): Card | null {
   const missing = issue.pair === MISSING;
   if (!missing && !issue.produced) return null;
-  const x = issue.ipa, y = issue.produced ?? "";
-  const example = practiceFor(missing ? x : y)[0]; // "cat" for [æ]: a word that has the sound it came out as
+  const x = issue.unit ?? issue.ipa, y = issue.produced ?? "";
+  const name = (sym: string) => (lang === "ko" ? soundLabel(ui, sym, "ko") : sym); // English cards keep the IPA
+  const example = practiceFor(missing ? x : y, lang)[0]; // "cat" for [æ]: a word that has the sound it came out as
   const happened = missing ? (example ? "missingHappened" : "missingHappenedPlain") : example ? "swapHappened" : "swapHappenedPlain";
-  const entry = sounds?.en[x];
+  const entry = sounds?.[lang][drawn(x, lang)];
   const line = entry ? caption(entry, say(ui)) : null;
   const how = line && ui === "en" ? line[0].toLowerCase() + line.slice(1) : line; // mid-sentence in English
   const tip = missing ? (how ? "missingTip" : "missingTipPlain") : how ? "swapTip" : "swapTipPlain";
   return {
     pair: issue.pair,
     word: word.word,
-    targetLabel: soundLabel(ui, x),
-    producedLabel: missing ? null : soundLabel(ui, y),
-    whatHappened: tr(ui, happened, { w: word.word, x, y, ex: example ?? "" }),
-    tip: tr(ui, tip, { w: word.word, x, how: how ?? "" }),
-    practice: practiceFor(x),
-    target: { lang: "en", sym: x },
-    produced: missing ? null : { lang: "en", sym: y },
+    targetLabel: soundLabel(ui, x, lang),
+    producedLabel: missing ? null : soundLabel(ui, y, lang),
+    whatHappened: tr(ui, happened, { w: word.word, x: name(x), y: name(y), ex: example ?? "" }),
+    tip: tr(ui, tip, { w: word.word, x: name(x), how: how ?? "" }),
+    practice: practiceFor(x, lang),
+    target: { lang, sym: drawn(x, lang) },
+    produced: missing ? null : { lang, sym: drawn(y, lang) },
     simple: false, // the correct mouth is always drawn (and what you probably said, for a swap)
     reviewed: true, // no phonetic claim of its own: the pictures and descriptions come from the sound table
     needsNativeReview: false,
@@ -78,7 +84,7 @@ function anySoundCard(issue: Issue, word: WordResult, ui: Ui, sounds?: Articulat
 // `sounds` (articulation.json) lets the every-sound cards quote the picture's caption in their tip.
 export function buildCard(issue: Issue, word: WordResult, tips: TipsTable, lang: Lang, ui: Ui = "en",
   sounds?: ArticulationTable["sounds"]): Card | null {
-  if (issue.pair === SWAP || issue.pair === MISSING) return anySoundCard(issue, word, ui, sounds);
+  if (issue.pair === SWAP || issue.pair === MISSING) return anySoundCard(issue, word, ui, lang, sounds);
   const raw = tips.tips[lang]?.[issue.pair];
   if (!raw) return null;
   const t = tipText(ui, lang, issue.pair, raw); // the words in the site language; sounds and flags unchanged

@@ -44,8 +44,8 @@ export const UI = {
   animateAnother: s("Animate another", "다른 문장 보기"),
   practiceHint: s("Say the sentence out loud, then see which sounds need work.", "문장을 소리 내어 말하면 어떤 소리를 고쳐야 할지 알려 드려요."),
   practiceHintKo: s(
-    "Record yourself. Korean grading is new: so far it checks ㅜ and plain ㅂ ㄷ ㄱ; other sounds stay plain text.",
-    "녹음해 보세요. 한국어 채점은 이제 시작이라 지금은 ㅜ와 예사소리 ㅂ ㄷ ㄱ만 확인하고, 다른 소리는 색 없이 보여 드려요.",
+    "Record yourself. Korean grading checks every sound; a sound it can't confirm stays plain text.",
+    "녹음해 보세요. 한국어 채점은 모든 소리를 확인하고, 확실하지 않은 소리는 색 없이 보여 드려요.",
   ),
   practiceMixed: s("Practice works for one language at a time. Type the sentence all in English or all in Korean to record it.",
     "연습은 한 번에 한 언어만 돼요. 녹음하려면 문장을 영어로만, 또는 한국어로만 입력해 주세요."),
@@ -112,7 +112,7 @@ export const UI = {
   close: s("Close", "닫기"),
   targetTag: s("TARGET", "목표"),
   yoursTag: s("WHAT YOU SAID", "내가 낸 소리"),
-  // cards of the every-sound check (any English sound swapped or left out)
+  // cards of the every-sound checks (any sound swapped or left out)
   swapHappened: s("In “{w}”, your [{x}] sounded like [{y}], as in “{ex}”.", "“{w}”에서 [{x}] 소리가 “{ex}”의 [{y}]처럼 들렸어요."),
   swapHappenedPlain: s("In “{w}”, your [{x}] sounded like [{y}].", "“{w}”에서 [{x}] 소리가 [{y}]처럼 들렸어요."),
   missingHappened: s("In “{w}”, the [{x}] sound (as in “{ex}”) seems to be missing.", "“{w}”에서 [{x}] 소리(“{ex}”의 소리)가 빠진 것 같아요."),

@@ -1,0 +1,11 @@
+{
+ "source": "eval/korean_any_sound.py (see results/korean_any_sound.json)",
+ "model": "slplab/wav2vec2-xls-r-300m_phone-mfa_korean",
+ "revision": "e26ff9dfb62169acf445d0060ef56863c018b20e",
+ "enabled": true,
+ "mode": "grade",
+ "cap": 0.05,
+ "margin": 1.0,
+ "right": 0.0,
+ "sub_right": 0.0001
+}

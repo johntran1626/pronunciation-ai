@@ -80,8 +80,8 @@ test("Korean Practice says up front which Korean sounds are graded so far", () =
     assert.ok(UI[key], `${key} exists`);
     assert.match(tr("ko", key), HANGUL, `${key} has Korean`);
   }
-  assert.match(tr("en", "practiceHintKo"), /ㅜ/);
-  assert.match(tr("en", "practiceHintKo"), /ㅂ ㄷ ㄱ/);
+  assert.match(tr("en", "practiceHintKo"), /every sound/); // the every-sound Korean check is live
+  assert.match(tr("en", "practiceHintKo"), /plain/);       // ...and what it can't confirm stays plain
   assert.doesNotMatch(tr("en", "nothingGraded"), /green or red/); // every piece is coloured now, so it never says "not marked"
 });
 

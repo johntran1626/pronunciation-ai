@@ -154,3 +154,30 @@ test("plainDescription drops the example-word label in front of a sound's descri
   assert.equal(plainDescription("ㅓ: 혀를 낮추고"), "혀를 낮추고");
   assert.equal(plainDescription("Both lips close, air builds up: lips pop open."), "Both lips close, air builds up: lips pop open.");
 });
+
+// ---------- the Korean every-sound check: Korean sounds, Korean mouths, jamo names ----------
+test("a Korean swap names both sounds by jamo and draws them from the Korean sound table", () => {
+  const w = word("멀을", [ph("m", "green"), { ...ph("ʌ", "red", "sound_swap"), produced: "a" }, ph("ɾ", "green")]);
+  const c = buildCard(issuesOf(w)[0], w, TIPS, "ko", "en", ART.sounds)!;
+  assert.match(c.whatHappened, /^In “멀을”, your \[ㅓ\] sounded like \[ㅏ\], as in “[가-힣]+”\.$/);
+  assert.deepEqual([c.target, c.produced], [{ lang: "ko", sym: "ʌ" }, { lang: "ko", sym: "a" }]);
+  assert.deepEqual([c.targetLabel, c.producedLabel], ["ㅓ", "ㅏ"]);
+  assert.ok(c.practice.length === 3 && c.practice.every((x) => /^[가-힣]+$/.test(x)));
+  assert.match(c.tip, /^Make \[ㅓ\] like the green picture: .+\. Say the practice words slowly, then “멀을”\.$/);
+  assert.match(buildCard(issuesOf(w)[0], w, TIPS, "ko", "ko", ART.sounds)!.whatHappened, /“멀을”에서 \[ㅓ\]/);
+});
+
+test("a Korean glide + vowel swap is one card, drawn with its vowel", () => {
+  const red = (ipa: string) => ({ ...ph(ipa, "red", "sound_swap"), produced: "jo", unit: "jʌ" });
+  const w = word("여", [red("j"), red("ʌ")]);
+  const issues = issuesOf(w);
+  assert.equal(issues.length, 1);
+  const c = buildCard(issues[0], w, TIPS, "ko", "en", ART.sounds)!;
+  assert.deepEqual([c.targetLabel, c.producedLabel], ["ㅕ", "ㅛ"]);
+  assert.deepEqual([c.target, c.produced], [{ lang: "ko", sym: "ʌ" }, { lang: "ko", sym: "o" }]);
+});
+
+test("a Korean swap with a hand-written tip uses the tip card, as before", () => {
+  const w = word("거", [ph("k", "green"), { ...ph("ʌ", "red", "eo_as_o"), produced: "o" }]);
+  assert.equal(buildCard(issuesOf(w)[0], w, TIPS, "ko")!.pair, "eo_as_o");
+});
