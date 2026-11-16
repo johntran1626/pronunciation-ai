@@ -42,7 +42,7 @@ export const UI = {
   youTyped: s("You typed:", "입력한 문장:"),
   practice: s("Practice it yourself!", "직접 연습해 보세요!"),
   animateAnother: s("Animate another", "다른 문장 보기"),
-  practiceHint: s("Record yourself and compare.", "녹음해서 원어민과 비교해 보세요."),
+  practiceHint: s("Say the sentence out loud, then see which sounds need work.", "문장을 소리 내어 말하면 어떤 소리를 고쳐야 할지 알려 드려요."),
   practiceHintKo: s(
     "Record yourself. Korean grading is new: so far it checks ㅜ and plain ㅂ ㄷ ㄱ; other sounds stay plain text.",
     "녹음해 보세요. 한국어 채점은 이제 시작이라 지금은 ㅜ와 예사소리 ㅂ ㄷ ㄱ만 확인하고, 다른 소리는 색 없이 보여 드려요.",

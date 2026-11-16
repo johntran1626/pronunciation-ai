@@ -30,7 +30,7 @@ import {
 import { loadCardData, type TextLang } from "@/lib/api";
 import { keyParts, side } from "@/lib/mouthViews";
 import { loadNativeClip } from "@/lib/native";
-import { SPEEDS, applySpeed, scrubFill, speedLabel } from "@/lib/player";
+import { SPEEDS, applySpeed, playEnd, scrubFill, speedLabel } from "@/lib/player";
 import { playSlice, stopPlayback } from "@/lib/replay";
 import { encodeWav16 } from "@/lib/wav";
 
@@ -96,21 +96,32 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
   // the object URL lives as long as this clip is shown
   useEffect(() => () => { if (clip) URL.revokeObjectURL(clip.url); }, [clip]);
 
+  // where playback stops: just after the last sound (the file's trailing silence is skipped)
+  const end = clip ? playEnd(clip.sounds.map((s) => s.end), clip.duration) : 0;
+
   // while playing, redraw every screen frame from the audio clock (so the picture can't drift from the sound),
-  // and keep the chosen speed on the clip in case the browser put an old one back
+  // keep the chosen speed on the clip in case the browser put an old one back, and stop once the voice is done
   useEffect(() => {
     if (!playing) return;
     let id = 0;
     const loop = () => {
-      if (audio.current) {
-        applySpeed(audio.current, speedNow.current);
-        setT(audio.current.currentTime);
+      const a = audio.current;
+      if (a) {
+        applySpeed(a, speedNow.current);
+        if (a.currentTime >= end) {
+          a.pause();
+          setT(end);
+          setPlaying(false);
+          setEnded(true);
+          return;
+        }
+        setT(a.currentTime);
       }
       id = requestAnimationFrame(loop);
     };
     id = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(id);
-  }, [playing]);
+  }, [playing, end]);
 
   // the sound button (React only sets `muted` on the first render, so keep the element in step)
   useEffect(() => { if (audio.current) audio.current.muted = muted; }, [muted, clip]);
@@ -148,7 +159,7 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
     if (!a || !clip) return;
     dismiss();
     stopPlayback();
-    if (fromTop || ended || a.currentTime >= clip.duration - 0.01) a.currentTime = 0;
+    if (fromTop || ended || a.currentTime >= end) a.currentTime = 0;
     applySpeed(a, speedNow.current);
     setEnded(false);
     a.play().then(
@@ -241,9 +252,10 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
         )}
       </div>
 
-      {/* Blueberry's tip for the sound on screen, then Placement tips */}
-      <div className="flex min-w-0 flex-col gap-3 [grid-area:side] lg:gap-[18px] lg:self-end">
-        <div className="flex items-end gap-2 lg:gap-2.5">
+      {/* Blueberry's tip for the sound on screen, then Placement tips (wide screens: tips in the top corner, Blueberry
+          down by the buttons) */}
+      <div className="flex min-w-0 flex-col gap-3 [grid-area:side] lg:gap-[18px]">
+        <div className="flex items-end gap-2 lg:mt-auto lg:gap-2.5">
           <div className="nod flex-none">
             <Blueberry width={62} talking={playing} className="h-auto w-[46px] lg:w-[62px]" />
           </div>
@@ -257,11 +269,11 @@ export default function NativeMouth({ text, lang, autoplay = true, muted = false
             )}
           </p>
         </div>
-        <div className="flex items-center gap-2 lg:gap-2.5">
+        <div className="flex items-center gap-2 lg:order-first lg:-ml-4 lg:mt-2">
           <button type="button" role="switch" aria-checked={showKey} onClick={() => setShowKey(!showKey)} data-testid="show-key"
-            className="flex items-center gap-2 text-sm font-semibold lg:gap-2.5 lg:text-base">
-            <span className={`relative inline-block h-6 w-[42px] rounded-full border-[2.5px] border-ink transition-colors lg:h-7 lg:w-12 ${showKey ? "bg-pink" : "bg-white"}`}>
-              <span className={`absolute top-[2px] size-[15px] rounded-full bg-ink transition-all lg:top-[3px] lg:size-[17px] ${showKey ? "left-5 lg:left-[23px]" : "left-[2px] lg:left-[3px]"}`} />
+            className="flex items-center gap-2 text-sm font-semibold lg:text-[15px]">
+            <span className={`relative inline-block h-6 w-[42px] rounded-full border-[2.5px] border-ink transition-colors ${showKey ? "bg-blue" : "bg-white"}`}>
+              <span className={`absolute top-[2px] size-[15px] rounded-full bg-ink transition-all ${showKey ? "left-5" : "left-[2px]"}`} />
             </span>
             {tr("placementTips")}
           </button>

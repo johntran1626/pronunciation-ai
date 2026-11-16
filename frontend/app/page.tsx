@@ -292,8 +292,10 @@ function Playing({ shown, autoplay, muted, onMuted, onAnother }: {
                       t("practice")
                     )}
                   </button>
-                  <p className="m-0 text-xs font-medium text-neutral-600 tabular-nums lg:text-sm">
-                    {phase.kind === "recording" ? `${phase.elapsed.toFixed(1)} s / ${MAX_SECONDS} s` : t(practiceHintKey(shown.lang))}
+                  {/* the hint until the press; then the timer (left), and nothing during the countdown / analyzing (the line keeps its height) */}
+                  <p className={`m-0 text-xs font-medium text-neutral-600 tabular-nums lg:text-sm ${phase.kind === "idle" ? "text-center" : ""}`}>
+                    {phase.kind === "recording" ? `${phase.elapsed.toFixed(1)} s / ${MAX_SECONDS} s`
+                      : phase.kind === "idle" ? t(practiceHintKey(shown.lang)) : "\u00a0"}
                   </p>
                 </div>
               )}

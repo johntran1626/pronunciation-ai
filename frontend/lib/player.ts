@@ -9,6 +9,15 @@ export const speedLabel = (s: number) => `${String(s).replace(/^0\./, ".")}×`;
 /** How far the scrubber's fill reaches, in % of the timeline: the middle of frame k's cell (n equal cells). */
 export const scrubFill = (k: number, n: number) => (n > 0 ? (100 * (k + 0.5)) / n : 0);
 
+/** Seconds the player keeps going after the last sound (its release), before Play comes back. */
+export const END_PAD = 0.05;
+
+/** Where playback stops: just after the last sound ends. The TTS file carries up to ~1 s of silence after the voice,
+ * and waiting for the file's own end left Pause on screen after the timeline had finished. Never past the file. */
+export function playEnd(soundEnds: number[], duration: number): number {
+  return soundEnds.length ? Math.min(duration, Math.max(...soundEnds) + END_PAD) : duration;
+}
+
 /** The bits of an <audio> element the speed change touches. */
 export type Media = {
   paused: boolean;

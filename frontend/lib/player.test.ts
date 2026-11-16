@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { AUTOPLAY_DEFAULT, SPEEDS, applySpeed, playerKey, readAutoplay, saveAutoplay, type Media } from "./player.ts";
+import { AUTOPLAY_DEFAULT, END_PAD, SPEEDS, applySpeed, playEnd, playerKey, readAutoplay, saveAutoplay, type Media } from "./player.ts";
 import { DEFAULT_SPEED } from "./animate.ts";
 
 // a stand-in for the <audio> element: the clock moves only while playing
@@ -85,4 +85,22 @@ test("Replay sits beside the speed buttons, never over the mouth picture", () =>
   const src = readFileSync(new URL("../components/NativeMouth.tsx", import.meta.url), "utf8");
   assert.ok(!src.includes("replay-overlay"), "no Replay overlay");
   assert.ok(!/absolute inset-0/.test(src), "nothing laid over the picture");
+});
+
+// the TTS file has up to ~1 s of silence after the last sound: the player stops (Play comes back) when the voice does
+test("playback ends just after the last sound, not at the end of the padded file", () => {
+  // "Testing": sounds end at 0.72 s, the file runs to 1.82 s
+  assert.equal(playEnd([0.31, 0.72, 0.55], 1.82), 0.72 + END_PAD);
+  assert.ok(END_PAD > 0 && END_PAD <= 0.1);
+});
+
+test("playback never ends past the file, and a clip with no sounds plays to its end", () => {
+  assert.equal(playEnd([1.8], 1.82), 1.82);
+  assert.equal(playEnd([], 1.82), 1.82);
+});
+
+test("the player stops at playEnd on every frame, and Play restarts from the top once there", () => {
+  const src = readFileSync(new URL("../components/NativeMouth.tsx", import.meta.url), "utf8");
+  assert.match(src, /playEnd\(/);
+  assert.doesNotMatch(src, /clip\.duration - 0\.01/);
 });
