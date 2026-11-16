@@ -1,36 +1,33 @@
-"use client"; // Tapping a word plays it. Tapping a RED word opens its detail card instead
+"use client"; // Tapping a word plays it. Tapping a RED word opens its detail card instead; hovering it previews the mouth
 
 import { useEffect, useState } from "react";
 import DetailCard from "@/components/DetailCard";
+import MouthDiagram from "@/components/MouthDiagram";
 import { useUi } from "@/components/UiLang";
-import { describeChecksIn } from "@/lib/i18n";
 import { loadCardData, type AnalyzeResult, type ArticulationTable, type DisplayPiece, type TipsTable, type WordResult } from "@/lib/api";
-import { buildCard, issuesOf, tapAction } from "@/lib/card";
+import { buildCard, hoverCards, issuesOf, tapAction } from "@/lib/card";
 import { loadNativeClip, nativePart, type NativeClip } from "@/lib/native";
 import { playSlice, stopPlayback } from "@/lib/replay";
-import { jamoParts, summarize } from "@/lib/results";
+import { GREEN_STYLE, jamoParts, pieceStyle, RED_STYLE, summarize } from "@/lib/results";
 
-// Red = color AND a wavy underline, so it still reads for color-blind users.
-const RED = "text-red-600 underline decoration-wavy decoration-2 underline-offset-4 dark:text-red-400";
-const GREEN = "text-green-700 dark:text-green-400";
-const STYLE = { red: RED, green: GREEN, unchecked: "" }; // unchecked = plain text: no live check looked at it
-const TAP =
-  "cursor-pointer rounded px-0.5 hover:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-blue-600 dark:hover:bg-neutral-800";
-const PLAYING = "bg-blue-100 dark:bg-blue-900";
-
+const RED = RED_STYLE;
+const GREEN = GREEN_STYLE;
+const TAP = "cursor-pointer rounded-lg px-1 hover:bg-tray focus-visible:outline-2 focus-visible:outline-blue";
+const PLAYING = "bg-sky hover:bg-sky";
+const PREVIEW_W = 300; // px: the hover preview's width
 
 type Audio = { samples: Float32Array<ArrayBuffer>; rate: number }; // the learner's own recording (louder copy)
 
 function Piece({ piece }: { piece: DisplayPiece }) {
   const parts = jamoParts(piece);
-  if (!parts) return <span className={STYLE[piece.status]}>{piece.text}</span>;
+  if (!parts) return <span className={pieceStyle(piece.status)}>{piece.text}</span>;
   // A red Korean block: the block itself, with its letters written small above it and the wrong one(s) in red.
   return (
     <ruby className={RED}>
       {piece.text}
       <rt className="text-[0.5em] tracking-wider no-underline">
         {parts.map((p, i) => (
-          <span key={i} className={p.red ? "font-bold text-red-600 dark:text-red-400" : "text-neutral-400"}>
+          <span key={i} className={p.red ? "text-red-600" : "text-neutral-400"}>
             {p.jamo}
           </span>
         ))}
@@ -49,6 +46,7 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
   const [dataError, setDataError] = useState<string | null>(null);
   const [native, setNative] = useState<NativeClip | null>(null); // The native clip, loaded when a card opens
   const [nativeError, setNativeError] = useState<string | null>(null);
+  const [hover, setHover] = useState<{ i: number; right: boolean } | null>(null); // the red word under the mouse
   useEffect(() => stopPlayback, []); // leaving the result (new recording, new sentence) stops the sound
   useEffect(() => {
     if (open === null || native) return;
@@ -76,7 +74,7 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
 
   if (!result.matched) {
     return (
-      <p className="rounded-lg bg-amber-50 p-3 text-amber-900 dark:bg-amber-950 dark:text-amber-200">
+      <p className="m-0 rounded-2xl border-[2.5px] border-ink bg-kakao px-4 py-3 font-medium text-ink shadow-pop-xs">
         {t(result.reason === "no_speech" ? "noSpeech" : "mismatch")} {t("estimated")}
       </p>
     );
@@ -98,6 +96,7 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
 
   // Tap = hear your audio for that part; on a red word it ONLY opens (or closes) the card.
   function tap(i: number, key: string, start?: number | null, end?: number | null) {
+    setHover(null);
     const action = tapAction(result.words[i]);
     if (action.play) play(key, start, end);
     if (action.toggleCard) {
@@ -151,23 +150,59 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
           ? t("heardAll")
           : t("nothingGraded");
 
+  // Hovering a red word with a mouse: a snapshot of the correct mouth for its red sound(s), opening toward the
+  // side with room. Touch screens skip it (a tap opens the full card); it hides while that word's card is open.
+  function previewOf(w: WordResult, i: number) {
+    if (!data || hover?.i !== i || open === i) return null;
+    const cards = hoverCards(w, data.tips, result.lang, ui);
+    if (!cards.length) return null;
+    return (
+      <div role="tooltip"
+        className={`pointer-events-none absolute top-full z-30 mt-1 flex flex-col gap-2 rounded-2xl border-[2.5px] border-ink bg-white p-2 font-sans text-base leading-normal font-normal tracking-normal text-ink no-underline shadow-pop-sm ${hover.right ? "right-0" : "left-0"}`}
+        style={{ width: PREVIEW_W }}>
+        {cards.map((c) => {
+          const entry = data.articulation.sounds[c.target!.lang][c.target!.sym];
+          return entry ? <MouthDiagram key={c.pair} compact entry={entry} title={t("targetIs", { x: c.targetLabel })} /> : null;
+        })}
+        <span className="px-1 text-xs font-medium text-neutral-600">{t("hoverHint")}</span>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-3">
-      <p className="font-medium">{headline}</p>
-      <p lang={result.lang} className="flex flex-wrap gap-x-3 gap-y-4 text-3xl leading-[2.2]">
-        {result.words.map((w, i) => (
-          <span key={i} title={w.not_heard ? t("notHeardTitle") : undefined}>
-            {renderWord(w, i)}
-          </span>
-        ))}
-      </p>
-      {audio && (
-        <p className="text-sm text-neutral-600 dark:text-neutral-300">
-          {t(result.lang === "ko" ? "tapSyllable" : "tapWord")}
-          {anyRed ? t("tapRed") : "."}
-        </p>
-      )}
-      {open !== null && dataError && <p className="text-sm text-red-600">{t("tipsError", { e: dataError })}</p>}
+    <div className="flex flex-col gap-4">
+      <div className="rounded-[20px] border-[2.5px] border-ink bg-white shadow-pop lg:rounded-3xl lg:shadow-pop-lg">
+        <div className="flex flex-col gap-1 px-4 pt-3 pb-2 lg:px-6 lg:pt-5">
+          <p className="m-0 font-display text-xl lg:text-2xl">{headline}</p>
+          <div lang={result.lang} className="flex flex-wrap gap-x-2 gap-y-1 font-display text-[34px] leading-[1.9] lg:gap-x-3 lg:text-[46px]">
+            {result.words.map((w, i) => (
+              <span key={i} className="relative" title={w.not_heard ? t("notHeardTitle") : undefined}
+                onPointerEnter={(e) => {
+                  if (e.pointerType !== "mouse" || !issuesOf(w).length) return;
+                  const left = e.currentTarget.getBoundingClientRect().left;
+                  setHover({ i, right: left + PREVIEW_W > window.innerWidth - 16 });
+                }}
+                onPointerLeave={() => setHover((h) => (h?.i === i ? null : h))}>
+                {renderWord(w, i)}
+                {previewOf(w, i)}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col gap-1 rounded-b-[17.5px] border-t-[2.5px] border-ink bg-tray px-4 py-2.5 text-sm font-medium text-neutral-700 lg:rounded-b-[21.5px] lg:px-6 lg:py-3">
+          {audio && (
+            <p className="m-0">
+              {t(result.lang === "ko" ? "tapSyllable" : "tapWord")}
+              {anyRed ? t("tapRed") : "."}
+            </p>
+          )}
+          <p className="m-0 text-neutral-600">
+            <span className={GREEN}>{t("green")}</span>{t("greenMeans")}<span className={RED}>{t("red")}</span>
+            {t("redMeans")}
+          </p>
+        </div>
+      </div>
+      {open !== null && dataError && <p className="m-0 rounded-2xl border-[2.5px] border-ink bg-[#FFE4EF] px-4 py-3 text-sm font-medium shadow-pop-xs">{t("tipsError", { e: dataError })}</p>}
       {open !== null &&
         data &&
         issuesOf(result.words[open]).map((issue) => {
@@ -190,10 +225,6 @@ export default function ResultSentence({ result, audio }: { result: AnalyzeResul
             />
           );
         })}
-      <p className="text-sm text-neutral-500">
-        <span className={GREEN}>{t("green")}</span>{t("greenMeans")}<span className={RED}>{t("red")}</span>
-        {t("redMeans")} {describeChecksIn(ui, result.checks)}
-      </p>
     </div>
   );
 }

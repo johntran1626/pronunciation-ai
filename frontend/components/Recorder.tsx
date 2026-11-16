@@ -94,38 +94,39 @@ export default function Recorder({ text, lang }: { text: string; lang: Lang }) {
   }
 
   const busy = state.kind === "working";
-  const button = "rounded-md px-4 py-2 font-medium text-white disabled:opacity-50";
+  const button =
+    "flex h-[50px] items-center gap-2 rounded-2xl border-[2.5px] border-ink px-5 font-display text-xl shadow-pop-sm transition-[transform,box-shadow] active:translate-x-[3px] active:translate-y-[3px] active:shadow-pop-xs disabled:opacity-60 lg:h-[54px] lg:text-[21px]";
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
         {state.kind === "recording" ? (
-          <button onClick={stop} className={`${button} bg-red-600 hover:bg-red-700`}>
+          <button onClick={stop} className={`${button} bg-pink text-ink`}>
             ■ {t("stop")}
           </button>
         ) : (
-          <button onClick={start} disabled={busy} className={`${button} bg-blue-600 hover:bg-blue-700`}>
+          <button onClick={start} disabled={busy} className={`${button} bg-blue text-white`}>
             ● {t(state.kind === "done" || state.kind === "error" ? "recordAgain" : "record")}
           </button>
         )}
         {state.kind === "recording" && (
-          <span className="tabular-nums text-neutral-600 dark:text-neutral-300">
+          <span className="font-display text-lg tabular-nums">
             {state.elapsed.toFixed(1)} s / {MAX_SECONDS} s
           </span>
         )}
-        {state.kind === "working" && <span className="text-neutral-500">{state.what}</span>}
+        {state.kind === "working" && <span className="font-medium text-neutral-600">{state.what}</span>}
       </div>
 
       {state.kind === "error" && (
         <>
-          <p className="rounded-lg bg-red-50 p-3 text-red-700 dark:bg-red-950 dark:text-red-300">{state.message}</p>
+          <p className="m-0 rounded-2xl border-[2.5px] border-ink bg-[#FFE4EF] px-4 py-3 font-medium text-ink shadow-pop-xs" role="alert">{state.message}</p>
           {/* developer output: local `next dev` only, never on the public site */}
           {SHOW_DEV && state.sent && <DebugPanel sent={state.sent} />}
         </>
       )}
 
       {state.kind === "done" && (
-        <div className="flex flex-col gap-3 border-t border-neutral-200 pt-4 dark:border-neutral-800">
+        <div className="flex flex-col gap-4">
           <ResultSentence result={state.result} audio={{ samples: state.sent.playSamples, rate: TARGET_RATE }} />
           {SHOW_DEV && <DebugPanel sent={state.sent} result={state.result} />}
         </div>

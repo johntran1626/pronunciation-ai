@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { decompose } from "./hangul.ts";
-import { describeChecks, jamoParts, summarize } from "./results.ts";
+import { GREEN_STYLE, jamoParts, pieceStyle, RED_STYLE, summarize } from "./results.ts";
 
 test("decompose splits a Hangul block into onset, vowel and (optional) coda", () => {
   assert.deepEqual(decompose("같"), [
@@ -57,33 +57,15 @@ test("summarize counts words that need work", () => {
   });
 });
 
-// ---------- say exactly what was checked ----------
+// ---------- how red looks ----------
 
-test("describeChecks names every live check in plain words", () => {
-  assert.equal(
-    describeChecks(["sentence_match", "word_heard", "r_as_l"]),
-    "This version checks that you read the sentence, that each word was heard, and R (said like L). Plain text = not checked yet.",
-  );
+test("red is underlined with a straight line, not a wavy one", () => {
+  assert.match(RED_STYLE, /\bunderline\b/);
+  assert.doesNotMatch(RED_STYLE, /wavy/);
 });
 
-test("describeChecks is honest when only the sentence check is live", () => {
-  assert.equal(
-    describeChecks(["sentence_match"]),
-    "This version checks that you read the sentence. Plain text = not checked yet.",
-  );
-});
-
-test("describeChecks with nothing live says nothing was graded", () => {
-  assert.equal(describeChecks([]), "No checks are switched on yet, so nothing was graded.");
-});
-
-test("a sentence check that only rejects silence is described as such, not as reading the sentence", () => {
-  assert.equal(describeChecks(["speech_heard"]), "This version checks that speech was heard. Plain text = not checked yet.");
-});
-
-test("the live Korean checks have plain names in the honesty line, not their ids", () => {
-  const line = describeChecks(["speech_heard", "lenis_as_tense", "u_as_eu"]);
-  assert.doesNotMatch(line, /lenis_as_tense|u_as_eu/);
-  assert.match(line, /ㅜ/);
-  assert.match(line, /ㅂ ㄷ ㄱ/);
+test("a practice result has no plain black text: every piece is green or red", () => {
+  assert.equal(pieceStyle("red"), RED_STYLE);
+  assert.equal(pieceStyle("green"), GREEN_STYLE);
+  assert.equal(pieceStyle("unchecked"), GREEN_STYLE); // nothing found wrong = green
 });

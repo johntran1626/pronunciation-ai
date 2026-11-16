@@ -82,7 +82,7 @@ test("Korean Practice says up front which Korean sounds are graded so far", () =
   }
   assert.match(tr("en", "practiceHintKo"), /ㅜ/);
   assert.match(tr("en", "practiceHintKo"), /ㅂ ㄷ ㄱ/);
-  assert.match(tr("en", "nothingGraded"), /green or red/);
+  assert.doesNotMatch(tr("en", "nothingGraded"), /green or red/); // every piece is coloured now, so it never says "not marked"
 });
 
 // ---------- one button: Animate ----------

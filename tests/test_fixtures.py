@@ -2,6 +2,7 @@
 without the git-ignored corpora. Native speakers reading correctly -> everything should be green.
 Files and licenses: tests/fixtures/fixtures.json and tests/fixtures/LICENSES.md."""
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -9,9 +10,7 @@ import soundfile as sf
 from fastapi.testclient import TestClient
 
 from backend.app import MAX_SECONDS, app
-from backend.g2p import expected_phonemes
-from backend.listener import live_listener
-from backend.scoring import PAIRS, load_thresholds
+from backend.g2p import _g2p_en, expected_phonemes
 
 FIXTURES = Path(__file__).with_name("fixtures")
 MANIFEST = json.loads((FIXTURES / "fixtures.json").read_text(encoding="utf-8")) if (FIXTURES / "fixtures.json").exists() else []
@@ -56,17 +55,11 @@ def test_native_speaker_reading_correctly_gets_no_red(fx):
     assert body["matched"] is True
     assert all(w["status"] != "red" for w in body["words"])
     if fx["lang"] == "en":
-        # green only where a live sound check passed; every other word is plain. Which sounds are checked
-        # comes from the thresholds of the listener the app runs, so this follows a listener switch.
-        targets = checked_targets(fx["lang"])
-        assert targets, "no live English sound check"
+        # the every-sound check (backend/any_sound.py) grades every sound of a word the dictionary knows, so
+        # those words are green; a word it doesn't know (a rare name) is not graded and stays "unchecked".
+        assert "any_sound" in body["checks"]
+        cmu = _g2p_en().cmu
         for w in body["words"]:
-            checked = any(p["ipa"] in targets for p in w["phonemes"])
-            assert w["status"] == ("green" if checked else "unchecked"), w["word"]
-
-
-def checked_targets(lang):
-    """Target sounds of the enabled per-sound checks for the listener the app runs for lang.
-    extra_vowel has no target sound (it looks after a word-final consonant), so it never makes a word green."""
-    pairs = load_thresholds(live_listener(lang)).get("pairs", {})
-    return {PAIRS[name]["target"] for name, t in pairs.items() if t.get("enabled") and name in PAIRS}
+            known = all(re.sub(r"'s$", "", part.lower()) in cmu for part in w["word"].split("-"))
+            assert w["status"] == ("green" if known else "unchecked"), w["word"]
+            assert all(p["checked"] for p in w["phonemes"]) == known, w["word"]

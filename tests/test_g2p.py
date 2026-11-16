@@ -85,3 +85,13 @@ def test_no_words_raises(text, lang):
 def test_unknown_language_raises():
     with pytest.raises(ValueError):
         expected_phonemes("hola", "es")
+
+
+def test_hyphenated_words_get_each_part_from_the_dictionary():
+    """g2p_en guesses a hyphenated word as one unknown word and drops sounds ("red-eye's" lost its "eye")."""
+    [w] = expected_phonemes("red-eye's", "en")
+    assert w["word"] == "red-eye's"
+    assert w["phonemes"] == ["ɹ", "ɛ", "d", "aɪ", "z"]
+    [w] = expected_phonemes("crooked-leg", "en")
+    assert w["phonemes"][-3:] == ["l", "ɛ", "ɡ"]
+    assert len(w["pron"].split()) == len(w["phonemes"])

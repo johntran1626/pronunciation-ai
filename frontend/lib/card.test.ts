@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import type { PhonemeResult, TipsTable, WordResult } from "./api.ts";
-import { buildCard, issuesOf, tapAction } from "./card.ts";
+import { buildCard, hoverCards, issuesOf, tapAction } from "./card.ts";
 
 const TIPS: TipsTable = JSON.parse(readFileSync(new URL("../../content/tips.json", import.meta.url), "utf-8"));
 
@@ -19,7 +19,7 @@ test("issuesOf lists each red pair once, in order, and ignores green / unchecked
   const w = word("rarer", [
     ph("ɹ", "red", "r_as_l", 0.1, 0.15), ph("ɛ", "green"), ph("ɹ", "red", "r_as_l", 0.3, 0.35), ph("ɚ", "unchecked"),
   ]);
-  assert.deepEqual(issuesOf(w), [{ pair: "r_as_l", ipa: "ɹ", index: 0, start: 0.1, end: 0.15 }]); // index: finds the same sound in the native clip
+  assert.deepEqual(issuesOf(w), [{ pair: "r_as_l", ipa: "ɹ", index: 0, start: 0.1, end: 0.15, produced: null }]); // index: finds the same sound in the native clip
   assert.deepEqual(issuesOf(word("now", [ph("n", "green"), ph("aʊ", "green")])), []);
   assert.deepEqual(issuesOf({ ...w, phonemes: undefined }), []); // older / fake results without sounds
 });
@@ -86,4 +86,46 @@ test("tapAction: a red word opens the card and does not play", () => {
 test("tapAction: a word without issues plays and has no card", () => {
   const green = word("now", [ph("n", "green"), ph("aʊ", "green")]);
   assert.deepEqual(tapAction(green), { play: true, toggleCard: false });
+});
+
+test("hovering a red word previews the correct mouth for each red sound that has one", () => {
+  const w = word("From", [ph("f", "green"), ph("ɹ", "red", "r_as_l")]);
+  assert.deepEqual(hoverCards(w, TIPS, "en").map((c) => c.target), [{ lang: "en", sym: "ɹ" }]);
+  const k = word("빵", [ph("p͈", "red", "pp_as_p"), ph("a", "green"), ph("ŋ", "green")]);
+  assert.deepEqual(hoverCards(k, TIPS, "ko").map((c) => c.target), [{ lang: "ko", sym: "p͈" }]);
+  // nothing to draw: a word that wasn't heard, an extra vowel (no single target sound), an all-green word
+  assert.deepEqual(hoverCards(word("now", [ph("n", "red", "word_not_heard")], { not_heard: true }), TIPS, "en"), []);
+  assert.deepEqual(hoverCards(word("bus", [ph("b", "green"), ph("s", "red", "extra_vowel")]), TIPS, "en"), []);
+  assert.deepEqual(hoverCards(word("now", [ph("n", "green")]), TIPS, "en"), []);
+});
+
+// ---------- the every-sound check: a card for ANY English sound swapped or left out ----------
+test("a swapped sound gets a card with both mouths, plain labels and practice words", () => {
+  const w = word("Testing", [ph("t", "green"), { ...ph("ɛ", "red", "sound_swap", 0.1, 0.2), produced: "eɪ" }]);
+  const [issue] = issuesOf(w);
+  assert.equal(issue.produced, "eɪ");
+  const c = buildCard(issue, w, TIPS, "en")!;
+  assert.equal(c.whatHappened, "In “Testing”, the “bed” vowel probably sounded like the “day” vowel.");
+  assert.deepEqual([c.target, c.produced], [{ lang: "en", sym: "ɛ" }, { lang: "en", sym: "eɪ" }]);
+  assert.equal(c.simple, false);
+  assert.equal(c.practice.length, 3);
+  assert.equal(c.reviewed, true); // no phonetic claim of its own: the pictures come from the sound table
+  assert.match(buildCard(issue, w, TIPS, "en", "ko")!.whatHappened, /“Testing”에서/);
+  assert.deepEqual(hoverCards(w, TIPS, "en").map((x) => x.target), [{ lang: "en", sym: "ɛ" }]);
+});
+
+test("a left-out sound gets a card with the correct mouth only", () => {
+  const w = word("acts", [ph("æ", "green"), { ...ph("k", "red", "sound_missing"), produced: null }]);
+  const c = buildCard(issuesOf(w)[0], w, TIPS, "en")!;
+  assert.equal(c.whatHappened, "In “acts”, the K seems to be missing.");
+  assert.deepEqual(c.target, { lang: "en", sym: "k" });
+  assert.equal(c.produced, null);
+  assert.equal(c.simple, false); // the correct mouth is still drawn
+});
+
+test("two different swaps in one word give two cards", () => {
+  const w = word("Stopping", [
+    { ...ph("s", "red", "sound_swap"), produced: "d" }, { ...ph("t", "red", "sound_swap"), produced: "ɹ" },
+  ]);
+  assert.deepEqual(issuesOf(w).map((i) => i.ipa), ["s", "t"]);
 });

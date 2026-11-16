@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { DEFAULT_UI, UI, describeChecksIn, descText, problemText, say, tipText } from "./i18n.ts";
+import { DEFAULT_UI, UI, descText, problemText, say, tipText } from "./i18n.ts";
 import { caption, airflowPhrases } from "./mouthViews.ts";
 import { callout, geometry, VIEW, textWidth } from "./mouth.ts";
 import { seeingSpeech } from "./reference.ts";
@@ -70,26 +70,10 @@ test("Korean callouts still fit inside the picture (Hangul is wider than Latin l
     }
 });
 
-test("the list of live checks reads in Korean too", () => {
-  const checks = ["sentence_match", "word_heard", "r_as_l", "l_as_r", "f_as_p", "v_as_b", "th_as_s", "dh_as_d", "ih_as_iy", "iy_as_ih", "extra_vowel"];
-  const ko = describeChecksIn("ko", checks);
-  assert.ok(HANGUL.test(ko) && !/said like|that each/.test(ko), ko);
-  assert.match(describeChecksIn("en", ["r_as_l"]), /This version checks R \(said like L\)/);
-});
 
 test("typing problems in both languages", () => {
   assert.equal(problemText("en", "  "), "Type a sentence first.");
   assert.ok(HANGUL.test(problemText("ko", "")!));
   assert.ok(HANGUL.test(problemText("ko", "a".repeat(81))!) && problemText("ko", "a".repeat(81))!.includes("81"));
   assert.equal(problemText("ko", "hello"), null);
-});
-
-test("the Korean honesty line has a Korean name for every check, incl. speech_heard", () => {
-  assert.doesNotMatch(describeChecksIn("ko", ["speech_heard"]), /speech_heard/);
-});
-
-test("the Korean honesty line names the live Korean checks in Korean", () => {
-  const line = describeChecksIn("ko", ["lenis_as_tense", "u_as_eu"]);
-  assert.doesNotMatch(line, /lenis_as_tense|u_as_eu/);
-  assert.match(line, /예사소리/);
 });

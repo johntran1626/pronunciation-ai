@@ -119,6 +119,10 @@ def _english(text):
     groups = _arpa_groups(text)  # whole sentence: g2p_en uses the sentence to pick between e.g. REcord / reCORD
     if len(groups) != len(written):  # numbers or hyphens changed the word count; go one word at a time
         groups = [sum(_arpa_groups(w), []) for w in written]
+    # A hyphenated word is unknown to the dictionary as a whole, and g2p_en's guess drops sounds ("red-eye's" lost
+    # its "eye"). Each part is a dictionary word, so it is said part by part: red + eye's.
+    groups = [sum((sum(_arpa_groups(part), []) for part in w.split("-") if part), []) if "-" in w else g
+              for w, g in zip(written, groups)]
     return [{"word": w, "pron": " ".join(g), "phonemes": [_arpa_to_ipa(a) for a in g]}
             for w, g in zip(written, groups) if g]
 

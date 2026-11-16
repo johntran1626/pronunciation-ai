@@ -50,6 +50,35 @@ const ENGLISH: AnalyzeResult = {
   ],
 };
 
+// The every-sound check: "Testing the locker" said as "Tasting the locker" (E swapped) with the K of "locker" left out.
+const SWAPPED: AnalyzeResult = {
+  ...BASE,
+  checks: [...BASE.checks, "any_sound"],
+  text: "Testing the locker.",
+  lang: "en",
+  duration_s: 2,
+  words: [
+    {
+      ...englishWord([["T", "green"], ["e", "red"], ["sting", "green"]]),
+      phonemes: [
+        { ipa: "t", status: "green", start: 0, end: 0.1 },
+        { ipa: "ɛ", status: "red", pair: "sound_swap", produced: "eɪ", start: 0.1, end: 0.2 },
+        { ipa: "s", status: "green", start: 0.2, end: 0.3 },
+      ],
+    },
+    englishWord([["the", "green"]]),
+    {
+      ...englishWord([["lo", "green"], ["ck", "red"], ["er", "green"]]),
+      phonemes: [
+        { ipa: "l", status: "green", start: 0.5, end: 0.6 },
+        { ipa: "ɑː", status: "green", start: 0.6, end: 0.7 },
+        { ipa: "k", status: "red", pair: "sound_missing", produced: null, start: 0.7, end: 0.75 },
+        { ipa: "ɚ", status: "green", start: 0.75, end: 0.9 },
+      ],
+    },
+  ],
+};
+
 // A test sentence. 엉 has ㅇ twice (silent start, [ŋ] end): only the END one is marked red.
 // 날's final ㄹ is red too. (Fake errors, for the display only.)
 const KOREAN: AnalyzeResult = {
@@ -103,6 +132,7 @@ export default function DevResults() {
         DEV ONLY: fake, hand-made results to check the colors. Not real analysis. Tap the red &quot;From&quot; or
         &quot;now&quot; to open a detail card (all cards: /dev/cards).
       </p>
+      <ResultSentence result={SWAPPED} />
       <ResultSentence result={ENGLISH} />
       <ResultSentence result={KOREAN} />
       <ResultSentence result={ALL_GREEN} />

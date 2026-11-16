@@ -309,11 +309,13 @@ export default function MouthDiagram({
   title,
   tone = "target",
   description,
+  compact = false,
 }: {
   entry: ArticulationEntry;
   title: string;
   tone?: "target" | "yours";
   description?: string; // the sound's description in the site language (default: the table's English)
+  compact?: boolean; // a quick snapshot (hovering a red word): the two pictures only, no marks / badges / description
 }) {
   const { ui } = useUi();
   const sayIt = say(ui);
@@ -348,15 +350,19 @@ export default function MouthDiagram({
           </div>
         ))}
       </div>
-      {marks.length > 0 && <p className="text-[11px] text-neutral-500">{marks.join("   ·   ")}</p>}
-      <ul className="flex flex-wrap gap-1.5 text-xs">
-        {badges(entry).map((x) => (
-          <li key={x} className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
-            {sayIt(x)}
-          </li>
-        ))}
-      </ul>
-      <p className="text-sm text-neutral-600 dark:text-neutral-400">{description ?? entry.description}</p>
+      {!compact && (
+        <>
+          {marks.length > 0 && <p className="text-[11px] text-neutral-500">{marks.join("   ·   ")}</p>}
+          <ul className="flex flex-wrap gap-1.5 text-xs">
+            {badges(entry).map((x) => (
+              <li key={x} className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
+                {sayIt(x)}
+              </li>
+            ))}
+          </ul>
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">{description ?? entry.description}</p>
+        </>
+      )}
     </figure>
   );
 }

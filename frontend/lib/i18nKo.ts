@@ -183,20 +183,3 @@ export const PHRASE_KO: Record<string, string> = {
   "This sound glides; the chart shows where it starts.": "이 소리는 미끄러지듯 바뀌어요. 차트는 시작 위치를 보여 줘요.",
 };
 
-// The live checks, as listed under every result ("This version checks ...").
-export const CHECK_KO: Record<string, string> = {
-  sentence_match: "문장을 읽었는지",
-  speech_heard: "말소리가 들렸는지",
-  word_heard: "각 단어가 들렸는지",
-  r_as_l: "R (L처럼 발음)",
-  l_as_r: "L (R처럼 발음)",
-  f_as_p: "F (P처럼 발음)",
-  v_as_b: "V (B처럼 발음)",
-  th_as_s: "TH (S나 T처럼 발음)",
-  dh_as_d: "TH (D처럼 발음)",
-  ih_as_iy: "짧은 i (ship과 sheep)",
-  iy_as_ih: "긴 ee (sheep과 ship)",
-  u_as_eu: "한국어 ㅜ (ㅡ처럼 발음)",
-  lenis_as_tense: "한국어 예사소리 ㅂ ㄷ ㄱ (된소리로 발음)",
-  extra_vowel: "끝 자음 뒤에 덧붙는 모음",
-};

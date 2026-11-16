@@ -33,14 +33,14 @@ export default function DetailCard({
   const produced = card.produced && articulation.sounds[card.produced.lang][card.produced.sym];
   const real = card.target && target ? seeingSpeech(card.target.lang, card.target.sym, target.kind) : null;
   const btn =
-    "rounded-lg border border-neutral-300 px-3 py-1.5 text-sm hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-800";
+    "rounded-xl border-[2.5px] border-ink bg-white px-3 py-1.5 text-sm font-medium text-ink shadow-pop-xs transition-[transform,box-shadow] hover:bg-sky active:translate-x-[2px] active:translate-y-[2px] active:shadow-none";
 
   return (
-    <article className="flex flex-col gap-4 rounded-xl border-2 border-red-300 bg-white p-4 dark:border-red-900 dark:bg-neutral-950">
+    <article className="flex flex-col gap-4 rounded-[20px] border-[2.5px] border-ink bg-white p-4 shadow-pop lg:rounded-3xl lg:p-6">
       <header className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-lg font-semibold">{card.whatHappened}</h3>
-          <p className="text-sm text-neutral-500">{t("cardEstimated")}</p>
+          <h3 className="m-0 font-display text-xl lg:text-2xl">{card.whatHappened}</h3>
+          <p className="m-0 text-sm text-neutral-600">{t("cardEstimated")}</p>
         </div>
         {onClose && (
           <button type="button" onClick={onClose} aria-label={t("close")} className={btn}>
@@ -49,6 +49,12 @@ export default function DetailCard({
         )}
       </header>
 
+      {!card.simple && target && !produced && ( // a left-out sound: the correct mouth only
+        <div className="grid grid-cols-1 gap-3 sm:max-w-[50%]">
+          <MouthDiagram entry={target} title={t("targetIs", { x: card.targetLabel })}
+            description={descText(ui, card.target!.lang, card.target!.sym, target.description)} />
+        </div>
+      )}
       {!card.simple && target && produced && (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <MouthDiagram entry={target} title={t("targetIs", { x: card.targetLabel })}
@@ -74,16 +80,16 @@ export default function DetailCard({
       )}
 
       <section>
-        <h4 className="font-medium">{t("howToFix")}</h4>
+        <h4 className="m-0 font-display text-lg">{t("howToFix")}</h4>
         <p>{card.tip}</p>
       </section>
 
       {card.practice.length > 0 && (
         <section>
-          <h4 className="font-medium">{t("practiceWords")}</h4>
+          <h4 className="m-0 font-display text-lg">{t("practiceWords")}</h4>
           <ul lang={card.target?.lang} className="mt-1 flex flex-wrap gap-2 text-lg">
             {card.practice.map((w) => (
-              <li key={w} className="rounded bg-neutral-100 px-2 py-0.5 dark:bg-neutral-800">
+              <li key={w} className="rounded-lg border-2 border-ink bg-tray px-2 py-0.5">
                 {w}
               </li>
             ))}
@@ -93,7 +99,7 @@ export default function DetailCard({
 
       {(onPlaySound || onPlayWord || nativeStatus) && (
         <section className="flex flex-col gap-2">
-          <h4 className="font-medium">{t("compare")}</h4>
+          <h4 className="m-0 font-display text-lg">{t("compare")}</h4>
           {card.sound && (onPlaySound || onPlayNativeSound) && (
             <div className="flex flex-wrap gap-2">
               {onPlaySound && (

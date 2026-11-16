@@ -1,8 +1,7 @@
 // The ENG / 한 switch: site text, tips and sound descriptions in English or Korean. It switches the words around
 // the app, never the language of the sentence being practised. Pure (no React), tested in i18n.test.ts.
 import { MAX_CUSTOM_CHARS } from "./custom.ts";
-import { CHECK_KO, DESC_KO, PHRASE_KO, TIP_KO } from "./i18nKo.ts";
-import { describeChecks } from "./results.ts";
+import { DESC_KO, PHRASE_KO, TIP_KO } from "./i18nKo.ts";
 
 export type Ui = "en" | "ko";
 export const DEFAULT_UI: Ui = "en";
@@ -91,8 +90,8 @@ export const UI = {
   noProblems: s("No problems found in what we checked.", "확인한 부분에서는 문제가 없어요."),
   heardAll: s("We heard every word. None of these sounds can be checked yet.", "모든 단어가 들렸어요. 이 소리들은 아직 확인할 수 없어요."),
   nothingGraded: s(
-    "These sounds can't be graded yet, so nothing is marked green or red.",
-    "이 소리들은 아직 채점할 수 없어서 초록색이나 빨간색으로 표시하지 않았어요.",
+    "These sounds can't be graded yet.",
+    "이 소리들은 아직 채점할 수 없어요.",
   ),
   notHeardTitle: s("This word wasn't heard. Skipped, or said as a different word?", "이 단어가 들리지 않았어요. 건너뛰었거나 다른 단어로 말했나요?"),
   tapWord: s("Tap a word to hear how you said it", "단어를 누르면 내가 말한 소리를 들을 수 있어요"),
@@ -102,13 +101,25 @@ export const UI = {
   playYour: s("Play your “{w}”", "내 “{w}” 듣기"),
   tipsError: s("Couldn't load the tips: {e}", "팁을 불러오지 못했어요: {e}"),
   green: s("Green", "초록"),
-  greenMeans: s(" = this sound passed a check · ", " = 확인을 통과한 소리 · "),
+  greenMeans: s(" = no problem found · ", " = 문제를 찾지 못한 소리 · "),
   red: s("red", "빨강"),
   redMeans: s(" = needs work or not heard. Results are estimated from your audio.", " = 연습이 필요하거나 들리지 않은 소리. 결과는 내 음성으로 추정한 거예요."),
   // detail card
   cardEstimated: s("Estimated from your audio. The app can't see your mouth.", "내 음성으로 추정한 결과예요. 앱은 입 안을 볼 수 없어요."),
   close: s("Close", "닫기"),
   targetIs: s("Target: {x}", "목표: {x}"),
+  // cards of the every-sound check (any English sound swapped or left out)
+  swapHappened: s("In “{w}”, the {x} probably sounded like the {y}.", "“{w}”에서 {x} 소리가 {y} 소리처럼 들렸을 거예요."),
+  missingHappened: s("In “{w}”, the {x} seems to be missing.", "“{w}”에서 {x} 소리가 빠진 것 같아요."),
+  swapTip: s(
+    "Copy the green picture ({x}), not the orange one ({y}). Say the practice words slowly, then the whole word.",
+    "초록 그림({x})을 따라 하고, 주황 그림({y})처럼 하지 마세요. 연습 단어를 천천히 말한 다음 단어 전체를 말해 보세요.",
+  ),
+  missingTip: s(
+    "Don't skip the {x}. Say the word slowly so every sound is there, then speed up.",
+    "{x} 소리를 빼먹지 마세요. 모든 소리가 들리도록 천천히 말한 다음 빠르게 말해 보세요.",
+  ),
+  hoverHint: s("Click to see what to fix.", "누르면 고칠 점을 볼 수 있어요."),
   yoursIs: s("What you probably did: {x}", "아마 이렇게 했어요: {x}"),
   drawings: s(
     "Drawings show the textbook position (based on public-domain diagrams by R. Wright & D. McCloy), not your mouth.",
@@ -151,13 +162,6 @@ export function tipText<T extends TipFields>(ui: Ui, lang: "en" | "ko", id: stri
 /** A sound's plain-words description in the chosen language. */
 export const descText = (ui: Ui, lang: "en" | "ko", ipa: string, english: string) =>
   (ui === "ko" ? DESC_KO[lang]?.[ipa] : undefined) ?? english;
-
-/** The honesty line under a result: which checks this version runs. */
-export function describeChecksIn(ui: Ui, checks: string[]): string {
-  if (ui === "en") return describeChecks(checks);
-  if (checks.length === 0) return "아직 켜진 확인 항목이 없어서 채점하지 않았어요.";
-  return `이 버전이 확인하는 것: ${checks.map((c) => CHECK_KO[c] ?? c).join(", ")}. 일반 글자 = 아직 확인하지 않는 부분.`;
-}
 
 /** The two quick checks on a typed sentence before it goes to the backend (same limits as lib/custom.ts). */
 export function problemText(ui: Ui, typed: string): string | null {

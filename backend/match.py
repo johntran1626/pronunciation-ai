@@ -100,18 +100,19 @@ def active_checks(lang, sound_t, match_t):
     return names + sorted(_live_pairs(sound_t, lang))
 
 
-def finalize(words, lang, sound_t, match_t):
+def finalize(words, lang, sound_t, match_t, also_checked=frozenset()):
     """After scoring.score_words(): apply the word check, mark what was checked, set honest statuses.
-    -> a copy; every phoneme gets `checked`, every word gets `not_heard`."""
+    -> a copy; every phoneme gets `checked`, every word gets `not_heard`.
+    also_checked = (word_index, phoneme_index) of sounds another live check graded (backend/any_sound.checked)."""
     words = copy.deepcopy(words)
     word_rule = _rules(match_t, lang)["word"]
     pairs = _live_pairs(sound_t, lang)
-    for w in words:
+    for wi, w in enumerate(words):
         w["not_heard"] = is_not_heard(word_features(w), word_rule)
-        for p in w["phonemes"]:
+        for pi, p in enumerate(w["phonemes"]):
             # Only a SOUND check counts. The word check can turn a word red ("not heard"), but passing it
             # only means "we heard the word", not "it sounded right", so it never makes a sound green.
-            p["checked"] = PAIR_OF_TARGET.get(p["ipa"]) in pairs
+            p["checked"] = PAIR_OF_TARGET.get(p["ipa"]) in pairs or (wi, pi) in also_checked
             if w["not_heard"]:
                 p["status"], p["pair"], p["produced"] = "red", NOT_HEARD, None
             elif p["status"] != "red" and not p["checked"]:
