@@ -2,8 +2,8 @@
  "source": "eval/any_sound.py (see results/any_sound.json)",
  "enabled": true,
  "cap": 0.05,
- "margin": 0.9475,
+ "margin": 0.98,
  "right": 0.0005,
- "sub_right": 0.005,
+ "sub_right": 0.002,
  "listener": "listener_v1"
 }

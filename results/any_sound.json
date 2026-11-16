@@ -1,117 +1,117 @@
 {
  "live_cap": 0.05,
  "sentences": {
-  "tune": 2261,
-  "test": 2262,
+  "tune": 5097,
+  "test": 3984,
   "korean": 600
  },
  "sounds": {
-  "tune": 70967,
-  "test": 71028,
+  "tune": 160153,
+  "test": 125268,
   "korean": 17163
  },
- "not_graded_rows": 2103,
+ "not_graded_rows": 4346,
  "caps": {
   "0.02": {
-   "margin": 0.9925,
+   "margin": 0.9975,
    "right": 0.0005,
-   "sub_right": 0.0002,
+   "sub_right": 0.0,
    "false_red_sentences": {
-    "tune": 0.0186,
-    "test": 0.0172,
-    "korean": 0.0283
+    "tune": 0.019,
+    "test": 0.0193,
+    "korean": 0.015
    },
    "swaps_all": {
-    "caught": 6615,
-    "n": 8950
+    "caught": 2666,
+    "n": 15754
    },
    "swaps_stressed": {
-    "caught": 4587,
-    "n": 5592
+    "caught": 1913,
+    "n": 9891
    },
    "swaps_stressed_vowels": {
-    "caught": 873,
-    "n": 1487
+    "caught": 3,
+    "n": 2576
    },
    "swaps_stressed_consonants": {
-    "caught": 3714,
-    "n": 4105
+    "caught": 1910,
+    "n": 7315
    },
    "said_sound_named_right": {
-    "caught": 4517,
-    "n": 4587
+    "caught": 1885,
+    "n": 1913
    },
    "left_out": {
-    "caught": 2338,
-    "n": 4496
+    "caught": 3824,
+    "n": 7918
    }
   },
   "0.05": {
-   "margin": 0.9475,
+   "margin": 0.98,
    "right": 0.0005,
-   "sub_right": 0.005,
+   "sub_right": 0.002,
    "false_red_sentences": {
-    "tune": 0.05,
-    "test": 0.0407,
-    "korean": 0.0967
+    "tune": 0.0494,
+    "test": 0.0419,
+    "korean": 0.0567
    },
    "swaps_all": {
-    "caught": 8001,
-    "n": 8950
+    "caught": 13688,
+    "n": 15754
    },
    "swaps_stressed": {
-    "caught": 5483,
-    "n": 5592
+    "caught": 9438,
+    "n": 9891
    },
    "swaps_stressed_vowels": {
-    "caught": 1423,
-    "n": 1487
+    "caught": 2283,
+    "n": 2576
    },
    "swaps_stressed_consonants": {
-    "caught": 4060,
-    "n": 4105
+    "caught": 7155,
+    "n": 7315
    },
    "said_sound_named_right": {
-    "caught": 5353,
-    "n": 5483
+    "caught": 9195,
+    "n": 9438
    },
    "left_out": {
-    "caught": 2458,
-    "n": 4496
+    "caught": 4173,
+    "n": 7918
    }
   },
   "0.10": {
-   "margin": 0.8,
-   "right": 0.005,
+   "margin": 0.88,
+   "right": 0.002,
    "sub_right": 0.01,
    "false_red_sentences": {
-    "tune": 0.0982,
-    "test": 0.0809,
-    "korean": 0.22
+    "tune": 0.0959,
+    "test": 0.0823,
+    "korean": 0.1583
    },
    "swaps_all": {
-    "caught": 8115,
-    "n": 8950
+    "caught": 14216,
+    "n": 15754
    },
    "swaps_stressed": {
-    "caught": 5557,
-    "n": 5592
+    "caught": 9788,
+    "n": 9891
    },
    "swaps_stressed_vowels": {
-    "caught": 1461,
-    "n": 1487
+    "caught": 2518,
+    "n": 2576
    },
    "swaps_stressed_consonants": {
-    "caught": 4096,
-    "n": 4105
+    "caught": 7270,
+    "n": 7315
    },
    "said_sound_named_right": {
-    "caught": 5419,
-    "n": 5557
+    "caught": 9525,
+    "n": 9788
    },
    "left_out": {
-    "caught": 2564,
-    "n": 4496
+    "caught": 4397,
+    "n": 7918
    }
   }
  }

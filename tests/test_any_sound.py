@@ -92,8 +92,8 @@ def test_live_thresholds_file_is_the_measured_balanced_choice():
     t = any_sound.load_thresholds()
     assert t["enabled"] is True
     assert t["cap"] == 0.05                               # "Balanced": <= 5% of correct tune sentences get a false red
-    assert t["margin"] == pytest.approx(0.9475) and t["right"] == pytest.approx(0.0005)
-    assert t["sub_right"] == pytest.approx(0.005)
+    assert t["margin"] == pytest.approx(0.98) and t["right"] == pytest.approx(0.0005)
+    assert t["sub_right"] == pytest.approx(0.002)
     assert t["listener"] == "listener_v1"                 # a short name, never a path from this machine
 
 
