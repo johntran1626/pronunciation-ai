@@ -232,7 +232,8 @@ def plot(kept, results, tag):
         ax1.scatter(x, y, s=4, alpha=0.15, color=colors[v])
         ax1.text(np.mean(x), np.mean(y), f"{v} {IPA[v]}", fontsize=15, ha="center", va="center",
                  color=colors[v], bbox=dict(facecolor="white", edgecolor=colors[v], alpha=0.85, boxstyle="round"))
-    ax1.set_title("All 10 speakers: every vowel token (dots) and each vowel's average (label)")
+    n_spk = len({r["speaker"] for r in kept})
+    ax1.set_title(f"All {n_spk} speakers: every vowel token (dots) and each vowel's average (label)")
     # Per speaker: line from that speaker's ㅓ average to their ㅗ average
     for spk in sorted({r["speaker"] for r in kept}):
         m = {}
@@ -253,8 +254,9 @@ def plot(kept, results, tag):
         ax.set_xlabel("F2, normalized (left = tongue more front)")
         ax.set_ylabel("F1, normalized (top = tongue higher)")
         ax.grid(alpha=0.3)
-    fig.suptitle(f"Spike (a): native Korean vowels, Zeroth-Korean test split (formants estimated from audio; "
-                 f"run: {tag})")
+    split = "test split" if tag.startswith("test") else "train split, unseen speakers"
+    where = "at the model's spike" if tag.endswith("blip") else "in the middle of the vowel window"
+    fig.suptitle(f"Native Korean vowels, Zeroth-Korean {split}, measured {where} (formants estimated from audio)")
     fig.tight_layout()
     PLOT.parent.mkdir(parents=True, exist_ok=True)
     out = PLOT.with_name(f"{PLOT.stem}_{tag}.png")

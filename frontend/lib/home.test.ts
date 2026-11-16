@@ -29,12 +29,14 @@ test("anything that isn't a Hangul block types in one step", () => {
   assert.deepEqual(typeSteps("가 @a!"), ["ㄱ", "가", "가 ", "가 @", "가 @a", "가 @a!"]);
 });
 
-// ---------- the 21 lines ----------
-test("21 lines, each Korean with an English gloss", () => {
-  assert.equal(HOME_LINES.length, 21);
+// ---------- the lines ----------
+test("16 lines, each Korean (formal speech, like the rest of the site's write-up) with a plain-ASCII English gloss", () => {
+  assert.equal(HOME_LINES.length, 16);
   for (const l of HOME_LINES) {
     assert.ok(HANGUL.test(l.ko), l.ko);
+    assert.match(l.ko.replace(/\s*@\w+$/, ""), /(니다|십시오|니까)[!?.]$/, `formal ending: ${l.ko}`);
     assert.ok(l.en.length > 0 && !HANGUL.test(l.en), l.en);
+    assert.ok(!/[é’]/.test(l.en), `plain letters only: ${l.en}`);
   }
 });
 
@@ -84,8 +86,9 @@ test("typing: each line opens with the carriage return (empty bubble), then type
   assert.equal(view(s, HOME_LINES).typed, "");
   assert.equal(view(s, HOME_LINES).progress, 0);
   // jump to the last line and run it out
-  const last = s.order[20];
-  s = { ...s, pos: 20, step: 0 };
+  const end = HOME_LINES.length - 1;
+  const last = s.order[end];
+  s = { ...s, pos: end, step: 0 };
   tick(RETURN_TICKS + typeSteps(HOME_LINES[last].ko).length + HOLD_TICKS);
   assert.equal(s.pos, 0);
   assert.notEqual(s.order[0], last);
@@ -119,11 +122,18 @@ test("theme tokens for the approved palette; light only; reduced motion stops ev
   for (const c of [".bob", ".blink", ".talk", ".caret", ".ground"]) assert.ok(reduced.includes(c), c);
 });
 
-test("the header: small GitHub / LinkedIn links on the left, the ENG / 한 switch on the right; title + byline in the page", () => {
+test("the header: small GitHub / LinkedIn links on the left, the two tabs, the ENG / 한 switch on the right; title + byline in the page", () => {
   const page = src("../app/page.tsx");
-  const header = page.slice(page.indexOf("<header"), page.indexOf("</header>"));
-  assert.match(header, /<SocialLinks \/>[\s\S]*<UiToggle \/>/, "links top-left, ENG / 한 top-right");
-  assert.ok(!header.replaceAll('t("home")', "").includes("t("), "no other text in the header besides Home");
+  assert.match(page, /<SiteHeader onHome=\{another\} \/>/, "the home page uses the shared header");
+  const site = src("../components/SiteHeader.tsx");
+  const header = site.slice(site.indexOf("<header"), site.indexOf("</header>"));
+  assert.match(header, /<SocialLinks \/>[\s\S]*TABS\.map[\s\S]*data-testid="home"[\s\S]*<UiToggle \/>/,
+    "links top-left; Development, Home and ENG / 한 together on the right");
+  assert.doesNotMatch(site, /<\/svg>\s*\{t\("home"\)\}/, "Home is the house icon only (its name stays in aria-label)");
+  assert.ok(!header.includes("order-last"), "the tab stays beside Home, never on a row of its own");
+  assert.match(header, /aria-label=\{t\("home"\)\}/);
+  const other = header.replaceAll('t("home")', "").replaceAll("t(tab.label)", "").replaceAll('t("tabsLabel")', "");
+  assert.ok(!other.includes("t("), "no other text in the header besides Home and the tabs");
   assert.match(page, /<h1[\s\S]*t\("brand"\)[\s\S]*t\("byline"\)[\s\S]*<\/h1>/);
   assert.equal(tr("en", "byline"), "by John Tran");
   assert.ok(HANGUL.test(tr("ko", "byline")));

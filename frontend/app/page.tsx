@@ -15,10 +15,10 @@ import Recorder from "@/components/Recorder";
 import Translation from "@/components/Translation";
 import InfoTip from "@/components/InfoTip";
 import LoadingScreen from "@/components/LoadingScreen";
-import SocialLinks from "@/components/SocialLinks";
+import SiteHeader from "@/components/SiteHeader";
 import TypedBubble, { useTypedLines } from "@/components/TypedBubble";
 import TypewriterBlueberry from "@/components/TypewriterBlueberry";
-import { UiLangProvider, UiToggle, useUi } from "@/components/UiLang";
+import { UiLangProvider, useUi } from "@/components/UiLang";
 import { checkHealth, fetchCustom, loadCardData, type TextLang } from "@/lib/api";
 import { MAX_CUSTOM_CHARS, checkLine } from "@/lib/custom";
 import { problemText, type Key } from "@/lib/i18n";
@@ -136,20 +136,7 @@ function Coach() {
 
   return (
     <main className="flex min-h-dvh w-full flex-col px-[22px] pt-5 pb-7 lg:px-10 lg:pt-7 lg:pb-12">
-      <header className="mx-auto flex w-full max-w-[1160px] items-center justify-between">
-        <SocialLinks />
-        <div className="flex items-center gap-2 lg:gap-2.5">
-          <button type="button" onClick={another} data-testid="home" aria-label={t("home")} title={t("home")}
-            className="flex items-center gap-1.5 rounded-xl border-[2.5px] border-ink bg-white px-2.5 py-1.5 font-display text-sm text-ink shadow-pop-xs hover:bg-sky lg:px-3.5 lg:py-[7px] lg:text-base">
-            <svg className="size-4 lg:size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8"
-              strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M3 11 12 3l9 8" /><path d="M5 9.5V21h14V9.5" />
-            </svg>
-            {t("home")}
-          </button>
-          <UiToggle />
-        </div>
-      </header>
+      <SiteHeader onHome={another} />
 
       {busy && <LoadingScreen done={ready !== null} onFinished={loaded} />}
 

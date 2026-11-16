@@ -18,8 +18,7 @@ export const UI = {
   typingSoundOn: s("Typing sounds are on. Tap Blueberry to turn them off.", "타자 소리가 켜져 있어요. 블루베리를 누르면 꺼져요."),
   typingSoundOff: s("Typing sounds are off. Tap Blueberry to turn them on.", "타자 소리가 꺼져 있어요. 블루베리를 누르면 켜져요."),
   infoAbout: s("What {name} does", "{name} 설명"),
-  autoplayInfo: s("On: each new animation starts playing by itself. Off: it loads and waits until you press Play.",
-    "켜면 새 애니메이션이 바로 재생돼요. 끄면 불러온 뒤 재생 버튼을 누를 때까지 기다려요."),
+  autoplayInfo: s("Plays the animation and audio automatically once it loads.", "불러오면 애니메이션과 음성이 바로 재생돼요."),
   placementInfo: s("On: each sound's key spot is highlighted on the mouth, like the lower lip touching the upper teeth for F.",
     "켜면 소리마다 중요한 입 부분을 강조해 보여 줘요. 예: F는 아랫입술이 윗니에 닿는 부분."),
   placeholder: s("Type here to get your pronunciation animation", "여기에 입력하면 발음 애니메이션을 보여 드려요"),
@@ -55,6 +54,12 @@ export const UI = {
   autoplay: s("Autoplay", "자동 재생"),
   switchLabel: s("Site language", "사이트 언어"),
   home: s("Home", "홈"),
+  // the Development tab and its page
+  tabsLabel: s("Pages", "페이지"),
+  tabDevelopment: s("Development", "개발 과정"),
+  devTitle: s("Development", "개발 과정"),
+  onThisPage: s("On this page", "이 페이지 목차"),
+  showNumbers: s("Show the numbers", "숫자로 보기"),
   // the native mouth player
   mouthLoading: s("Loading the native mouth…", "원어민 입 모양을 불러오는 중…"),
   tryAgain: s("Try again", "다시 시도"),

@@ -71,10 +71,12 @@ test("Animate another (both site languages) sits above Practice and goes back to
 test("a Home button (both site languages) sits just left of ENG/한 and does what Animate another does, even mid-loading", () => {
   assert.equal(tr("en", "home"), "Home");
   assert.ok(HANGUL.test(UI.home.ko));
-  const header = page.slice(page.indexOf("<header"), page.indexOf("</header>"));
+  const site = readFileSync(new URL("../components/SiteHeader.tsx", import.meta.url), "utf8");
+  const header = site.slice(site.indexOf("<header"), site.indexOf("</header>"));
   const home = header.indexOf('data-testid="home"');
   assert.ok(home > 0 && header.indexOf("<UiToggle") > home, "Home, then ENG/한");
-  assert.match(header, /onClick=\{another\}/);
+  assert.match(header, /onClick=\{onHome\}/);
+  assert.match(page, /<SiteHeader onHome=\{another\} \/>/);
   // going home while the loading screen is up drops that request, so its answer never pops up later
   const another = page.slice(page.indexOf("function another()"), page.indexOf("function openPractice()"));
   assert.match(another, /setBusy\(false\)/);
