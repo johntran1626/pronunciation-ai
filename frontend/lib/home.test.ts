@@ -30,11 +30,12 @@ test("anything that isn't a Hangul block types in one step", () => {
 });
 
 // ---------- the lines ----------
-test("16 lines, each Korean (formal speech, like the rest of the site's write-up) with a plain-ASCII English gloss", () => {
+test("16 lines, each Korean (polite 해요 speech, like the rest of the app) with a plain-ASCII English gloss", () => {
   assert.equal(HOME_LINES.length, 16);
   for (const l of HOME_LINES) {
     assert.ok(HANGUL.test(l.ko), l.ko);
-    assert.match(l.ko.replace(/\s*@\w+$/, ""), /(니다|십시오|니까)[!?.]$/, `formal ending: ${l.ko}`);
+    assert.match(l.ko.replace(/\s*@\w+$/, ""), /요[!?.]$/, `해요 ending: ${l.ko}`);
+    assert.ok(!/(니다|십시오|니까)/.test(l.ko), `no formal ending: ${l.ko}`);
     assert.ok(l.en.length > 0 && !HANGUL.test(l.en), l.en);
     assert.ok(!/[é’]/.test(l.en), `plain letters only: ${l.en}`);
   }

@@ -10,22 +10,22 @@ export type HomeLine = { ko: string; en: string; href?: string };
 
 // Every line is shown in both languages: the site language is typed (big), the other sits under it (small).
 export const HOME_LINES: HomeLine[] = [
-  { ko: "좋아하는 드라마 대사를 써 보십시오!", en: "Try a line from your favorite drama!" },
-  { ko: "노래 가사 한 줄을 넣어 보십시오!", en: "Drop in a line from a song!" },
-  { ko: "오늘 점심 메뉴를 써 보십시오!", en: "Type what you had for lunch!" },
-  { ko: "카페에서 주문하듯이 써 보십시오!", en: "Type it like you're ordering at a cafe!" },
-  { ko: "혀가 꼬이는 말에 도전해 보십시오!", en: "Try a tongue twister!" },
-  { ko: "친구에게 보낼 문자를 써 보십시오!", en: "Type a text you'd send a friend!" },
-  { ko: "인사말부터 시작해 보시겠습니까?", en: "Want to start with a greeting?" },
-  { ko: "좋아하는 음식 이름을 써 보십시오!", en: "Type your favorite food!" },
-  { ko: "길을 묻는 말을 연습해 보시겠습니까?", en: "Practice asking for directions?" },
-  { ko: "오늘 기분을 한 문장으로 써 보십시오!", en: "Sum up your mood in one sentence!" },
-  { ko: "좋아하는 영화 대사를 써 보십시오!", en: "Try a line from your favorite movie!" },
-  { ko: "자기소개 한마디를 써 보십시오!", en: "Type how you'd introduce yourself!" },
-  { ko: "오늘 날씨를 한 문장으로 써 보십시오!", en: "Describe today's weather!" },
-  { ko: "주말 계획을 써 보십시오!", en: "Type your weekend plans!" },
-  { ko: "GitHub에서 저를 찾아 주십시오! @johntran1626", en: "Find me on GitHub @johntran1626", href: GITHUB_URL },
-  { ko: "LinkedIn에서 저와 연결해 주십시오!", en: "Connect with me on LinkedIn!", ...(LINKEDIN_URL ? { href: LINKEDIN_URL } : {}) },
+  { ko: "좋아하는 드라마 대사를 써 보세요!", en: "Try a line from your favorite drama!" },
+  { ko: "노래 가사 한 줄을 넣어 보세요!", en: "Drop in a line from a song!" },
+  { ko: "오늘 점심 메뉴를 써 보세요!", en: "Type what you had for lunch!" },
+  { ko: "카페에서 주문하듯이 써 보세요!", en: "Type it like you're ordering at a cafe!" },
+  { ko: "혀가 꼬이는 말에 도전해 보세요!", en: "Try a tongue twister!" },
+  { ko: "친구에게 보낼 문자를 써 보세요!", en: "Type a text you'd send a friend!" },
+  { ko: "인사말부터 시작해 볼까요?", en: "Want to start with a greeting?" },
+  { ko: "좋아하는 음식 이름을 써 보세요!", en: "Type your favorite food!" },
+  { ko: "길을 묻는 말을 연습해 볼까요?", en: "Practice asking for directions?" },
+  { ko: "오늘 기분을 한 문장으로 써 보세요!", en: "Sum up your mood in one sentence!" },
+  { ko: "좋아하는 영화 대사를 써 보세요!", en: "Try a line from your favorite movie!" },
+  { ko: "자기소개 한마디를 써 보세요!", en: "Type how you'd introduce yourself!" },
+  { ko: "오늘 날씨를 한 문장으로 써 보세요!", en: "Describe today's weather!" },
+  { ko: "주말 계획을 써 보세요!", en: "Type your weekend plans!" },
+  { ko: "GitHub에서 저를 찾아 주세요! @johntran1626", en: "Find me on GitHub @johntran1626", href: GITHUB_URL },
+  { ko: "LinkedIn에서 저와 연결해 주세요!", en: "Connect with me on LinkedIn!", ...(LINKEDIN_URL ? { href: LINKEDIN_URL } : {}) },
 ];
 
 export const TICK_MS = 60; // one typing step
