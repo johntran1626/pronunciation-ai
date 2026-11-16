@@ -32,8 +32,11 @@ def word(text, ipas, status="unchecked", not_heard=False):
                          for i, p in enumerate(ipas)]}
 
 
-def row(wi, pi, check, margin, heard_said):
-    return {"wi": wi, "pi": pi, "check": check, "position": "initial", "margin": margin, "heard_said": heard_said}
+def row(wi, pi, check, margin, heard_said, heard_target=None):
+    """heard_target: the listener's own transcription has the RIGHT sound there (default: yes, unless it heard the mistake)."""
+    heard_target = (0 if heard_said else 1) if heard_target is None else heard_target
+    return {"wi": wi, "pi": pi, "check": check, "position": "initial", "margin": margin, "heard_said": heard_said,
+            "heard_target": heard_target}
 
 
 # ---------- which checks are live ----------
@@ -83,15 +86,36 @@ def test_a_live_check_that_fires_turns_the_sound_and_word_red():
 
 def test_a_checked_sound_that_passes_is_green_and_the_word_too():
     out = apply_korean([word("보도", ["p", "o", "t", "o"])],
-                       [row(0, 0, "lenis_as_tense", 0.5, 1), row(0, 2, "lenis_as_tense", 0.95, 0)], KT)
+                       [row(0, 0, "lenis_as_tense", 0.5, 0), row(0, 2, "lenis_as_tense", 0.95, 0)], KT)
     assert [p["status"] for p in out[0]["phonemes"]] == ["green", "unchecked", "green", "unchecked"]
     assert out[0]["status"] == "green"
+
+
+def test_heard_the_mistake_but_below_the_cut_is_neither_red_nor_green():
+    out = apply_korean([word("보", ["p", "o"])], [row(0, 0, "lenis_as_tense", 0.5, 1)], KT)
+    assert out[0]["phonemes"][0]["status"] == "unchecked"
 
 
 def test_red_needs_both_the_margin_and_the_wrong_sound_heard():
     out = apply_korean([word("바", ["p", "a"])], [row(0, 0, "lenis_as_tense", 0.95, 1)], KT)
     p = out[0]["phonemes"][0]
     assert (p["status"], p["pair"], p["produced"]) == ("red", "p_as_pp", "p" + TENSE)
+
+
+def test_a_sound_is_green_only_if_the_listener_heard_that_sound_there():
+    # 발을 said 말을: not tense (the check doesn't fire), but the listener heard ㅁ, not ㅂ -> never green
+    out = apply_korean([word("발을", ["p", "a", "ɾ", "ɯ", "l"])],
+                       [row(0, 0, "lenis_as_tense", 0.1, 0, heard_target=0)], KT)
+    p = out[0]["phonemes"][0]
+    assert (p["status"], p["checked"]) == ("unchecked", False)
+    assert out[0]["status"] == "unchecked"
+
+
+def test_a_row_without_heard_target_never_makes_green():
+    r = row(0, 1, "ㅜ_as_ㅡ", 0.1, 0)
+    del r["heard_target"]
+    out = apply_korean([word("수", ["s", "u"])], [r], KT)
+    assert out[0]["phonemes"][1]["status"] == "unchecked"
 
 
 def test_a_check_that_failed_its_bars_never_colors_anything():
@@ -145,3 +169,19 @@ def test_live_text_asking_for_u_where_the_speaker_said_eu_goes_red_there_only():
     assert red_words == ["가루칠"]
     red = [p for w in body["words"] for p in w["phonemes"] if p["status"] == "red"]
     assert [(p["ipa"], p["pair"], p["produced"]) for p in red] == [("u", "u_as_eu", "ɯ")]
+
+
+def test_live_rows_say_whether_the_right_sound_was_heard():
+    from backend.g2p import expected_phonemes
+    from backend.korean_listener import measure
+    audio, sr = sf.read(io.BytesIO(FIXTURE.read_bytes()), dtype="float32")
+    rows = measure(audio, sr, expected_phonemes(NATIVE_TEXT, "ko"))
+    assert rows and all(r["heard_target"] in (0, 1) for r in rows)
+    assert sum(r["heard_target"] for r in rows) >= len(rows) // 2      # a native: mostly heard as themselves
+
+
+def test_live_text_asking_for_b_where_the_speaker_said_m_is_not_green_there():
+    body = _analyze(NATIVE_TEXT.replace("말을", "발을"))
+    w = next(w for w in body["words"] if w["word"] == "발을")
+    assert w["phonemes"][0]["ipa"] == "p"
+    assert w["phonemes"][0]["status"] != "green"        # the speaker said ㅁ: we must not claim this ㅂ was right

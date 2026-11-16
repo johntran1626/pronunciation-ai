@@ -10,7 +10,9 @@ is backend/korean_thresholds.json ("enabled": true). Today that is ㅜ said like
 What each sound gets:
   - a live check looked at it and fired (margin above the cut AND the model wrote the wrong sound) -> red,
     with pair = the tip to show (u_as_eu, or p_as_pp / t_as_tt / k_as_kk for the stop's own place)
-  - a live check looked at it and did not fire -> green
+  - a live check looked at it, did not fire, AND the listener heard the right sound there -> green
+  - a live check did not fire but the listener heard some other sound there (발을 said 말을) -> stays plain:
+    the check only asks "tense or not?", so "not tense" is no proof the ㅂ was right
   - no live check covers it -> stays "unchecked" (plain text): we never claim a sound is right unchecked
 A word the "did you say it?" check already marked not heard stays red for that reason.
 """
@@ -70,12 +72,15 @@ def apply_korean(words, rows, kt):
         target = p["ipa"]
         if target not in (LENIS if r["check"] == "lenis_as_tense" else {"u"}):
             continue          # the row doesn't line up with this sound: ignore it rather than guess
-        p["checked"] = True
         if float(r["margin"]) > live[r["check"]] and int(r["heard_said"]) == 1:   # = korean_listener.fires()
+            p["checked"] = True
             p["status"], p["pair"], p["margin"] = "red", tip_id(r["check"], target), r["margin"]
             p["produced"] = produced(r["check"], target)
-        elif p["status"] != "red":
+        elif int(r.get("heard_target", 0)) == 1 and p["status"] != "red":
+            p["checked"] = True
             p["status"] = "green"
+        # else: not the mistake this check looks for, but the listener didn't hear the right sound either
+        # (발을 said 말을): no verdict, the sound stays plain rather than a false green
     for w in words:
         statuses = [p["status"] for p in w["phonemes"]]
         w["status"] = "red" if "red" in statuses else "green" if "green" in statuses else "unchecked"

@@ -1,7 +1,7 @@
 """The Korean-trained listener: how far each Korean sound is from what a native says.
 
     rows = measure(audio, sr, expected_phonemes(text, "ko"))
-    -> [{"wi", "pi", "check", "position", "margin", "heard_said"}, ...]   one row per (sound, possible mistake)
+    -> [{"wi", "pi", "check", "position", "margin", "heard_said", "heard_target"}, ...]   one row per (sound, possible mistake)
 
 Why a second model: the app's main listener was trained on many languages. It writes Korean ㅂ, ㅃ and ㅍ all
 as "p" and native ㅓ as "ɔ" in our early tests, so it can't judge Korean. This one (slplab, Apache-2.0)
@@ -14,7 +14,10 @@ How one sound is measured (like asking "which of these two did you hear, and how
   3. margin = best frame of the MISTAKE symbol - best frame of the RIGHT symbol, inside that window (-1..1).
      Natives score low; someone saying ㅗ where ㅓ belongs scores high.
   4. heard_said = the model's own free transcription has the mistake symbol in that place.
-A sound turns red only when BOTH hold: margin above the cut AND heard_said (fires()). The cut per check comes
+  5. heard_target = the free transcription has the RIGHT symbol in that place.
+A sound turns red only when BOTH hold: margin above the cut AND heard_said (fires()). It turns green only when
+the check did not fire AND heard_target (a check answers one question, e.g. "tense or not?": a ㅁ said for ㅂ is
+"not tense", but it is not a correct ㅂ either). The cut per check comes
 from native speakers (eval/korean_checks.py), and a check is used only if it passed its four bars.
 
 Which sounds get a check (candidates()): only the big confusions, and only sounds the SPELLING shows. A ㄲ that
@@ -231,9 +234,10 @@ def measure_lp(lp, words):
     for c in cands:
         f0, f1 = win[(c["wi"], c["pi"])]
         peak = lambda t: probs[f0:f1, vocab[t]].max().item()
+        here = in_place[tok_of[(c["wi"], c["pi"])]]
         rows.append(dict(wi=c["wi"], pi=c["pi"], check=c["check"], position=c["position"],
                          margin=round(peak(c["said_tok"]) - peak(c["target_tok"]), 4),
-                         heard_said=int(in_place[tok_of[(c["wi"], c["pi"])]] == c["said_tok"])))
+                         heard_said=int(here == c["said_tok"]), heard_target=int(here == c["target_tok"])))
     return rows
 
 
