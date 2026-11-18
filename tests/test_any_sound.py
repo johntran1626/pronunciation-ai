@@ -155,10 +155,12 @@ def test_a_never_blurred_vowel_pair_gets_the_gentler_cut_in_a_stressed_syllable(
     assert verdict(row("ɛ", "æ", margin=0.83, right=0.01), NB) is None     # a pair natives DO blur: global cut
 
 
-def test_live_thresholds_list_only_vowel_pairs_natives_never_blur():
+def test_live_thresholds_list_only_pairs_natives_never_blur():
     nb = any_sound.load_thresholds()["never_blurred"]
     assert nb["cut"] == pytest.approx(0.8)
     pairs = {tuple(p.split()) for p in nb["pairs"]}
     assert ("ʌ", "æ") in pairs and ("æ", "ʌ") in pairs
+    assert ("v", "b") in pairs and ("dʒ", "tʃ") in pairs           # consonant pairs too
     assert ("ɛ", "æ") not in pairs and ("ɪ", "iː") not in pairs     # natives blur these on their own
-    assert all(t in any_sound.VOWELS and o in any_sound.VOWELS and t != o for t, o in pairs)
+    V = any_sound.VOWELS
+    assert all((t in V) == (o in V) and t != o for t, o in pairs)   # a vowel only competes with vowels
