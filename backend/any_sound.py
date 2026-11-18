@@ -93,10 +93,16 @@ def dropped_ok(r):
 
 def margin_cut(r, t):
     """How far another sound must win for this sound to count as swapped. One global cut-off is set by the pairs
-    natives blur on their own (weak vowels, cot/caught), so it is high (~0.95). Pairs natives never blur get their own,
-    gentler cut-off (t["pair_margin"], "target other", e.g. "ɪ ʌ"); "target *" covers that target's other pairs."""
+    natives blur on their own (weak vowels, cot/caught, ɛ/æ), so it is high (~0.98). A stressed vowel that natives
+    NEVER said like a given other vowel (t["never_blurred"]: every such pair, rare ones included, picked from the
+    native voices by eval/any_sound.py) gets a gentler cut, so a real learner's less clean swap still turns red.
+    t["pair_margin"] ("target other", "target *") is the per-pair experiment from eval --pairs, not live."""
     cuts = t.get("pair_margin") or {}
-    return cuts.get(f"{r['target']} {r['other']}", cuts.get(f"{r['target']} *", t["margin"]))
+    cut = cuts.get(f"{r['target']} {r['other']}", cuts.get(f"{r['target']} *", t["margin"]))
+    nb = t.get("never_blurred") or {}
+    if not r.get("weak") and f"{r['target']} {r['other']}" in set(nb.get("pairs", ())):
+        cut = min(cut, nb["cut"])     # a stressed vowel natives never say like that other vowel ("lucky" -> "lacky")
+    return cut
 
 
 def verdict(r, t):

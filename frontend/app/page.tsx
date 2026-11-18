@@ -24,7 +24,6 @@ import { UiLangProvider, useUi } from "@/components/UiLang";
 import { checkHealth, fetchCustom, loadCardData, type Lang, type TextLang } from "@/lib/api";
 import { MAX_CUSTOM_CHARS, checkLine } from "@/lib/custom";
 import { problemText, type Key } from "@/lib/i18n";
-import { SHOW_DEV } from "@/lib/devOnly";
 import { MAX_SECONDS, TARGET_RATE } from "@/lib/recorder";
 import { detectLang, htmlLang, practiceHintKey, practiceOffered } from "@/lib/landing";
 import { loadNativeClip } from "@/lib/native";
@@ -310,8 +309,8 @@ function Playing({ shown, autoplay, muted, onMuted, onAnother }: {
           {outcome.kind === "done" && (
             <ResultSentence key={outcome.id} result={outcome.result} audio={{ samples: outcome.sent.playSamples, rate: TARGET_RATE }} />
           )}
-          {/* developer output: local `next dev` only, never on the public site; under all the cards */}
-          {SHOW_DEV && outcome.sent && <DebugPanel sent={outcome.sent} result={outcome.kind === "done" ? outcome.result : undefined} />}
+          {/* the debug panel: under all the cards, on every result (green or red) */}
+          {outcome.sent && <DebugPanel sent={outcome.sent} result={outcome.kind === "done" ? outcome.result : undefined} />}
         </section>
       )}
     </>

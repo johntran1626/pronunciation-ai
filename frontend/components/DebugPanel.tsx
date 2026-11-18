@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { AnalyzeResult } from "@/lib/api";
 import type { AudioStats } from "@/lib/recorder";
+import { useUi } from "@/components/UiLang";
 
 // Local blob: URLs (browser memory only). sentUrl = the exact WAV sent to /analyze; playUrl = a louder copy to listen to.
 export type Sent = { sentUrl: string; playUrl: string; stats: AudioStats; playSamples: Float32Array<ArrayBuffer> };
@@ -10,13 +11,14 @@ export type Sent = { sentUrl: string; playUrl: string; stats: AudioStats; playSa
 const BTN =
   "inline-flex items-center gap-2 rounded-xl border-[2.5px] border-ink bg-white px-3 py-1.5 font-display text-base text-ink shadow-pop-xs transition-[transform,box-shadow] hover:bg-sky active:translate-x-[2px] active:translate-y-[2px] active:shadow-none";
 
-// Developer view (local `next dev` only): what audio we really sent, and what the model heard.
+// Under the results (green or red): the exact audio we sent, what the recognizer heard, and the raw reply.
 export default function DebugPanel({ sent, result }: { sent: Sent; result?: AnalyzeResult }) {
+  const { t } = useUi();
   const { seconds, peak, rmsDb } = sent.stats;
   const warnings: string[] = [];
-  if (peak < 0.01) warnings.push("Almost silent: the mic may be muted, the wrong input, or blocked by the browser.");
-  else if (rmsDb < -45) warnings.push("Very quiet: move closer or raise the input level (System Settings → Sound → Input).");
-  if (peak >= 0.999) warnings.push("Clipping: the input is too loud.");
+  if (peak < 0.01) warnings.push(t("debugSilent"));
+  else if (rmsDb < -45) warnings.push(t("debugQuiet"));
+  if (peak >= 0.999) warnings.push(t("debugClipping"));
   const heard = result?.heard?.map((h) => h.symbol).join(" ");
 
   // Play / stop the louder listening copy
@@ -39,7 +41,7 @@ export default function DebugPanel({ sent, result }: { sent: Sent; result?: Anal
   return (
     <details open className="rounded-2xl border-[2.5px] border-ink bg-tray px-4 py-3 text-sm shadow-pop-xs">
       <summary className="cursor-pointer font-display text-lg">
-        Debug
+        {t("debugTitle")}
       </summary>
       <div className="mt-3 flex flex-col gap-3">
         {warnings.map((w) => (
@@ -49,23 +51,23 @@ export default function DebugPanel({ sent, result }: { sent: Sent; result?: Anal
         ))}
         {result && (
           <p className="m-0 font-medium">
-            Recognizer heard:{" "}
-            <span className="rounded-lg border-2 border-ink bg-white px-2 py-0.5 font-mono">{heard || "(nothing)"}</span>
+            {t("debugHeard")}{" "}
+            <span className="rounded-lg border-2 border-ink bg-white px-2 py-0.5 font-mono">{heard || t("debugNothing")}</span>
           </p>
         )}
         <div className="flex flex-wrap items-center gap-3">
           <button type="button" onClick={toggle} className={BTN}>
-            {playing ? "■ Stop" : "▶ Play my recording"}
+            {playing ? t("debugStop") : t("debugPlay")}
           </button>
           <span className="font-medium tabular-nums">{seconds.toFixed(1)} s</span>
         </div>
         <a href={sent.sentUrl} download="my-recording.wav" className={`${BTN} self-start`}>
-          ⤓ Download the exact recording that was analyzed
-          <span className="font-sans text-xs font-medium text-neutral-600">(WAV, stays on your computer)</span>
+          {t("debugDownload")}
+          <span className="font-sans text-xs font-medium text-neutral-600">{t("debugDownloadNote")}</span>
         </a>
         {result && (
           <details>
-            <summary className="cursor-pointer font-display text-base">Raw JSON</summary>
+            <summary className="cursor-pointer font-display text-base">{t("debugJson")}</summary>
             <pre className="mt-2 max-h-80 overflow-auto rounded-xl border-2 border-ink bg-white p-2 text-xs">
               {JSON.stringify(result, null, 1)}
             </pre>

@@ -104,3 +104,20 @@ test("no 존댓말 / 반말 switch left (only English -> Korean translations had
 test("a typed Korean sentence still shows its English meaning", () => {
   assert.match(page, /<Translation text=\{shown\.text\}/);
 });
+
+test("the debug panel (my recording, what the recognizer heard, raw JSON) shows on the public site too, under the results", () => {
+  assert.ok(!/SHOW_DEV && outcome\.sent && <DebugPanel/.test(page), "not only on a local dev server");
+  const result = page.indexOf("<ResultSentence");
+  const debug = page.indexOf("<DebugPanel");
+  assert.ok(result > 0 && debug > result, "under the result cards, whether they are green or red");
+  const panel = src("../components/DebugPanel.tsx");
+  for (const english of ["Recognizer heard", "Play my recording", "Raw JSON", "Almost silent", "Download the exact"])
+    assert.ok(!panel.includes(english), `"${english}" comes from i18n`);
+  const keys = ["debugTitle", "debugHeard", "debugNothing", "debugPlay", "debugStop", "debugDownload", "debugDownloadNote",
+    "debugJson", "debugSilent", "debugQuiet", "debugClipping"] as const;
+  for (const k of keys) {
+    assert.ok(k in UI, k);
+    assert.ok(HANGUL.test(UI[k as keyof typeof UI].ko), `${k} has Korean`);
+    assert.match(panel, new RegExp(`t\\("${k}"\\)`));
+  }
+});

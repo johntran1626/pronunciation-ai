@@ -142,6 +142,20 @@ export const UI = {
   playWord: s("Hear “{w}”", "“{w}” 듣기"),
   draftTip: s(" Draft tip, not reviewed yet.", " 초안 팁이에요. 아직 검토 전이에요."),
   needsNative: s(" Not yet checked by a native Korean speaker.", " 아직 한국어 원어민이 확인하지 않았어요."),
+  // the debug panel under the results: the exact recording sent, what the recognizer heard, the raw reply
+  debugTitle: s("Debug", "디버그"),
+  debugHeard: s("Recognizer heard:", "인식기가 들은 소리:"),
+  debugNothing: s("(nothing)", "(없음)"),
+  debugPlay: s("▶ Play my recording", "▶ 내 녹음 듣기"),
+  debugStop: s("■ Stop", "■ 정지"),
+  debugDownload: s("⤓ Download the exact recording that was analyzed", "⤓ 분석한 녹음 그대로 내려받기"),
+  debugDownloadNote: s("(WAV, stays on your device)", "(WAV, 내 기기에만 저장돼요)"),
+  debugJson: s("Raw JSON", "원본 JSON"),
+  debugSilent: s("Almost silent: the mic may be muted, the wrong input, or blocked by the browser.",
+    "거의 무음이에요. 마이크가 꺼져 있거나, 다른 입력 장치가 선택됐거나, 브라우저가 막았을 수 있어요."),
+  debugQuiet: s("Very quiet: move closer or raise the input level in your sound settings.",
+    "소리가 아주 작아요. 마이크에 더 가까이 가거나 소리 설정에서 입력 크기를 올려 주세요."),
+  debugClipping: s("Clipping: the input is too loud.", "소리가 너무 커서 찌그러졌어요(클리핑)."),
   // footer
 } as const;
 export type Key = keyof typeof UI;

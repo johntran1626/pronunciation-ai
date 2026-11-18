@@ -4,6 +4,7 @@ sound, or left out, without marking correct speech red?
     python -m eval.any_sound --limit 1132    # all CMU ARCTIC sentences of 9 voices + 566 per Korean voice (~1 h)
     python -m eval.any_sound                 # re-read data/cache/any_sound.csv and print the table
     python -m eval.any_sound --write         # also write backend/any_sound_thresholds.json + results/any_sound.json
+    python -m eval.any_sound --never-blurred [--write]   # gentler cut for vowel pairs natives never blur
 
 The idea in plain words: we have thousands of CORRECT recordings, but no recordings of a native speaker saying
 every possible wrong sound. So we make the mistake on the TEXT side instead. A correct recording of "testing"
@@ -60,6 +61,11 @@ SAFETY_GRID = [0.0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]
 ADD_CAP = 0.005         # leave-one-voice-out on tune: the pair cuts may add at most 0.5 points of false-red sentences
 PAIR_BARS = {"test_false_red_max": 0.05, "korean_false_red_max_rise": 0.01}   # held out; plus: catches must go up
 PAIRS_RESULTS = ROOT / "results" / "any_sound_pairs.json"
+# Never-blurred vowel pairs (python -m eval.any_sound --never-blurred): a stressed vowel natives never said like a
+# given other vowel gets the gentler cut NB_CUT. Bars = PAIR_BARS (fixed before). NB_CUT was chosen on 2026-11-17
+# knowing one real "lucky" said "lacky" scored margin 0.83, so it is not a blind choice; the bars are on held-out voices.
+NB_CUT = 0.8
+NB_RESULTS = ROOT / "results" / "any_sound_never_blurred.json"
 
 
 # ---------- making the mistakes ----------
@@ -144,12 +150,13 @@ def run(limit, n_sub, n_del, seed=0):
 
 
 # ---------- the numbers ----------
-def flag(r, m, rc, rs=0.0, cuts=None):
+def flag(r, m, rc, rs=0.0, cuts=None, nb=None):
     """The live rule (backend/any_sound.verdict) with these cut-offs: m = margin, rc = right for a dropped sound,
-    rs = right for a sound the recognizer replaced, cuts = per-pair margin cut-offs (pair_cuts)."""
+    rs = right for a sound the recognizer replaced, cuts = per-pair margin cut-offs (pair_cuts), nb = the
+    never-blurred vowel pairs ({"cut", "pairs"}, never_blurred_pairs)."""
     if r["skip"]:
         return False
-    swapped = (r["margin"] > margin_cut(r, {"margin": m, "pair_margin": cuts}) or (r["op"] == "sub" and r["right"] < rs)) \
+    swapped = (r["margin"] > margin_cut(r, {"margin": m, "pair_margin": cuts, "never_blurred": nb}) or (r["op"] == "sub" and r["right"] < rs)) \
         and not accepted(r)
     return swapped or (r["op"] == "del" and r["right"] < rc and not dropped_ok(r))
 
@@ -282,12 +289,12 @@ def pair_cuts(correct, global_m, safety, floor=FLOOR, min_n=MIN_N):
     return cuts
 
 
-def _false_red(rows, m, rc, rs, cuts=None):
+def _false_red(rows, m, rc, rs, cuts=None, nb=None):
     """Share of correct sentences with at least one false red (swap or left-out sound)."""
     hit = defaultdict(bool)
     for r in rows:
         k = (r["speaker"], r["utt"])
-        hit[k] |= flag(r, m, rc, rs, cuts) or (r["op"] == "del" and r["right"] < rc and not dropped_ok(r))
+        hit[k] |= flag(r, m, rc, rs, cuts, nb) or (r["op"] == "del" and r["right"] < rc and not dropped_ok(r))
     return sum(hit.values()) / len(hit) if hit else float("nan")
 
 
@@ -370,6 +377,72 @@ def write_pairs(p):
         print("wrote the pair cut-offs into", THRESHOLDS_FILE.relative_to(ROOT))
 
 
+# ---------- never-blurred vowel pairs ----------
+# The global cut sits at 0.98 because natives themselves blur some vowel pairs (ɛ/æ, ɪ/iː, ɑː/ʌ). A real learner's
+# swap is less clean than a made-up one (their æ still sounds a bit like the ʌ they aimed at), so it can win by "only"
+# 0.83 and stay green. Every stressed vowel pair natives NEVER blurred on the tune voices, rare pairs included, gets
+# the gentler cut instead. Consonants are left out: the global cut already catches ~98% of consonant swaps, and the
+# gentler cut there mostly added false reds on Korean speakers' correct sounds (ð->d, n->ŋ).
+def never_blurred_pairs(correct, cut=NB_CUT, min_n=MIN_N):
+    """correct = correct tune rows (with context). -> sorted "target other" vowel pairs: the target has at least
+    min_n tune examples and no correct STRESSED example leaned toward that other vowel by `cut` or more."""
+    n, worst = defaultdict(int), defaultdict(lambda: -9.0)
+    for r in correct:
+        if r["skip"] or r["target"] not in VOWELS:
+            continue
+        n[r["target"]] += 1
+        if not r["weak"] and not accepted(r):
+            worst[(r["target"], r["other"])] = max(worst[(r["target"], r["other"])], r["margin"])
+    return sorted(f"{t} {o}" for t in n if n[t] >= min_n for o in VOWELS if o != t and worst[(t, o)] < cut)
+
+
+def evaluate_never_blurred(rows, live, cut=NB_CUT):
+    """Today's live cut-offs vs the same plus the never-blurred vowel pairs, on the held-out voices and on real
+    learner mistakes (L2-ARCTIC Korean speakers' sounds the annotators marked as substituted)."""
+    rows = [r for r in rows if not r["skip"]]
+    m, rc, rs = live["margin"], live["right"], live["sub_right"]
+    correct = {g: [r for r in rows if r["cond"] == "correct" and r["group"] == g
+                   and (g != "korean" or r["human"] == "correct")] for g in ("tune", "test", "korean")}
+    nb = {"cut": cut, "pairs": never_blurred_pairs(correct["tune"], cut)}
+    strong = [r for r in rows if r["cond"] == "sub" and r["group"] == "test" and not r["weak"]
+              and not accepted(dict(r, other=r["said"]))]
+    sets = {"swaps_stressed_vowels": [r for r in strong if r["target"] in VOWELS],
+            "real_learner_substitutions": [r for r in rows if r["group"] == "korean" and r["human"] == "sub"]}
+
+    def measure(x):
+        return {"false_red_sentences": {g: round(_false_red(correct[g], m, rc, rs, None, x), 4) for g in correct},
+                **{k: {"caught": sum(flag(r, m, rc, rs, None, x) for r in v), "n": len(v)} for k, v in sets.items()}}
+    today, with_nb = measure(None), measure(nb)
+    fr = with_nb["false_red_sentences"]
+    adopt = bool(fr["test"] <= PAIR_BARS["test_false_red_max"]
+                 and fr["korean"] <= today["false_red_sentences"]["korean"] + PAIR_BARS["korean_false_red_max_rise"]
+                 and with_nb["swaps_stressed_vowels"]["caught"] > today["swaps_stressed_vowels"]["caught"])
+    return {"settings": {"cut": cut, "min_n": MIN_N, "bars": PAIR_BARS}, "n_pairs": len(nb["pairs"]),
+            "never_blurred": nb, "today": today, "with_never_blurred": with_nb, "adopt": adopt}
+
+
+def show_never_blurred(p):
+    pct = lambda d: f"{100 * d['caught'] / d['n']:5.1f}% ({d['caught']}/{d['n']})" if d["n"] else "n/a"
+    print(f"{p['n_pairs']} stressed vowel pairs natives never blurred get the cut {p['settings']['cut']}")
+    for name in ("today", "with_never_blurred"):
+        c = p[name]
+        fr = c["false_red_sentences"]
+        print(f"{name:18s} false-red sentences: tune {100 * fr['tune']:.2f}%, test {100 * fr['test']:.2f}%, "
+              f"korean {100 * fr['korean']:.2f}% | stressed vowel swaps {pct(c['swaps_stressed_vowels'])} | "
+              f"real learner substitutions {pct(c['real_learner_substitutions'])}")
+    print(f"adopt (bars fixed before): {p['adopt']}")
+
+
+def write_never_blurred(p):
+    NB_RESULTS.write_text(json.dumps(p, indent=1, ensure_ascii=False) + "\n")
+    print("wrote", NB_RESULTS.relative_to(ROOT))
+    if p["adopt"]:
+        t = json.loads(THRESHOLDS_FILE.read_text())
+        t["never_blurred"] = p["never_blurred"]
+        THRESHOLDS_FILE.write_text(json.dumps(t, indent=1, ensure_ascii=False) + "\n")
+        print("wrote the never-blurred vowel pairs into", THRESHOLDS_FILE.relative_to(ROOT))
+
+
 def show(res):
     pct = lambda d: f"{100 * d['caught'] / d['n']:5.1f}% ({d['caught']}/{d['n']})" if d["n"] else "n/a"
     print(f"correct sentences: {res['sentences']}; rows not graded (word not in the dictionary): {res['not_graded_rows']}")
@@ -385,9 +458,13 @@ def show(res):
 
 def write(res):
     live = res["caps"][f"{LIVE_CAP:.2f}"]
-    THRESHOLDS_FILE.write_text(json.dumps({
-        "source": "eval/any_sound.py (see results/any_sound.json)", "enabled": True, "cap": LIVE_CAP,
-        "margin": live["margin"], "right": live["right"], "sub_right": live["sub_right"], "listener": listener_id(str(live_listener("en")))}, indent=1) + "\n")
+    old = json.loads(THRESHOLDS_FILE.read_text()) if THRESHOLDS_FILE.exists() else {}
+    new = {"source": "eval/any_sound.py (see results/any_sound.json)", "enabled": True, "cap": LIVE_CAP,
+           "margin": live["margin"], "right": live["right"], "sub_right": live["sub_right"],
+           "listener": listener_id(str(live_listener("en")))}
+    if "never_blurred" in old:                      # written by --never-blurred; kept across a re-tune
+        new["never_blurred"] = old["never_blurred"]
+    THRESHOLDS_FILE.write_text(json.dumps(new, indent=1, ensure_ascii=False) + "\n")
     RESULTS.write_text(json.dumps({"live_cap": LIVE_CAP, **res}, indent=1) + "\n")
     print("wrote", THRESHOLDS_FILE.relative_to(ROOT), "and", RESULTS.relative_to(ROOT))
 
@@ -399,9 +476,16 @@ if __name__ == "__main__":
     ap.add_argument("--dels", type=int, default=2)
     ap.add_argument("--write", action="store_true")
     ap.add_argument("--pairs", action="store_true", help="per-pair cut-offs on top of the live ones")
+    ap.add_argument("--never-blurred", action="store_true", help="gentler cut for vowel pairs natives never blur")
     a = ap.parse_args()
     if a.limit:
         run(a.limit, a.subs, a.dels)
+    if a.never_blurred:
+        p = evaluate_never_blurred(load_rows(), json.loads(THRESHOLDS_FILE.read_text()))
+        show_never_blurred(p)
+        if a.write:
+            write_never_blurred(p)
+        raise SystemExit
     if a.pairs:
         p = evaluate_pairs(load_rows(), json.loads(THRESHOLDS_FILE.read_text()))
         show_pairs(p)

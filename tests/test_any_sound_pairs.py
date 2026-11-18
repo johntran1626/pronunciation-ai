@@ -36,3 +36,17 @@ def test_native_variants_dont_set_the_cut():
     # a weak ɪ heard as ʌ is accepted (never red), so it must not push the ɪ ʌ cut up
     rows = [ok("ɪ", "ʌ", 0.8, accepted_variant=True)] + [ok("ɪ", "ʌ", -0.5)] * 120
     assert pair_cuts(rows, global_m=0.95, safety=0.1, floor=0.25, min_n=100)["ɪ ʌ"] == pytest.approx(0.25)
+
+
+def test_never_blurred_vowel_pairs_include_pairs_never_seen_and_skip_blurred_or_rare_targets():
+    from backend.any_sound import VOWELS
+    from eval.any_sound import never_blurred_pairs
+    rows = ([ok("ʌ", "ə", -0.2)] * 120 + [ok("ʌ", "ɑː", 0.85)]                 # ʌ leans to ɑː once: blurred
+            + [ok("ʌ", "æ", 0.9, accepted_variant=True)]                      # a weak syllable never counts
+            + [ok("ʊ", "uː", -0.5)] * 20                                       # too few ʊ to judge
+            + [ok("k", "t", -0.9)] * 200)                                      # consonants are not part of it
+    pairs = never_blurred_pairs(rows, cut=0.8, min_n=100)
+    assert "ʌ æ" in pairs and "ʌ ɪ" in pairs                           # never seen at all still counts
+    assert "ʌ ɑː" not in pairs and "ʌ ʌ" not in pairs
+    assert not any(p.startswith("ʊ ") or p.startswith("k ") for p in pairs)
+    assert all(set(p.split()) <= VOWELS for p in pairs) and pairs == sorted(pairs)

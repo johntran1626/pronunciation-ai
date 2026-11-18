@@ -139,3 +139,26 @@ def test_a_pair_cut_overrides_the_global_cut_for_that_pair_only():
     assert verdict(row("ɪ", "æ", margin=0.7, right=0.18), t) == (SWAP, "æ")     # the target's own fallback
     assert verdict(row("ɪ", "æ", margin=0.5, right=0.18), t) is None
     assert verdict(row("ɛ", "eɪ", margin=0.80), t) is None                       # other targets keep the global cut
+
+
+# ---------- vowel pairs natives never blur ----------
+NB = {**T, "never_blurred": {"cut": 0.8, "pairs": ["ʌ æ", "æ ʌ"]}}
+
+
+def test_a_never_blurred_vowel_pair_gets_the_gentler_cut_in_a_stressed_syllable():
+    # the listener's numbers for a clear "I'm lacky" read against the text "I'm lucky" (ʌ said as æ)
+    lacky = row("ʌ", "æ", margin=0.8327, right=0.0055)
+    assert verdict(lacky, T) is None                                 # the global cut alone misses it
+    assert verdict(lacky, NB) == (SWAP, "æ")
+    assert verdict(row("ʌ", "æ", margin=0.75, right=0.0055), NB) is None   # still has to clearly win
+    assert verdict({**lacky, "weak": True}, NB) is None              # weak syllables keep the global cut
+    assert verdict(row("ɛ", "æ", margin=0.83, right=0.01), NB) is None     # a pair natives DO blur: global cut
+
+
+def test_live_thresholds_list_only_vowel_pairs_natives_never_blur():
+    nb = any_sound.load_thresholds()["never_blurred"]
+    assert nb["cut"] == pytest.approx(0.8)
+    pairs = {tuple(p.split()) for p in nb["pairs"]}
+    assert ("ʌ", "æ") in pairs and ("æ", "ʌ") in pairs
+    assert ("ɛ", "æ") not in pairs and ("ɪ", "iː") not in pairs     # natives blur these on their own
+    assert all(t in any_sound.VOWELS and o in any_sound.VOWELS and t != o for t, o in pairs)
