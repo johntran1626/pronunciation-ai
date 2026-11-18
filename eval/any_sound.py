@@ -411,14 +411,18 @@ def evaluate_never_blurred(rows, live, cut=NB_CUT):
     nb = {"cut": cut, "pairs": never_blurred_pairs(correct["tune"], cut)}
     strong = [r for r in rows if r["cond"] == "sub" and r["group"] == "test" and not r["weak"]
               and not accepted(dict(r, other=r["said"]))]
-    sets = {"swaps_stressed_vowels": [r for r in strong if r["target"] in VOWELS],
+    sets = {"swaps_stressed": strong,
+            "swaps_stressed_vowels": [r for r in strong if r["target"] in VOWELS],
             "swaps_stressed_consonants": [r for r in strong if r["target"] not in VOWELS],
             "real_learner_substitutions": [r for r in rows if r["group"] == "korean" and r["human"] == "sub"],
+            "left_out": [r for r in rows if r["cond"] == "del" and r["group"] == "test"],
             "korean_correct_sounds_red": correct["korean"]}
 
     def measure(x):
+        caught = [r for r in strong if flag(r, m, rc, rs, None, x)]
         return {"false_red_sentences": {g: round(_false_red(correct[g], m, rc, rs, None, x), 4) for g in correct},
-                **{k: {"caught": sum(flag(r, m, rc, rs, None, x) for r in v), "n": len(v)} for k, v in sets.items()}}
+                **{k: {"caught": sum(flag(r, m, rc, rs, None, x) for r in v), "n": len(v)} for k, v in sets.items()},
+                "said_sound_named_right": {"caught": sum(r["other"] == r["said"] for r in caught), "n": len(caught)}}
     today, with_nb = measure(None), measure(nb)
     fr = with_nb["false_red_sentences"]
     new_right = with_nb["real_learner_substitutions"]["caught"] - today["real_learner_substitutions"]["caught"]

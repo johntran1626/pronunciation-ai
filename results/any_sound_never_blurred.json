@@ -691,6 +691,10 @@
    "test": 0.0419,
    "korean": 0.0567
   },
+  "swaps_stressed": {
+   "caught": 9438,
+   "n": 9891
+  },
   "swaps_stressed_vowels": {
    "caught": 2283,
    "n": 2576
@@ -703,9 +707,17 @@
    "caught": 75,
    "n": 1518
   },
+  "left_out": {
+   "caught": 4173,
+   "n": 7918
+  },
   "korean_correct_sounds_red": {
    "caught": 39,
    "n": 17163
+  },
+  "said_sound_named_right": {
+   "caught": 9195,
+   "n": 9438
   }
  },
  "with_never_blurred": {
@@ -713,6 +725,10 @@
    "tune": 0.0494,
    "test": 0.0452,
    "korean": 0.0817
+  },
+  "swaps_stressed": {
+   "caught": 9568,
+   "n": 9891
   },
   "swaps_stressed_vowels": {
    "caught": 2378,
@@ -726,9 +742,17 @@
    "caught": 100,
    "n": 1518
   },
+  "left_out": {
+   "caught": 4191,
+   "n": 7918
+  },
   "korean_correct_sounds_red": {
    "caught": 56,
    "n": 17163
+  },
+  "said_sound_named_right": {
+   "caught": 9320,
+   "n": 9568
   }
  },
  "new_reds": {

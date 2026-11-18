@@ -251,3 +251,24 @@ def test_render_puts_each_new_block_in_its_language_section():
     en, ko = md.split("## Results: English speakers learning Korean")
     assert "167/3,984" in en and "16/457 (3.5%" in ko and "456/457" in ko
     assert md.rstrip().endswith(END)
+
+
+NB = {"adopt": True, "settings": {"cut": 0.8}, "n_pairs": 672, "with_never_blurred": {
+    "false_red_sentences": {"tune": 0.0494, "test": 0.0452, "korean": 0.0817},
+    "swaps_stressed": {"caught": 9568, "n": 9891}, "swaps_stressed_vowels": {"caught": 2378, "n": 2576},
+    "swaps_stressed_consonants": {"caught": 7190, "n": 7315}, "said_sound_named_right": {"caught": 9300, "n": 9568},
+    "left_out": {"caught": 4173, "n": 7918}, "real_learner_substitutions": {"caught": 100, "n": 1518}}}
+
+
+def test_english_every_sound_block_uses_the_live_never_blurred_numbers_and_real_mistakes():
+    md = "\n".join(any_sound_block(ANY_EN, NB))
+    assert "180/3,984 (4.5%" in md and "49/600 (8.2%" in md     # the live cut, not the older one
+    assert "167/3,984" not in md and "34/600" not in md
+    assert "9,568/9,891" in md and "2,378/2,576" in md
+    assert "100/1,518 (6.6%" in md                               # real annotated mistakes, not made-up swaps
+    assert "0.8" in md and "672" in md
+
+
+def test_english_every_sound_block_ignores_a_never_blurred_run_that_was_not_adopted():
+    md = "\n".join(any_sound_block(ANY_EN, dict(NB, adopt=False)))
+    assert "167/3,984 (4.2%" in md and "1,518" not in md

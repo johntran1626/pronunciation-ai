@@ -51,3 +51,19 @@ def test_never_blurred_pairs_include_pairs_never_seen_and_skip_blurred_or_rare_t
     assert not any(p.startswith("ʊ ") for p in pairs)
     assert all((a in VOWELS) == (b in VOWELS) for a, b in map(str.split, pairs))   # vowel-vowel or consonant-consonant
     assert pairs == sorted(pairs)
+
+
+def test_never_blurred_report_has_every_number_the_readme_shows():
+    from eval.any_sound import evaluate_never_blurred
+    live = {"margin": 0.98, "right": 0.0005, "sub_right": 0.002}
+    swap = dict(ok("ʌ", "æ", 0.85), said="æ", op="sub", right=0.1)       # wins by 0.85: red only with the gentle cut
+    rows = ([ok("ʌ", "ə", -0.2, utt=f"u{i}") for i in range(120)]
+            + [dict(swap, cond="sub", group="test", utt="s1")]
+            + [dict(swap, cond="correct", group="korean", human="sub", speaker="hkk", utt="k1")]
+            + [dict(ok("t", "d", -0.9), cond="del", group="test", op="del", right=0.0, utt="d1")])
+    p = evaluate_never_blurred(rows, live)
+    today, nb = p["today"], p["with_never_blurred"]
+    assert today["swaps_stressed"] == {"caught": 0, "n": 1} and nb["swaps_stressed"] == {"caught": 1, "n": 1}
+    assert nb["said_sound_named_right"] == {"caught": 1, "n": 1}
+    assert nb["left_out"] == {"caught": 1, "n": 1}
+    assert today["real_learner_substitutions"]["caught"] == 0 and nb["real_learner_substitutions"]["caught"] == 1

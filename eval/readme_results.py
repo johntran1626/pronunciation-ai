@@ -9,6 +9,7 @@ Reads (nothing is recomputed here):
   results/timing_live.json      the same, on the deployed server (`python -m eval.timing --live URL`); optional
   results/korean_checks.json    the ten candidate Korean checks and their four bars (`python -m eval.korean_checks`)
   results/any_sound.json        the every-sound English check (`python -m eval.any_sound`); optional
+  results/any_sound_never_blurred.json  its gentler cut for never-blurred pairs (`--never-blurred`); used if adopted
   results/korean_match.json     the Korean "did they read this sentence / this word?" checks; optional
   results/korean_any_sound.json the every-sound Korean check (`python -m eval.korean_any_sound`); optional
 Rewrites only the part of README.md between START and END; the rest of the README is left as it is.
@@ -26,6 +27,7 @@ TIMING = ROOT / "results" / "timing.json"
 LIVE_TIMING = ROOT / "results" / "timing_live.json"
 KOREAN = ROOT / "results" / "korean_checks.json"
 ANY_EN = ROOT / "results" / "any_sound.json"
+ANY_NB = ROOT / "results" / "any_sound_never_blurred.json"
 KO_MATCH = ROOT / "results" / "korean_match.json"
 KO_ANY = ROOT / "results" / "korean_any_sound.json"
 EN_LISTENER = "listener_v1"   # the listener every number in this block is for (what the app runs for English)
@@ -193,9 +195,14 @@ def _caught(d):
     return kn(d["caught"], d["n"])
 
 
-def any_sound_block(a):
-    """The every-sound English check: native false reds, Korean speakers' false reds, made-up swaps caught."""
+def any_sound_block(a, nb=None):
+    """The every-sound English check: native false reds, Korean speakers' false reds, made-up swaps caught.
+    nb = results/any_sound_never_blurred.json; when it was adopted (live), its numbers replace the plain ones and
+    the real annotated L2-ARCTIC mistakes caught get their own row."""
     c, n = a["caps"][f"{a['live_cap']:.2f}"], a["sentences"]
+    nb = nb if nb and nb.get("adopt") else None
+    if nb:
+        c = {**c, **nb["with_never_blurred"]}
     fr = c["false_red_sentences"]
     return [
         "### Every other sound: any sound said as another, or left out",
@@ -207,7 +214,11 @@ def any_sound_block(a):
         "have no license file, so only totals are reported and their audio is never shared). The cut-offs allow "
         f"at most {100 * a['live_cap']:g}% of correct tuning sentences to have any red, a cap picked from a "
         "2% / 5% / 10% table. The swaps are clean native sounds, so the catch rates are likely higher than on "
-        "real learner errors.",
+        "real learner errors."
+        + (f" A stressed sound pair the tuning voices never blurred ({nb['n_pairs']} pairs, such as *lucky* said "
+           f"*lacky*) gets a gentler cut ({nb['settings']['cut']:g}), since a learner's swap is less clean than a "
+           "made-up one. The last row is the real check: L2-ARCTIC sounds the annotators marked as said as "
+           "another sound." if nb else ""),
         "",
         "| Every-sound check | Result |",
         "|---|---|",
@@ -219,6 +230,8 @@ def any_sound_block(a):
         f"{_caught(c['swaps_stressed_consonants'])} |",
         f"| ... and the sound really said named right | {_caught(c['said_sound_named_right'])} |",
         f"| A sound added to the text that was never said: caught as left out | {_caught(c['left_out'])} |",
+        *([f"| Real mistakes by the Korean speakers (annotated as another sound): caught "
+           f"| {_caught(c['real_learner_substitutions'])} |"] if nb else []),
     ]
 
 
@@ -315,7 +328,8 @@ def live_timing_line(live):
 
 
 # ---------- the whole block ----------
-def render(listeners, match, timing=None, live=None, korean=None, any_en=None, ko_match=None, ko_any=None):
+def render(listeners, match, timing=None, live=None, korean=None, any_en=None, ko_match=None, ko_any=None,
+           any_nb=None):
     for t, cmd in ((timing, "python -m eval.timing"), (live, "python -m eval.timing --live URL")):
         if t and t.get("listener") != EN_LISTENER:
             raise ValueError(f"timing was measured on {t.get('listener')!r}, but these results are "
@@ -347,7 +361,7 @@ def render(listeners, match, timing=None, live=None, korean=None, any_en=None, k
         out.append(f"| {r['label']} | {r['in_app']} | {r['caught']} | {r['false_alarms']} | {r['reds_right']} "
                    f"| {r['baseline_caught']} | {r['baseline_false_alarms']} |")
     if any_en:
-        out += ["", *any_sound_block(any_en)]
+        out += ["", *any_sound_block(any_en, any_nb)]
     out += [
         "",
         "### Did they read the sentence? Was each word said?",
@@ -398,7 +412,7 @@ def main():
     korean = json.loads(KOREAN.read_text(encoding="utf-8")) if KOREAN.exists() else None
     opt = lambda f: json.loads(f.read_text(encoding="utf-8")) if f.exists() else None
     block = render(json.loads(LISTENERS.read_text()), json.loads(MATCH.read_text()), timing, live, korean,
-                   opt(ANY_EN), opt(KO_MATCH), opt(KO_ANY))
+                   opt(ANY_EN), opt(KO_MATCH), opt(KO_ANY), opt(ANY_NB))
     README.write_text(update_readme(README.read_text(), block))
     print(f"wrote the results block in {README.relative_to(ROOT)} ({block.count(chr(10))} lines)")
 
